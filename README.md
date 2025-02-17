@@ -1,16 +1,16 @@
-# Status dos Ecopontos - Monitoramento em Tempo Real
+# Estado dos Ecopontos - Monitorização em Tempo Real
 
-![Captura de Tela](Cabecalho.JPG)
+![Captura de Ecrã](Cabecalho.JPG)
 
-Projeto desenvolvido para a PAP (Prova de Aptidão Profissional) de Maximilian Guimaro que monitora o status de ecopontos em tempo real.
+Projeto desenvolvido para a PAP (Prova de Aptidão Profissional) de Maximilian Guimaro que monitoriza o estado de ecopontos em tempo real.
 
 ## Funcionalidades Principais
 
-- 🟡 **Monitoramento de Capacidade**: Visualização em tempo real do nível dos ecopontos Amarelo, Verde e Azul
-- 🔄 **Atualização Automática**: Dados atualizados a cada 5 segundos
-- 🌓 **Modo Escuro**: Alternância entre temas claro e escuro com persistência de preferência
+- 🟡 **Monitorização de Capacidade**: Visualização em tempo real dos níveis dos ecopontos Amarelo, Verde e Azul
+- 🔄 **Atualização Automática**: Dados renovados a cada 5 segundos
+- 🌓 **Modo Escuro**: Alternância entre temas claro e escuro com guarda de preferências
 - 📊 **Barras Interativas**: Representação visual dinâmica da capacidade disponível
-- 📶 **Status de Conexão**: Indicação visual do estado da conexão com o servidor
+- 📶 **Estado da Ligação**: Indicação visual do estado de conexão ao servidor
 
 ## Tecnologias Utilizadas
 
@@ -18,9 +18,9 @@ Projeto desenvolvido para a PAP (Prova de Aptidão Profissional) de Maximilian G
 - CSS3 (com animações e transições)
 - JavaScript ES6
 - Font Awesome (ícones)
-- GitHub Pages (hospedagem do JSON)
+- GitHub Pages (alojamento do JSON)
 
 ## Pré-requisitos
 
-- Navegador web moderno (Chrome, Firefox, Edge)
-- Conexão com internet para carregamento dos ícones e dados
+- Browser moderno (Chrome, Firefox, Edge)
+- Ligação à Internet para carregamento de ícones e dados

@@ -20,7 +20,7 @@
 
         async function atualizarDados() {
             try {
-                let resposta = await fetch('https://ecopontos-server.onrender.com'); // Substituir pela URL do Render
+                let resposta = await fetch('https://ecopontos-server.onrender.com/dados'); // Substituir pela URL do Render
                 let dados = await resposta.json();
                 
                 document.getElementById('yellow').innerText = dados.yellow + ' cm';

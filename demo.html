@@ -24,14 +24,12 @@
         });
 
         function iniciarSimulacao() {
-            // Atualiza os valores a cada segundo
+            // Atualiza os valores a cada 5 segundos
             setInterval(gerarValoresAleatorios, 5000);
-            // Gera primeiro conjunto de valores imediatamente
             gerarValoresAleatorios();
         }
 
         function gerarValoresAleatorios() {
-            // Gera valores entre 0 e 100%
             const amarelo = Math.floor(Math.random() * 101);
             const verde = Math.floor(Math.random() * 101);
             const azul = Math.floor(Math.random() * 101);
@@ -44,7 +42,8 @@
             document.getElementById('green-bar').style.width = verde + '%';
             document.getElementById('blue-bar').style.width = azul + '%';
             
-            document.getElementById('status').innerText = 'Conectado';
+            // Alterado para Demo em verde
+            document.getElementById('status').innerText = 'Demo';
             document.getElementById('status').style.color = 'green';
         }
 
@@ -67,7 +66,6 @@
         }
     </script>
     <style>
-        /* Mantido o mesmo CSS anterior */
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; margin: 0; transition: background 0.3s, color 0.3s; }
         .dark-mode { background-color: #1e1e1e; color: white; }
         .container { margin-top: 50px; max-width: 600px; margin: auto; }
@@ -89,7 +87,8 @@
 <body>
     <h1>Simulação em Tempo Real - Enchimento do Ecoponto</h1>
     
-    <p class="status">Estado: <span id="status">Simulação Ativa</span></p>
+    <!-- Texto alterado para Demo -->
+    <p class="status">Estado: <span id="status">Demo</span></p>
     
     <div class="container">
         <div class="ecoponto">

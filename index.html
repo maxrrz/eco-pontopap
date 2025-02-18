@@ -10,40 +10,65 @@
             document.body.classList.toggle('dark-mode');
             let mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
             localStorage.setItem('theme', mode);
+            updateButtonText();
+            updateImage();
         }
         
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-mode');
             }
+            updateButtonText();
+            updateImage();
+            atualizarDados(); // Inicia o ciclo de atualizações
         });
+
+        function updateButtonText() {
+            const button = document.getElementById('theme-toggle-btn');
+            if (document.body.classList.contains('dark-mode')) {
+                button.innerText = "Modo Claro";
+            } else {
+                button.innerText = "Modo Escuro";
+            }
+        }
+
+        function updateImage() {
+            const image = document.getElementById('theme-image');
+            if (document.body.classList.contains('dark-mode')) {
+                image.src = 'tgeiescuro.png';
+            } else {
+                image.src = 'tgeiclaro.png';
+            }
+        }
 
         async function atualizarDados() {
             try {
-                let resposta = await fetch('https://ecopontos-server.onrender.com/dados'); // Substituir pela URL do Render adicionar /dados para aparecer conectado!
+                let resposta = await fetch('https://ecopontos-server.onrender.com/dados'); // SERVIDOR
                 let dados = await resposta.json();
                 
-                document.getElementById('yellow').innerText = dados.yellow + ' cm';
-                document.getElementById('green').innerText = dados.green + ' cm';
-                document.getElementById('blue').innerText = dados.blue + ' cm';
+                // Atualizações imediatas dos valores
+                document.getElementById('yellow').innerText = dados.yellow + '%';
+                document.getElementById('green').innerText = dados.green + '%';
+                document.getElementById('blue').innerText = dados.blue + '%';
                 
-                document.getElementById('yellow-bar').style.width = (100 - dados.yellow) + '%';
-                document.getElementById('green-bar').style.width = (100 - dados.green) + '%';
-                document.getElementById('blue-bar').style.width = (100 - dados.blue) + '%';
+                document.getElementById('yellow-bar').style.width = dados.yellow + '%';
+                document.getElementById('green-bar').style.width = dados.green + '%';
+                document.getElementById('blue-bar').style.width = dados.blue + '%';
                 
                 document.getElementById('status').innerText = 'Conectado';
                 document.getElementById('status').style.color = 'green';
-                document.getElementById('next-update').innerText = 'Próxima atualização em 5 segundos';
+                
+                // Nova atualização imediatamente após receber resposta
+                setTimeout(atualizarDados, 100); // Pequeno delay para evitar sobrecarga
             } catch (erro) {
                 console.error('Erro ao obter os dados:', erro);
                 document.getElementById('status').innerText = 'Desconectado';
                 document.getElementById('status').style.color = 'red';
-                document.getElementById('next-update').innerText = '';
+                
+                // Tenta reconectar após 1 segundo em caso de erro
+                setTimeout(atualizarDados, 1000);
             }
         }
-        
-        setInterval(atualizarDados, 5000); // Atualiza os dados a cada 5 segundos
-        window.onload = atualizarDados;
     </script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; margin: 0; transition: background 0.3s, color 0.3s; }
@@ -56,18 +81,19 @@
         #yellow-bar { background: #FFD700; }
         #green-bar { background: #008000; }
         #blue-bar { background: #0000FF; }
-        .status { font-size: 18px; font-weight: bold; margin-top: 20px; }
+        .status { font-size: 18px; font-weight: bold; margin-top: 50px; }
         .footer { margin-top: 30px; font-size: 14px; }
         .footer img { width: 100%; max-width: 600px; margin-top: 10px; }
-        .toggle-btn { margin-top: 20px; padding: 10px 20px; cursor: pointer; background: #007BFF; color: white; border: none; border-radius: 5px; font-size: 16px; }
+        .toggle-btn { padding: 10px 20px; cursor: pointer; background: #007BFF; color: white; border: none; border-radius: 5px; font-size: 16px; margin: 20px auto; display: block; }
         .dark-mode .toggle-btn { background: #FFD700; color: black; }
+        .footer .toggle-btn { margin-bottom: 15px; }
     </style>
 </head>
 <body>
     <h1>Monitorização em Tempo Real - Enchimento do Ecoponto</h1>
-    <button class="toggle-btn" onclick="toggleDarkMode()">Alternar Modo Escuro</button>
+    
     <p class="status">Estado da Conexão: <span id="status">Carregando...</span></p>
-    <p id="next-update">Próxima atualização em 5 segundos</p>
+    
     <div class="container">
         <div class="ecoponto">
             <i class="fas fa-recycle" style="color: #FFD700;"></i> Amarelo: <span id="yellow">Carregando...</span>
@@ -82,8 +108,11 @@
             <div class="bar-container"><div id="blue-bar" class="bar"></div></div>
         </div>
     </div>
+
     <div class="footer">
+        <button class="toggle-btn" id="theme-toggle-btn" onclick="toggleDarkMode()">Modo Escuro</button>
         <p>Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
+        <img id="theme-image" src="tgeiescuro.png" alt="Imagem do Tema" style="display: block; width: 90%; max-width: 100px; margin: 10px auto;">
         <img src="Cabecalho.JPG" alt="Logotipos de apoio ao projeto">
     </div>
 </body>

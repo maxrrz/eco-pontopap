@@ -7,7 +7,7 @@ Projeto desenvolvido para a PAP (Prova de Aptidão Profissional) de Maximilian G
 ## Funcionalidades Principais
 
 - 🟡 **Monitorização de Capacidade**: Visualização em tempo real dos níveis dos ecopontos Amarelo, Verde e Azul
-- 🔄 **Atualização Automática**: Dados renovados a cada 5 segundos
+- 🔄 **Atualização Automática**: Dados renovados a cada segundo
 - 🌓 **Modo Escuro**: Alternância entre temas claro e escuro com guarda de preferências
 - 📊 **Barras Interativas**: Representação visual dinâmica da capacidade disponível
 - 📶 **Estado da Ligação**: Indicação visual do estado de conexão ao servidor

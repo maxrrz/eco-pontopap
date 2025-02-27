@@ -72,7 +72,8 @@
             margin-top: 10px; 
         }
         .toggle-btn { 
-            padding: 6px 12px; 
+            padding: 0 12px; /* Ajustado para centralizar verticalmente */
+            height: 40px; /* Igual à altura do .language-toggle */
             cursor: pointer; 
             background: white; 
             color: inherit; 
@@ -80,6 +81,9 @@
             border-radius: 5px; 
             font-size: 16px; 
             transition: background 0.3s, color 0.3s; 
+            display: flex; /* Adicionado para alinhamento */
+            align-items: center; /* Centraliza verticalmente */
+            justify-content: center; /* Centraliza horizontalmente */
         }
         .dark-mode .toggle-btn { 
             background: #333; 
@@ -252,7 +256,6 @@
             menu.style.display = isOpen ? 'none' : 'grid';
             ensureGridLayout();
             if (!isOpen) {
-                // Adiciona o evento de clique fora apenas quando o menu é aberto
                 setTimeout(() => {
                     document.addEventListener('click', closeLanguageMenuOnClickOutside, { once: true });
                 }, 0);

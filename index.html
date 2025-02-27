@@ -4,8 +4,206 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estado dos Ecopontos - Monitorização em Tempo Real</title>
-    <link rel="icon" type="image/x-icon" href="ec.png">
+    <link rel="icon" type="image/x-icon" href="photos/ec.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            background-color: #f4f4f4; 
+            margin: 0; 
+            transition: background 0.3s, color 0.3s; 
+        }
+        .dark-mode { 
+            background-color: #1e1e1e; 
+            color: white; 
+        }
+        .container { 
+            margin-top: 50px; 
+            max-width: 600px; 
+            margin: auto; 
+        }
+        .ecoponto { 
+            font-size: 20px; 
+            margin: 20px 0; 
+            padding: 10px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            transition: background 0.3s; 
+        }
+        .dark-mode .ecoponto { 
+            background: #333; 
+        }
+        .bar-container { 
+            width: 100%; 
+            background: #ddd; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+        .bar { 
+            height: 20px; 
+            width: 0; 
+            transition: width 0.5s ease-in-out; 
+        }
+        #yellow-bar { background: #FFD700; }
+        #green-bar { background: #008000; }
+        #blue-bar { background: #0000FF; }
+        .status { 
+            font-size: 18px; 
+            font-weight: bold; 
+            margin-top: 50px; 
+        }
+        .footer { 
+            margin-top: 30px; 
+            font-size: 14px; 
+            display: block; 
+        }
+        .footer .theme-language { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 15px; 
+        }
+        .footer img { 
+            width: 100%; 
+            max-width: 600px; 
+            margin-top: 10px; 
+        }
+        .toggle-btn { 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            background: white; 
+            color: inherit; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            transition: background 0.3s, color 0.3s; 
+        }
+        .dark-mode .toggle-btn { 
+            background: #333; 
+            color: white; 
+            border-color: #555; 
+        }
+        .language-select { 
+            position: relative; 
+            display: inline-block; 
+            padding-left: 0; 
+        }
+        .language-toggle { 
+            padding: 0 11px; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            border: 1px solid #ddd; 
+            background: white; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            height: 40px; 
+            width: 150px; 
+            box-sizing: border-box; 
+        }
+        .dark-mode .language-toggle { 
+            background: #333; 
+            color: white; 
+            border-color: #555; 
+        }
+        .language-menu { 
+            display: none; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(2, auto); 
+            position: absolute; 
+            background: white; 
+            border-radius: 5px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            width: 450px; 
+            z-index: 10; 
+            top: 100%; 
+            left: 0; 
+            padding: 0; 
+            border: 1px solid #000; 
+        }
+        .dark-mode .language-menu { 
+            background: #333; 
+            border: 1px solid #000; 
+        }
+        .language-option { 
+            padding: 8px 15px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            justify-content: flex-start; 
+            margin: 0; 
+            box-sizing: border-box; 
+            transition: background 0.3s; 
+            border-right: 1px solid #000; 
+            border-bottom: 1px solid #000; 
+            width: 100%; 
+        }
+        .language-option .flag-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 24px; 
+            height: 24px; 
+        }
+        .language-menu .language-option:nth-child(3n) { 
+            border-right: none; 
+        }
+        .language-menu .language-option:nth-child(n+4) { 
+            border-bottom: none; 
+        }
+        .language-option:hover { 
+            background: #f0f0f0; 
+        }
+        .dark-mode .language-option:hover { 
+            background: #444; 
+        }
+        .dark-mode .language-option { 
+            border-right: 1px solid #000; 
+            border-bottom: 1px solid #000; 
+        }
+        .dark-mode .language-menu .language-option:nth-child(3n) { 
+            border-right: none; 
+        }
+        .dark-mode .language-menu .language-option:nth-child(n+4) { 
+            border-bottom: none; 
+        }
+        .flag-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 24px; 
+            height: 24px; 
+            margin-right: 10px; 
+            flex-shrink: 0;
+            transform: translateY(-4px); 
+        }
+        .flag { 
+            width: 24px; 
+            height: 24px; 
+            object-fit: contain; 
+            display: block; 
+            border: none; 
+        }
+        #theme-image { 
+            display: block; 
+            width: 90%; 
+            max-width: 100px; 
+            margin: 10px auto; 
+            object-fit: contain; 
+        }
+        #theme-image[src=""] { 
+            display: none; 
+        }
+        #theme-image.error { 
+            display: none; 
+        }
+    </style>
     <script>
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
@@ -13,108 +211,300 @@
             localStorage.setItem('theme', mode);
             updateButtonText();
             updateImage();
+            updateLanguageDisplay();
         }
         
-        document.addEventListener("DOMContentLoaded", () => {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('language', lang);
+
+            const translations = {
+                pt: { 
+                    title: "Monitorização em Tempo Real - Enchimento do Ecoponto", 
+                    status: "Estado da Conexão", 
+                    yellow: "Plástico e Metal", 
+                    green: "Vidro", 
+                    blue: "Papel e Cartão", 
+                    footer: "Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro", 
+                    loading: "Carregando...", 
+                    disconnected: "Desconectado", 
+                    connected: "Conectado",
+                    themeDark: "Tema Escuro", 
+                    themeLight: "Tema Claro" 
+                },
+                fr: { 
+                    title: "Surveillance en Temps Réel - Remplissage des Écopoints", 
+                    status: "État de la Connexion", 
+                    yellow: "Plastique et Métal", 
+                    green: "Verre", 
+                    blue: "Papier et Carton", 
+                    footer: "Projet développé pour l'Épreuve d'Aptitude Professionnelle de Maximilian Guimaro", 
+                    loading: "Chargement...", 
+                    disconnected: "Déconnecté", 
+                    connected: "Connecté",
+                    themeDark: "Thème Sombre", 
+                    themeLight: "Thème Clair" 
+                },
+                en: { 
+                    title: "Real-Time Monitoring - Ecopoint Filling Status", 
+                    status: "Connection Status", 
+                    yellow: "Plastic and Metal", 
+                    green: "Glass", 
+                    blue: "Paper and Cardboard", 
+                    footer: "Project developed for Maximilian Guimaro's Professional Aptitude Test", 
+                    loading: "Loading...", 
+                    disconnected: "Disconnected", 
+                    connected: "Connected",
+                    themeDark: "Dark Theme", 
+                    themeLight: "Light Theme" 
+                },
+                ja: { 
+                    title: "リアルタイム監視 - エコポイントの充填状況", 
+                    status: "接続状態", 
+                    yellow: "プラスチックと金属", 
+                    green: "ガラス", 
+                    blue: "紙と段ボール", 
+                    footer: "マクシミリアン・ギマロの職業適性試験のために開発されたプロジェクト", 
+                    loading: "読み込み中...", 
+                    disconnected: "切断されました", 
+                    connected: "接続済み",
+                    themeDark: "ダークテーマ", 
+                    themeLight: "ライトテーマ" 
+                },
+                es: { 
+                    title: "Monitorización en Tiempo Real - Estado de Llenado del Ecopunto", 
+                    status: "Estado de la Conexión", 
+                    yellow: "Plástico y Metal", 
+                    green: "Vidrio", 
+                    blue: "Papel y Cartón", 
+                    footer: "Proyecto desarrollado para la Prueba de Aptitud Profesional de Maximilian Guimaro", 
+                    loading: "Cargando...", 
+                    disconnected: "Desconectado", 
+                    connected: "Conectado",
+                    themeDark: "Tema Oscuro", 
+                    themeLight: "Tema Claro" 
+                },
+                de: { 
+                    title: "Echtzeit-Überwachung - Füllstand des Ecopoints", 
+                    status: "Verbindungsstatus", 
+                    yellow: "Kunststoff und Metall", 
+                    green: "Glas", 
+                    blue: "Papier und Karton", 
+                    footer: "Projekt entwickelt für die berufliche Eignungsprüfung von Maximilian Guimaro", 
+                    loading: "Laden...", 
+                    disconnected: "Getrennt", 
+                    connected: "Verbunden",
+                    themeDark: "Dunkles Thema", 
+                    themeLight: "Helles Thema" 
+                }
+            };
+
+            document.getElementById("title").innerText = translations[lang].title;
+            document.getElementById("status-label").innerText = translations[lang].status;
+            document.getElementById("yellow-label").innerText = translations[lang].yellow;
+            document.getElementById("green-label").innerText = translations[lang].green;
+            document.getElementById("blue-label").innerText = translations[lang].blue;
+            document.getElementById("footer-text").innerText = translations[lang].footer;
+            document.getElementById("status").innerText = translations[lang].loading;
+            updateLanguageDisplay();
+            ensureGridLayout();
+            updateButtonText();
+            startDataUpdate();
+        }
+
+        function toggleLanguageMenu() {
+            const menu = document.getElementById('language-menu');
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'grid';
+                ensureGridLayout();
+            } else {
+                menu.style.display = 'none';
             }
+        }
+
+        function selectLanguage(lang) {
+            changeLanguage(lang);
+            const menu = document.getElementById('language-menu');
+            menu.style.display = 'none';
+        }
+
+        function updateLanguageDisplay() {
+            const lang = document.documentElement.lang;
+            const langNames = { pt: 'Português', fr: 'Français', en: 'English', ja: '日本語', es: 'Español', de: 'Deutsch' };
+            const flagUrls = { 
+                pt: 'flag/pt.png', 
+                fr: 'flag/fr.png', 
+                en: 'flag/gb.png', 
+                ja: 'flag/jp.png', 
+                es: 'flag/es.png', 
+                de: 'flag/de.png' 
+            };
+            const toggle = document.getElementById('language-toggle');
+            
+            toggle.innerHTML = `
+                <div class="flag-container">
+                    <img class="flag" src="${flagUrls[lang]}" alt="Bandeira de ${langNames[lang]}">
+                </div>
+                <span>${langNames[lang]}</span>
+            `;
+        }
+
+        function ensureGridLayout() {
+            const menu = document.getElementById('language-menu');
+            if (menu) {
+                menu.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                menu.style.gridTemplateRows = 'repeat(2, auto)';
+                menu.style.width = '450px';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+            const savedLang = localStorage.getItem('language') || 'pt';
+            changeLanguage(savedLang);
             updateButtonText();
             updateImage();
-            atualizarDados(); // Inicia o ciclo de atualizações
+            updateLanguageDisplay();
+            const menu = document.getElementById('language-menu');
+            menu.style.display = 'none';
+            ensureGridLayout();
+            startDataUpdate();
+            const languageOptions = document.querySelectorAll('.language-option');
+            languageOptions.forEach(option => {
+                option.addEventListener('click', (event) => {
+                    const lang = event.target.closest('.language-option').getAttribute('onclick').match(/selectLanguage\('(.+)'\)/)[1];
+                    selectLanguage(lang);
+                });
+            });
         });
 
         function updateButtonText() {
             const button = document.getElementById('theme-toggle-btn');
-            if (document.body.classList.contains('dark-mode')) {
-                button.innerText = "Modo Claro";
-            } else {
-                button.innerText = "Modo Escuro";
-            }
+            const lang = document.documentElement.lang;
+            const translations = {
+                pt: { themeDark: "Tema Escuro", themeLight: "Tema Claro" },
+                fr: { themeDark: "Thème Sombre", themeLight: "Thème Clair" },
+                en: { themeDark: "Dark Theme", themeLight: "Light Theme" },
+                ja: { themeDark: "ダークテーマ", themeLight: "ライトテーマ" },
+                es: { themeDark: "Tema Oscuro", themeLight: "Tema Claro" },
+                de: { themeDark: "Dunkles Thema", themeLight: "Helles Thema" }
+            };
+            button.innerText = document.body.classList.contains('dark-mode') 
+                ? `${translations[lang].themeLight} ☀️` 
+                : `${translations[lang].themeDark} 🌙`;
         }
 
         function updateImage() {
             const image = document.getElementById('theme-image');
-            if (document.body.classList.contains('dark-mode')) {
-                image.src = 'tgeiescuro.png';
+            if (image) {
+                image.src = document.body.classList.contains('dark-mode') ? 'photos/tgeiescuro.png' : 'photos/tgeiclaro.png';
+                image.onerror = () => {
+                    console.error('Erro ao carregar a imagem de tema:', image.src);
+                    image.classList.add('error');
+                    image.src = '';
+                };
             } else {
-                image.src = 'tgeiclaro.png';
+                console.error('Elemento #theme-image não encontrado no DOM.');
             }
         }
 
+        let dataUpdateInterval = null;
+
+        function startDataUpdate() {
+            if (dataUpdateInterval) clearInterval(dataUpdateInterval);
+            atualizarDados();
+            dataUpdateInterval = setInterval(atualizarDados, 3000);
+        }
+
         async function atualizarDados() {
+            const lang = document.documentElement.lang;
+            const translations = {
+                pt: { loading: "Carregando...", disconnected: "Desconectado", connected: "Conectado" },
+                fr: { loading: "Chargement...", disconnected: "Déconnecté", connected: "Connecté" },
+                en: { loading: "Loading...", disconnected: "Disconnected", connected: "Connected" },
+                ja: { loading: "読み込み中...", disconnected: "切断されました", connected: "接続済み" },
+                es: { loading: "Cargando...", disconnected: "Desconectado", connected: "Conectado" },
+                de: { loading: "Laden...", disconnected: "Getrennt", connected: "Verbunden" }
+            };
+
             try {
-                let resposta = await fetch('https://ecopontos-server.onrender.com/dados'); // SERVIDOR
+                const resposta = await Promise.race([
+                    fetch('https://ecopontos-server.onrender.com/dados'),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
+                ]);
+                if (!resposta.ok) throw new Error(`Erro: ${resposta.status} - ${resposta.statusText}`);
                 let dados = await resposta.json();
                 
-                // Atualizações imediatas dos valores
-                document.getElementById('yellow').innerText = dados.yellow + '%';
-                document.getElementById('green').innerText = dados.green + '%';
-                document.getElementById('blue').innerText = dados.blue + '%';
-                
-                document.getElementById('yellow-bar').style.width = dados.yellow + '%';
-                document.getElementById('green-bar').style.width = dados.green + '%';
-                document.getElementById('blue-bar').style.width = dados.blue + '%';
-                
-                document.getElementById('status').innerText = 'Conectado';
+                const yellow = dados.yellow !== undefined ? dados.yellow : 0;
+                const green = dados.green !== undefined ? dados.green : 0;
+                const blue = dados.blue !== undefined ? dados.blue : 0;
+
+                document.getElementById('yellow').innerText = yellow + '%';
+                document.getElementById('green').innerText = green + '%';
+                document.getElementById('blue').innerText = blue + '%';
+                document.getElementById('yellow-bar').style.width = yellow + '%';
+                document.getElementById('green-bar').style.width = green + '%';
+                document.getElementById('blue-bar').style.width = blue + '%';
+                document.getElementById('status').innerText = translations[lang].connected;
                 document.getElementById('status').style.color = 'green';
                 
-                // Nova atualização imediatamente após receber resposta
-                setTimeout(atualizarDados, 100); // Pequeno delay para evitar sobrecarga
+                if (dataUpdateInterval) clearInterval(dataUpdateInterval);
+                dataUpdateInterval = setInterval(atualizarDados, 100);
             } catch (erro) {
                 console.error('Erro ao obter os dados:', erro);
-                document.getElementById('status').innerText = 'Desconectado';
+                document.getElementById('yellow').innerText = '0%';
+                document.getElementById('green').innerText = '0%';
+                document.getElementById('blue').innerText = '0%';
+                document.getElementById('yellow-bar').style.width = '0%';
+                document.getElementById('green-bar').style.width = '0%';
+                document.getElementById('blue-bar').style.width = '0%';
+                document.getElementById('status').innerText = translations[lang].disconnected;
                 document.getElementById('status').style.color = 'red';
-                
-                // Tenta reconectar após 1 segundo em caso de erro
-                setTimeout(atualizarDados, 1000);
+                if (dataUpdateInterval) clearInterval(dataUpdateInterval);
+                setTimeout(() => startDataUpdate(), 2000);
             }
         }
     </script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; margin: 0; transition: background 0.3s, color 0.3s; }
-        .dark-mode { background-color: #1e1e1e; color: white; }
-        .container { margin-top: 50px; max-width: 600px; margin: auto; }
-        .ecoponto { font-size: 20px; margin: 20px 0; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.3s; }
-        .dark-mode .ecoponto { background: #333; }
-        .bar-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; }
-        .bar { height: 20px; width: 0; transition: width 0.5s ease-in-out; }
-        #yellow-bar { background: #FFD700; }
-        #green-bar { background: #008000; }
-        #blue-bar { background: #0000FF; }
-        .status { font-size: 18px; font-weight: bold; margin-top: 50px; }
-        .footer { margin-top: 30px; font-size: 14px; }
-        .footer img { width: 100%; max-width: 600px; margin-top: 10px; }
-        .toggle-btn { padding: 10px 20px; cursor: pointer; background: #007BFF; color: white; border: none; border-radius: 5px; font-size: 16px; margin: 20px auto; display: block; }
-        .dark-mode .toggle-btn { background: #FFD700; color: black; }
-        .footer .toggle-btn { margin-bottom: 15px; }
-    </style>
 </head>
 <body>
-    <h1>Monitorização em Tempo Real - Enchimento do Ecoponto</h1>
-    
-    <p class="status">Estado da Conexão: <span id="status">Carregando...</span></p>
+    <h1 id="title">Monitorização em Tempo Real - Enchimento do Ecoponto</h1>
+    <p class="status"><span id="status-label">Estado da Conexão</span>: <span id="status">Carregando...</span></p>
     
     <div class="container">
         <div class="ecoponto">
-            <i class="fas fa-recycle" style="color: #FFD700;"></i> Plástico e Metal: <span id="yellow">Carregando...</span>
+            <i class="fas fa-recycle" style="color: #FFD700;"></i> <span id="yellow-label">Plástico e Metal</span>: <span id="yellow">Carregando...</span>
             <div class="bar-container"><div id="yellow-bar" class="bar"></div></div>
         </div>
         <div class="ecoponto">
-            <i class="fas fa-recycle" style="color: #008000;"></i> Vidro: <span id="green">Carregando...</span>
+            <i class="fas fa-recycle" style="color: #008000;"></i> <span id="green-label">Vidro</span>: <span id="green">Carregando...</span>
             <div class="bar-container"><div id="green-bar" class="bar"></div></div>
         </div>
         <div class="ecoponto">
-            <i class="fas fa-recycle" style="color: #0000FF;"></i> Papel e Cartão: <span id="blue">Carregando...</span>
+            <i class="fas fa-recycle" style="color: #0000FF;"></i> <span id="blue-label">Papel e Cartão</span>: <span id="blue">Carregando...</span>
             <div class="bar-container"><div id="blue-bar" class="bar"></div></div>
         </div>
     </div>
 
     <div class="footer">
-        <button class="toggle-btn" id="theme-toggle-btn" onclick="toggleDarkMode()">Modo Escuro</button>
-        <p>Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
-        <img id="theme-image" src="tgeiescuro.png" alt="Imagem do Tema" style="display: block; width: 90%; max-width: 100px; margin: 10px auto;">
-        <img src="Cabecalho.JPG" alt="Logotipos de apoio ao projeto">
+        <div class="theme-language">
+            <button class="toggle-btn" id="theme-toggle-btn" onclick="toggleDarkMode()">Tema Escuro 🌙</button>
+            <div class="language-select">
+                <button class="language-toggle" id="language-toggle" onclick="toggleLanguageMenu()">
+                    <!-- Conteúdo será preenchido dinamicamente -->
+                </button>
+                <div id="language-menu" class="language-menu">
+                    <div class="language-option" onclick="selectLanguage('pt')"><div class="flag-container"><img class="flag" src="flag/pt.png" alt="Bandeira de Portugal"></div> Português</div>
+                    <div class="language-option" onclick="selectLanguage('fr')"><div class="flag-container"><img class="flag" src="flag/fr.png" alt="Bandeira da França"></div> Français</div>
+                    <div class="language-option" onclick="selectLanguage('en')"><div class="flag-container"><img class="flag" src="flag/gb.png" alt="Bandeira do Reino Unido"></div> English</div>
+                    <div class="language-option" onclick="selectLanguage('es')"><div class="flag-container"><img class="flag" src="flag/es.png" alt="Bandeira da Espanha"></div> Español</div>
+                    <div class="language-option" onclick="selectLanguage('de')"><div class="flag-container"><img class="flag" src="flag/de.png" alt="Bandeira da Alemanha"></div> Deutsch</div>
+                    <div class="language-option" onclick="selectLanguage('ja')"><div class="flag-container"><img class="flag" src="flag/jp.png" alt="Bandeira do Japão"></div> 日本語</div>
+                </div> 
+            </div>
+        </div>
+        <p id="footer-text">Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
+        <img id="theme-image" src="photos/tgeiclaro.png" alt="Imagem do Tema" style="display: block; width: 90%; max-width: 100px; margin: 10px auto;" onload="this.style.display = 'block';" onerror="this.classList.add('error'); this.style.display = 'none'; console.error('Erro ao carregar tgeiclaro.png');">
+        <img src="photos/Cabecalho.JPG" alt="Logotipos de apoio ao projeto">
     </div>
 </body>
 </html>

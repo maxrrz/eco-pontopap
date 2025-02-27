@@ -72,8 +72,8 @@
             margin-top: 10px; 
         }
         .toggle-btn { 
-            padding: 0 12px; /* Ajustado para centralizar verticalmente */
-            height: 40px; /* Igual à altura do .language-toggle */
+            padding: 0 12px; 
+            height: 40px; 
             cursor: pointer; 
             background: white; 
             color: inherit; 
@@ -81,9 +81,9 @@
             border-radius: 5px; 
             font-size: 16px; 
             transition: background 0.3s, color 0.3s; 
-            display: flex; /* Adicionado para alinhamento */
-            align-items: center; /* Centraliza verticalmente */
-            justify-content: center; /* Centraliza horizontalmente */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
         }
         .dark-mode .toggle-btn { 
             background: #333; 
@@ -126,7 +126,7 @@
             width: 300px; 
             z-index: 10; 
             top: calc(100% + 10px);
-            left: -75px; 
+            left: -150px; 
             padding: 0; 
             border: 1px solid #000; 
         }
@@ -290,7 +290,7 @@
             menu.style.gridTemplateColumns = 'repeat(2, 1fr)';
             menu.style.gridTemplateRows = 'repeat(3, auto)';
             menu.style.width = '300px';
-            menu.style.left = '-75px';
+            menu.style.left = '-150px';
         }
 
         function updateButtonText() {
@@ -360,8 +360,25 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-            changeLanguage(localStorage.getItem('language') || 'pt');
+            // Define padrões iniciais apenas se não houver tema salvo
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light'); // Salva 'light' como padrão inicial
+            }
+
+            // Carrega a linguagem salva ou usa 'pt' como padrão inicial
+            const savedLanguage = localStorage.getItem('language') || 'pt';
+            changeLanguage(savedLanguage);
+
+            // Atualiza a interface imediatamente após carregar o tema e idioma
+            updateImage();
+            updateButtonText();
+            updateLanguageDisplay();
+
+            // Configura os eventos de clique para os idiomas
             document.querySelectorAll('.language-option').forEach(option => {
                 option.addEventListener('click', (e) => {
                     const lang = e.target.closest('.language-option').getAttribute('onclick').match(/selectLanguage\('(.+)'\)/)[1];

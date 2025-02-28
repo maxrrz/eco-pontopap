@@ -1,9 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
-    <title>Hello World</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitorização em Tempo Real - Enchimento do Ecoponto</title>
+    <link rel="icon" type="image/x-icon" href="photos/ec.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="js/main.js"></script>
 </head>
 <body>
-    <h1>Hello World!</h1>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1 id="title">
+                        <i class="fas fa-leaf"></i>
+                        EcoPonto
+                        <span class="subtitle">Monitorização Inteligente</span>
+                    </h1>
+                </div>
+                <div class="header-info">
+                    <div class="status-indicator">
+                        <div id="status-dot" class="status-dot"></div>
+                        <i class="fas fa-signal"></i>
+                        <span id="status">Carregando...</span>
+                    </div>
+                    <div class="theme-language">
+                        <div class="language-select">
+                            <button class="language-toggle">
+                                <i class="fas fa-globe"></i>
+                                <span>Idioma</span>
+                            </button>
+                            <div class="language-menu">
+                                <div class="language-option" data-lang="pt">
+                                    <img src="https://flagcdn.com/w40/pt.png" alt="Português">
+                                    Português
+                                </div>
+                                <div class="language-option" data-lang="es">
+                                    <img src="https://flagcdn.com/w40/es.png" alt="Español">
+                                    Español
+                                </div>
+                                <div class="language-option" data-lang="de">
+                                    <img src="https://flagcdn.com/w40/de.png" alt="Deutsch">
+                                    Deutsch
+                                </div>
+                                <div class="language-option" data-lang="fr">
+                                    <img src="https://flagcdn.com/w40/fr.png" alt="Français">
+                                    Français
+                                </div>
+                                <div class="language-option" data-lang="ja">
+                                    <img src="https://flagcdn.com/w40/jp.png" alt="日本語">
+                                    日本語
+                                </div>
+                            </div>
+                        </div>
+                        <button id="theme-toggle" class="toggle-btn">
+                            <i class="fas fa-moon"></i>
+                            <span>Tema Escuro</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-chart-pie"></i>
+                <div class="stat-title">Média de Enchimento</div>
+                <div class="stat-value" id="average-fill">0%</div>
+                <div class="stat-trend">
+                    <i class="fas fa-clock"></i>
+                    <span>Em tempo real</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-arrow-trend-up"></i>
+                <div class="stat-title">Contentor Mais Cheio</div>
+                <div class="stat-value" id="most-full">-</div>
+                <div class="stat-trend">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Monitorização ativa</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock-rotate-left"></i>
+                <div class="stat-title">Última Atualização</div>
+                <div class="stat-value" id="last-update">-</div>
+                <div class="stat-trend">
+                    <i class="fas fa-rotate"></i>
+                    <span>Atualização automática</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ecoponto">
+            <div id="yellow-container">
+                <div class="ecoponto-header">
+                    <div class="ecoponto-title-container">
+                        <div class="ecoponto-icon-wrapper">
+                            <i class="fas fa-jug-detergent ecoponto-icon" style="color: var(--warning-color);"></i>
+                        </div>
+                        <div class="ecoponto-info">
+                            <span id="yellow-label" class="ecoponto-title">Plástico e Metal</span>
+                            <span class="ecoponto-subtitle">Embalagens e recipientes</span>
+                        </div>
+                    </div>
+                    <div id="yellow-percentage" class="ecoponto-percentage">0%</div>
+                </div>
+                <div class="bar-container">
+                    <div id="yellow-bar" class="bar"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ecoponto">
+            <div id="green-container">
+                <div class="ecoponto-header">
+                    <div class="ecoponto-title-container">
+                        <div class="ecoponto-icon-wrapper">
+                            <i class="fas fa-wine-bottle ecoponto-icon" style="color: var(--success-color);"></i>
+                        </div>
+                        <div class="ecoponto-info">
+                            <span id="green-label" class="ecoponto-title">Vidro</span>
+                            <span class="ecoponto-subtitle">Garrafas e frascos</span>
+                        </div>
+                    </div>
+                    <div id="green-percentage" class="ecoponto-percentage">0%</div>
+                </div>
+                <div class="bar-container">
+                    <div id="green-bar" class="bar"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ecoponto">
+            <div id="blue-container">
+                <div class="ecoponto-header">
+                    <div class="ecoponto-title-container">
+                        <div class="ecoponto-icon-wrapper">
+                            <i class="fas fa-newspaper ecoponto-icon" style="color: var(--primary-color);"></i>
+                        </div>
+                        <div class="ecoponto-info">
+                            <span id="blue-label" class="ecoponto-title">Papel e Cartão</span>
+                            <span class="ecoponto-subtitle">Jornais e embalagens</span>
+                        </div>
+                    </div>
+                    <div id="blue-percentage" class="ecoponto-percentage">0%</div>
+                </div>
+                <div class="bar-container">
+                    <div id="blue-bar" class="bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Histórico de Enchimento</span>
+                </h2>
+                <div class="chart-actions">
+                    <button class="chart-btn">
+                        <i class="fas fa-calendar-days"></i>
+                        <span>Últimas 24h</span>
+                    </button>
+                </div>
+            </div>
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <i class="fas fa-graduation-cap"></i>
+                <p id="footer-text">Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
+            </div>
+            <div class="footer-images">
+                <img id="theme-image" src="photos/tgeiclaro.png" alt="Imagem do Tema" class="theme-logo">
+                <img src="photos/Cabecalho.JPG" alt="Logotipos de apoio ao projeto" class="support-logos">
+            </div>
+            <div class="footer-links">
+                <a href="about.html" class="footer-link">
+                    <i class="fas fa-info-circle"></i>
+                    Sobre
+                </a>
+                <a href="docs.html" class="footer-link">
+                    <i class="fas fa-code"></i>
+                    Documentação
+                </a>
+                <a href="contact.html" class="footer-link">
+                    <i class="fas fa-envelope"></i>
+                    Contato
+                </a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import { CONFIG, translations } from './config.js';
 import * as helpers from '../src/utils/helpers.js';
+import { initGoogleAuth, checkAuthStatus } from './auth.js';
 
 // Estado global da aplicação
 const state = {
@@ -296,8 +297,10 @@ function updateChartLabels(lang) {
     state.chart.update();
 }
 
-// Inicialização da aplicação
+// Initialize authentication when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+    initGoogleAuth();
+    checkAuthStatus();
     // Carregar preferências salvas
     const savedLanguage = helpers.loadSavedLanguage();
     const savedTheme = helpers.loadSavedTheme();

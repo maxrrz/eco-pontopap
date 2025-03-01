@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/auth.js"></script>
 </head>
 <body>
     <div class="container">
@@ -23,6 +26,10 @@
                     </h1>
                 </div>
                 <div class="header-info">
+                    <div id="userInfo" class="user-info">
+                        <span>Olá, <span id="userName">[Nome do Usuário]</span>!</span>
+                        <button id="logoutButton" class="logout-btn">Sair</button>
+                    </div>
                     <div class="status-indicator">
                         <div id="status-dot" class="status-dot"></div>
                         <i class="fas fa-signal"></i>
@@ -33,6 +40,78 @@
                         <span></span>
                         <span></span>
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Panel -->
+        <div id="loginPanel" class="login-panel">
+            <div class="login-container">
+                <button class="back-btn" id="backToLogin" style="display: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="form-container">
+                    <!-- Login Side -->
+                    <div class="login-side">
+                        <div class="login-header">
+                            <h2>Bem-vindo ao EcoPonto</h2>
+                            <p>Faça login para acessar o sistema de monitorização em tempo real</p>
+                        </div>
+                        <div class="login-options">
+                            <button id="googleSignInButton" class="google-btn">
+                                <img src="https://www.google.com/favicon.ico" alt="Google Logo">
+                                Continuar com Google
+                            </button>
+                            <div class="login-divider">
+                                <span>ou</span>
+                            </div>
+                            <form class="login-form" id="loginForm">
+                                <div class="form-group">
+                                    <label for="loginEmail">E-mail</label>
+                                    <input type="email" id="loginEmail" placeholder="Seu e-mail" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="password-input-group">
+                                        <label for="loginPassword">Senha</label>
+                                        <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                                        <button type="button" class="password-toggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="submit" class="login-btn">Entrar</button>
+                            </form>
+                        </div>
+                        <div class="login-footer">
+                            <p>Não tem uma conta? <button type="button" class="switch-form-btn" id="showRegister">Criar conta</button></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Register Side -->
+                    <div class="register-side" style="display: none;">
+                        <div class="login-header">
+                            <h2>Crie sua conta</h2>
+                            <p>Preencha os dados abaixo para criar uma nova conta.</p>
+                        </div>
+                        <form class="login-form">
+                            <div class="form-group">
+                                <label for="name">Nome</label>
+                                <input type="text" id="name" placeholder="Seu nome" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="register-email">Email</label>
+                                <input type="email" id="register-email" placeholder="Seu email" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="register-password">Senha</label>
+                                <input type="password" id="register-password" placeholder="Sua senha" required />
+                            </div>
+                            <button type="submit" class="login-btn">Criar Conta</button>
+                        </form>
+                        <div class="form-info">
+                            Já tem uma conta? <button class="switch-form-btn">Fazer login</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,28 +130,12 @@
                         <i class="fas fa-globe"></i>
                         <span>Idioma</span>
                     </button>
-                    <div id="language-backdrop" class="language-backdrop"></div>
                     <div id="language-menu" class="language-menu">
-                        <div class="language-option" data-lang="pt">
-                            <img src="https://flagcdn.com/w40/pt.png" alt="Português">
-                            Português
-                        </div>
-                        <div class="language-option" data-lang="es">
-                            <img src="https://flagcdn.com/w40/es.png" alt="Español">
-                            Español
-                        </div>
-                        <div class="language-option" data-lang="de">
-                            <img src="https://flagcdn.com/w40/de.png" alt="Deutsch">
-                            Deutsch
-                        </div>
-                        <div class="language-option" data-lang="fr">
-                            <img src="https://flagcdn.com/w40/fr.png" alt="Français">
-                            Français
-                        </div>
-                        <div class="language-option" data-lang="ja">
-                            <img src="https://flagcdn.com/w40/jp.png" alt="日本語">
-                            日本語
-                        </div>
+                        <div class="language-option" data-lang="pt">Português</div>
+                        <div class="language-option" data-lang="es">Español</div>
+                        <div class="language-option" data-lang="de">Deutsch</div>
+                        <div class="language-option" data-lang="fr">Français</div>
+                        <div class="language-option" data-lang="ja">日本語</div>
                     </div>
                 </div>
             </div>
@@ -82,6 +145,11 @@
                     <span>Modo Escuro</span>
                 </button>
             </div>
+        </div>
+
+        <div class="welcome-message">
+            <h2>Olá, <span id="userName">[Nome do Usuário]</span>!</h2>
+            <p>Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.</p>
         </div>
 
         <div class="stats-container">
@@ -114,6 +182,9 @@
             </div>
         </div>
 
+        <div class="ecoponto-info-message" style="margin-bottom: 20px;">
+            <p>Aqui você pode ver os níveis de enchimento dos ecopontos.</p>
+        </div>
         <div class="ecoponto">
             <div id="yellow-container">
                 <div class="ecoponto-header">

@@ -23,6 +23,31 @@ const state = {
 
 // Manipuladores de eventos
 function setupEventListeners() {
+    // Menu de hambúrguer
+    const menuButton = document.getElementById('menu-button');
+    const menuPanel = document.querySelector('.menu-panel');
+    const menuOverlay = document.querySelector('.menu-overlay');
+    const menuClose = document.querySelector('.menu-close');
+
+    if (menuButton && menuPanel && menuOverlay && menuClose) {
+        const toggleMenu = () => {
+            menuButton.classList.toggle('active');
+            menuPanel.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = menuPanel.classList.contains('active') ? 'hidden' : '';
+        };
+
+        menuButton.addEventListener('click', toggleMenu);
+        menuClose.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && menuPanel.classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+    }
+
     // Tema
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
@@ -99,35 +124,82 @@ function setupEventListeners() {
 
     // Menu de idiomas
     const languageToggle = document.querySelector('.language-toggle');
-    const languageMenu = document.querySelector('.language-menu');
+    const languageMenu = document.getElementById('language-menu');
+    const languageBackdrop = document.getElementById('language-backdrop');
     const languageOptions = document.querySelectorAll('.language-option');
 
-    if (languageToggle && languageMenu) {
+    if (languageToggle && languageMenu && languageBackdrop) {
+        // Garantir que o menu está fechado inicialmente
+        languageMenu.classList.remove('show');
+        languageBackdrop.classList.remove('show');
+        document.body.style.overflow = '';
+
+        // Função para abrir o menu
+        const openMenu = () => {
+            languageMenu.classList.add('show');
+            languageBackdrop.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+
+        // Função para fechar o menu
+        const closeMenu = () => {
+            languageMenu.classList.remove('show');
+            languageBackdrop.classList.remove('show');
+            document.body.style.overflow = '';
+        };
+
+        // Fechar o menu imediatamente após o carregamento da página
+        closeMenu();
+
         languageToggle.addEventListener('click', (event) => {
+            event.preventDefault();
             event.stopPropagation();
-            languageMenu.classList.toggle('show');
+            
+            const isMenuOpen = languageMenu.classList.contains('show');
+            if (isMenuOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        // Fechar o menu quando clicar no backdrop
+        languageBackdrop.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            closeMenu();
         });
 
         // Fechar o menu quando clicar fora
         document.addEventListener('click', (event) => {
-            if (!event.target.closest('.language-select')) {
-                languageMenu.classList.remove('show');
+            const isClickInside = event.target.closest('.language-select');
+            const isMenuOpen = languageMenu.classList.contains('show');
+            if (!isClickInside && isMenuOpen) {
+                closeMenu();
             }
         });
-    }
 
-    if (languageOptions) {
-        languageOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                const lang = option.dataset.lang;
-                if (lang && translations[lang]) {
-                    updateLanguage(lang);
-                    if (languageMenu) {
-                        languageMenu.classList.remove('show');
-                    }
-                }
-            });
+        // Fechar o menu quando pressionar ESC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && languageMenu.classList.contains('show')) {
+                closeMenu();
+            }
         });
+
+        // Adicionar eventos aos botões de idioma
+        if (languageOptions) {
+            languageOptions.forEach(option => {
+                option.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const lang = option.dataset.lang;
+                    if (lang && translations[lang]) {
+                        updateLanguage(lang);
+                        closeMenu();
+                    }
+                });
+            });
+        }
     }
 }
 

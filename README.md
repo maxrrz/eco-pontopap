@@ -1,6 +1,6 @@
 # Estado dos Ecopontos - Monitorização em Tempo Real
 
-![Captura de Ecrã](Cabecalho.JPG)
+![Captura de Ecrã](photos/Cabecalho.JPG)
 
 Projeto desenvolvido para a PAP (Prova de Aptidão Profissional) de Maximilian Guimaro que monitoriza o estado de ecopontos em tempo real.
 

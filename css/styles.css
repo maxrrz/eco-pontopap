@@ -303,18 +303,23 @@ body {
 .menu-panel {
     position: fixed;
     top: 0;
-    right: -300px;
+    right: -100%;
     width: 300px;
     height: 100%;
-    background: var(--header-bg);
-    box-shadow: -4px 0 25px rgba(0, 0, 0, 0.15);
-    padding: 20px;
-    transition: right 0.3s ease;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: -4px 0 25px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    transition: all 0.3s ease;
     z-index: 1000;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
 .menu-panel.active {
     right: 0;
+    visibility: visible;
 }
 
 .menu-overlay {
@@ -340,252 +345,232 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.menu-header h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
 }
 
 .menu-close {
     all: unset;
     cursor: pointer;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
+    color: var(--text-primary);
 }
 
 .menu-close:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
 }
 
 .menu-close i {
-    font-size: 1.2rem;
-    color: var(--header-text);
+    font-size: 1.3rem;
+    color: var(--text-primary);
 }
 
 .menu-items {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding: 0;
+    margin: 0;
+    flex: 1;
 }
 
 .menu-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--header-text);
+    gap: 15px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(4px);
+    background: rgba(0, 0, 0, 0.08);
+    transform: translateX(8px);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .menu-item i {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    min-width: 32px;
+    text-align: left;
+    color: var(--primary-color);
 }
 
 .theme-language {
     display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.language-toggle, .toggle-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--header-text);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.language-toggle:hover, .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.18);
-    transform: translateY(-1px);
-}
-
-.language-toggle i, .toggle-btn i {
-    font-size: 1rem;
-}
-
-.language-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    background: white;
-    border-radius: 12px;
-    padding: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    min-width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.2s ease;
-}
-
-.language-menu.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.language-option {
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 12px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    margin-top: auto;
+    padding-top: 25px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.language-option:hover {
+.language-toggle, 
+.toggle-btn {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
     background: rgba(0, 0, 0, 0.05);
-    transform: translateX(4px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    transition: all 0.3s ease;
 }
 
-.language-option img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
+.language-toggle:hover, 
+.toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.language-toggle i, 
+.toggle-btn i {
+    font-size: 1.4rem;
+    min-width: 32px;
+    color: var(--primary-color);
+    text-align: left;
 }
 
 @media (max-width: 768px) {
-    .header {
-        margin: 8px;
-        padding: 10px 12px;
-        border-radius: 12px;
-    }
-    
-    .header-title h1 {
-        font-size: 1.2rem;
-    }
-    
-    .header-info {
-        gap: 8px;
-    }
-    
-    .status-indicator {
-        padding: 4px 10px;
-        font-size: 0.85rem;
-        height: 28px;
-    }
-    
-    .menu-button {
-        width: 20px;
-        height: 16px;
-    }
-
-    .menu-button span {
-        height: 1.5px;
-    }
-    
     .menu-panel {
-        width: 85%;
-        right: -85%;
-        padding: 16px;
-        max-width: 320px;
+        padding: 20px;
+        gap: 20px;
     }
 
     .menu-header {
-        padding: 0 0 12px 0;
-        margin-bottom: 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .menu-header h3 {
-        font-size: 1.2rem;
-        font-weight: 500;
+        margin-bottom: 20px;
     }
 
     .menu-items {
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+        gap: 10px;
     }
 
-    .menu-item {
-        padding: 12px 16px;
-        border-radius: 12px;
-        font-size: 0.95rem;
-    }
-
-    .language-toggle, 
+    .menu-item,
+    .language-toggle,
     .toggle-btn {
-        padding: 12px 16px;
-        border-radius: 12px;
+        padding: 12px 14px;
         font-size: 0.95rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    .menu-close {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.1);
+    .menu-item i,
+    .language-toggle i,
+    .toggle-btn i {
+        font-size: 1.3rem;
+        min-width: 28px;
     }
 
-    .menu-close i {
-        font-size: 1.1rem;
+    .theme-language {
+        padding-top: 20px;
     }
 }
 
 @media (max-width: 360px) {
-    .header-title h1 {
-        font-size: 1.1rem;
-    }
-
-    .status-indicator {
-        font-size: 0.8rem;
-        padding: 4px 8px;
-    }
-
-    .menu-button {
-        width: 18px;
-        height: 14px;
-    }
-
-    .menu-button span {
-        height: 1.2px;
-    }
-
     .menu-panel {
         width: 90%;
         right: -90%;
-        padding: 12px;
+        padding: 16px;
     }
 
     .menu-header h3 {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 
     .menu-item {
-        padding: 10px 14px;
+        padding: 12px;
         font-size: 0.9rem;
     }
 
     .language-toggle, 
     .toggle-btn {
-        padding: 10px 14px;
+        padding: 12px;
         font-size: 0.9rem;
     }
+}
+
+.dark-mode .menu-panel {
+    background: rgba(30, 30, 30, 0.98);
+}
+
+.dark-mode .menu-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .menu-close {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+.dark-mode .menu-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.dark-mode .menu-close i {
+    color: white;
+}
+
+.dark-mode .menu-item {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.dark-mode .menu-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .menu-item i {
+    color: var(--primary-color);
+}
+
+.dark-mode .language-toggle,
+.dark-mode .toggle-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.dark-mode .language-toggle:hover,
+.dark-mode .toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .language-toggle i,
+.dark-mode .toggle-btn i {
+    color: var(--primary-color);
+}
+
+.dark-mode .theme-language {
+    border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 .stats-container {
@@ -1185,7 +1170,7 @@ body {
     border-radius: 30px;
     cursor: pointer;
     font-size: 0.9rem;
-    color: var(--header-text);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 8px;

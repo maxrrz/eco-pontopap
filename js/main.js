@@ -236,7 +236,7 @@ function setupEventListeners() {
     const languageToggle = document.querySelector('.language-toggle');
     const languageMenu = document.getElementById('language-menu');
     const languageBackdrop = document.getElementById('language-backdrop');
-    const languageOptions = document.querySelectorAll('.language-option');
+    const languageMenuOptions = document.querySelectorAll('.language-option');
 
     if (languageToggle && languageMenu && languageBackdrop) {
         // Garantir que o menu está fechado inicialmente
@@ -297,8 +297,8 @@ function setupEventListeners() {
         });
 
         // Adicionar eventos aos botões de idioma
-        if (languageOptions) {
-            languageOptions.forEach(option => {
+        if (languageMenuOptions) {
+            languageMenuOptions.forEach(option => {
                 option.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();

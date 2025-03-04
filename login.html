@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - EcoPonto</title>
+    <link rel="icon" type="image/x-icon" href="photos/ec.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detectar dispositivo móvel e adicionar classe
+            function detectMobileDevice() {
+                if (window.innerWidth <= 768) {
+                    document.body.classList.add('mobile-device');
+                } else {
+                    document.body.classList.remove('mobile-device');
+                }
+            }
+            
+            // Executar na inicialização
+            detectMobileDevice();
+            
+            // Executar quando a janela for redimensionada
+            window.addEventListener('resize', detectMobileDevice);
+            
+            // Verificar se o usuário já está logado
+            function checkAuthStatus() {
+                try {
+                    const userData = localStorage.getItem('user');
+                    
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        if (user && user.name && user.email) {
+                            // Redirecionar para a página principal
+                            window.location.href = 'index.html';
+                            return true; // Usuário está logado
+                        }
+                    }
+                    
+                    // Verificar se "lembrar de mim" estava ativado
+                    if (localStorage.getItem('rememberMe') === 'true') {
+                        const email = localStorage.getItem('userEmail');
+                        if (email) {
+                            const loginEmail = document.getElementById('loginEmail');
+                            const rememberMe = document.getElementById('rememberMe');
+                            
+                            if (loginEmail) loginEmail.value = email;
+                            if (rememberMe) rememberMe.checked = true;
+                        }
+                    }
+                    
+                    return false; // Usuário não está logado
+                } catch (error) {
+                    console.error('Erro ao verificar status de autenticação:', error);
+                    localStorage.removeItem('user'); // Limpar dados corrompidos
+                    return false;
+                }
+            }
+            
+            // Processar login com email/senha
+            function handleEmailPasswordLogin(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const rememberMe = document.getElementById('rememberMe')?.checked || false;
+                
+                // Validação básica
+                if (!email || !password) {
+                    showNotification('Por favor, preencha todos os campos.', 'error');
+                    return;
+                }
+                
+                // Validação de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showNotification('Por favor, insira um email válido.', 'error');
+                    return;
+                }
+                
+                // Mostrar estado de carregamento
+                const submitButton = document.querySelector('#loginForm .login-btn');
+                if (submitButton) {
+                    const originalButtonText = submitButton.textContent;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
+                    submitButton.disabled = true;
+                    
+                    // Simular chamada de API com timeout
+                    setTimeout(() => {
+                        // Simular login bem-sucedido
+                        const userData = {
+                            name: email.split('@')[0],
+                            email: email,
+                            picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(email.split('@')[0]) + '&background=0066cc&color=fff',
+                            provider: 'email'
+                        };
+                        
+                        // Armazenar preferência de "lembrar de mim"
+                        if (rememberMe) {
+                            localStorage.setItem('rememberMe', 'true');
+                            localStorage.setItem('userEmail', email);
+                        } else {
+                            localStorage.removeItem('rememberMe');
+                            localStorage.removeItem('userEmail');
+                        }
+                        
+                        // Armazenar dados do usuário no localStorage
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        
+                        // Redirecionar para a página principal
+                        window.location.href = 'index.html';
+                        
+                        // Resetar botão
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    }, 1000);
+                }
+            }
+            
+            // Função para mostrar notificações
+            function showNotification(message, type = 'info') {
+                // Função desativada - não mostrar notificações
+                return;
+            }
+            
+            // Alternar visibilidade da senha
+            window.togglePasswordVisibility = function(inputId, buttonEl) {
+                const input = document.getElementById(inputId);
+                const icon = buttonEl.querySelector('i');
+                
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                }
+            };
+            
+            // Configurar tema escuro/claro
+            function setupThemeToggle() {
+                // Forçar modo claro
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Configurar event listeners
+            function setupEventListeners() {
+                // Login
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', handleEmailPasswordLogin);
+                }
+                
+                // Botão de registro
+                const showRegisterBtn = document.getElementById('showRegister');
+                if (showRegisterBtn) {
+                    showRegisterBtn.addEventListener('click', function() {
+                        // Redirecionar para a página de registro
+                        window.location.href = 'register.html';
+                    });
+                }
+                
+                // Botão de login com Google
+                const googleSignInButton = document.getElementById('googleSignInButton');
+                if (googleSignInButton) {
+                    googleSignInButton.addEventListener('click', function() {
+                        showNotification('Login com Google em desenvolvimento.', 'info');
+                    });
+                }
+                
+                // Botão de login na seção de registro
+                const showLoginBtn = document.getElementById('showLogin');
+                if (showLoginBtn) {
+                    showLoginBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        // Focar no formulário de login
+                        const loginEmail = document.getElementById('loginEmail');
+                        if (loginEmail) {
+                            loginEmail.focus();
+                        }
+                    });
+                }
+            }
+            
+            // Inicializar aplicação
+            function initApp() {
+                setupThemeToggle();
+                setupEventListeners();
+                checkAuthStatus();
+            }
+            
+            // Iniciar aplicação
+            initApp();
+        });
+    </script>
+</head>
+<body>
+    <div class="login-panel">
+        <div class="login-container">
+            <div class="login-content">
+                <!-- Seção de Login -->
+                <div class="login-side">
+                    <h2>Entra na tua conta EcoPonto!</h2>
+                    
+                    <div class="login-options">
+                        <button id="googleSignInButton" class="google-btn">
+                            <i class="fab fa-google"></i>
+                            Entrar com o Google
+                        </button>
+                        
+                        <div class="login-divider">
+                            <span>ou</span>
+                        </div>
+                        
+                        <form class="login-form" id="loginForm">
+                            <div class="form-group">
+                                <input type="email" id="loginEmail" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <div class="password-input-group">
+                                    <input type="password" id="loginPassword" placeholder="Password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-options">
+                                <div class="remember-me">
+                                    <input type="checkbox" id="rememberMe">
+                                    <label for="rememberMe">Guardar sessão</label>
+                                </div>
+                                <a href="forgot-password.html" class="forgot-password">Esqueceste-te da palavra-passe?</a>
+                            </div>
+                            
+                            <button type="submit" class="login-btn">INICIAR SESSÃO</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Linha divisória (visível apenas em mobile) -->
+                <div class="section-divider">
+                    <hr>
+                </div>
+                
+                <!-- Seção de Registro -->
+                <div class="register-side">
+                    <h2>Ainda não tens conta?</h2>
+                    <p class="register-subtitle">Regista-te agora!</p>
+                    
+                    <p class="register-subtitle">Fácil e Rápido!</p>
+                    
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acompanha os níveis de enchimento em tempo real</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check"></i>
+                            <span>Recebe notificações quando os ecopontos estiverem quase cheios</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check"></i>
+                            <span>Acede a estatísticas e histórico de recolhas</span>
+                        </div>
+                    </div>
+                    
+                    <a href="register.html" id="showRegister" class="create-account-btn">CRIAR CONTA</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

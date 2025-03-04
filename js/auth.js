@@ -8,30 +8,8 @@ let loginInitialized = false;
 
 // Função para mostrar notificações
 function showNotification(message, type = 'info') {
-    // Remover notificações existentes
-    const existingNotifications = document.querySelectorAll('.notification');
-    existingNotifications.forEach(notification => notification.remove());
-    
-    // Criar nova notificação
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                       type === 'error' ? 'fa-exclamation-circle' : 
-                       'fa-info-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Mostrar notificação
-    setTimeout(() => notification.classList.add('show'), 100);
-    
-    // Remover notificação após 3 segundos
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    // Função desativada - não mostrar notificações
+    return;
 }
 
 // Alternar visibilidade da senha
@@ -163,49 +141,13 @@ function handleEmailPasswordLogin(event) {
 
 // Função para sair
 function signOut() {
-    // Limpar dados do usuário do localStorage
+    // Limpar dados do usuário
     localStorage.removeItem('user');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('rememberMe');
     
-    // Atualizar UI
-    const userInfo = document.getElementById('userInfo');
-    if (userInfo) {
-        userInfo.innerHTML = '';
-        userInfo.style.display = 'none';
-    }
-    
-    // Mostrar painel de login
-    const loginPanel = document.getElementById('loginPanel');
-    if (loginPanel) {
-        loginPanel.style.display = 'flex';
-        
-        // Resetar formulários
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) loginForm.reset();
-        
-        // Voltar para o formulário de login se estiver na tela de registro
-        const loginSide = document.querySelector('.login-side');
-        const registerSide = document.querySelector('.register-side');
-        const backToLoginBtn = document.getElementById('backToLogin');
-        
-        if (loginSide && registerSide) {
-            loginSide.style.display = 'block';
-            registerSide.style.display = 'none';
-            if (backToLoginBtn) backToLoginBtn.style.display = 'none';
-        }
-    }
-    
-    // Mostrar elementos de convidado
-    document.querySelectorAll('.guest-only').forEach(el => {
-        el.style.display = 'block';
-    });
-    
-    // Ocultar elementos específicos do usuário
-    document.querySelectorAll('.user-only').forEach(el => {
-        el.style.display = 'none';
-    });
-    
-    // Mostrar notificação de logout
-    showNotification('Você saiu da sua conta.', 'info');
+    // Redirecionar para a página de login
+    window.location.href = 'login.html';
 }
 
 // Verificar se o usuário já está logado

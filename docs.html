@@ -203,5 +203,37 @@ npm start</pre>
     </footer>
 
     <script type="module" src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o usuário está autenticado
+            function checkAuth() {
+                try {
+                    const userData = localStorage.getItem('user');
+                    if (!userData) {
+                        // Usuário não está logado, redirecionar para a página de login
+                        window.location.href = 'login.html';
+                        return false;
+                    }
+                    
+                    const user = JSON.parse(userData);
+                    if (!user || !user.name || !user.email) {
+                        // Dados de usuário inválidos, redirecionar para a página de login
+                        window.location.href = 'login.html';
+                        return false;
+                    }
+                    
+                    return true; // Usuário está logado
+                } catch (error) {
+                    console.error('Erro ao verificar autenticação:', error);
+                    // Em caso de erro, redirecionar para a página de login
+                    window.location.href = 'login.html';
+                    return false;
+                }
+            }
+            
+            // Verificar autenticação ao carregar a página
+            checkAuth();
+        });
+    </script>
 </body>
 </html> 

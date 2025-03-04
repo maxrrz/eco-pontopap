@@ -242,7 +242,7 @@
                     <span>Configurações</span>
                 </a>
                 <div class="menu-divider"></div>
-                <a href="#" class="menu-item" data-menu-id="logout" onclick="signOut()">
+                <a href="#" class="menu-item" data-menu-id="logout" onclick="handleSignOut()">
                     <i class="fas fa-sign-out-alt" style="color: #0066cc;"></i>
                     <span>Logout</span>
                 </a>
@@ -420,30 +420,8 @@
             // ===== FUNÇÕES UTILITÁRIAS =====
             // Função para mostrar notificações
             function showNotification(message, type = 'info') {
-                // Remover notificações existentes
-                const existingNotifications = document.querySelectorAll('.notification');
-                existingNotifications.forEach(notification => notification.remove());
-                
-                // Criar nova notificação
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.innerHTML = `
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                                   type === 'error' ? 'fa-exclamation-circle' : 
-                                   'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                // Mostrar notificação
-                setTimeout(() => notification.classList.add('show'), 100);
-                
-                // Remover notificação após 3 segundos
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
+                // Função desativada - não mostrar notificações
+                return;
             }
             
             // Alternar visibilidade da senha
@@ -482,7 +460,7 @@
                     userInfo.innerHTML = `
                         <img src="${user.picture}" alt="${user.name}" class="user-avatar">
                         <span class="user-name">${user.name}</span>
-                        <button onclick="signOut()" class="sign-out-button">
+                        <button onclick="handleSignOut()" class="sign-out-button">
                             <i class="fas fa-sign-out-alt"></i>
                         </button>
                     `;
@@ -494,28 +472,12 @@
             }
             
             // Função para sair
-            window.signOut = function() {
-                // Limpar dados do usuário do localStorage
+            window.handleSignOut = function() {
+                // Limpar dados do usuário
                 localStorage.removeItem('user');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('rememberMe');
                 
-                // Atualizar UI
-                if (userInfo) {
-                    userInfo.innerHTML = '';
-                    userInfo.style.display = 'none';
-                }
-                
-                // Mostrar painel de login
-                if (loginPanel) {
-                    loginPanel.style.display = 'flex';
-                    
-                    // Resetar formulários
-                    if (loginForm) loginForm.reset();
-                }
-                
-                // Mostrar notificação de logout
-                showNotification('Sessão terminada com sucesso', 'info');
+                // Redirecionar para a página de login
+                window.location.href = 'login.html';
             };
             
             // Verificar se o usuário já está logado
@@ -531,27 +493,13 @@
                         }
                     }
                     
-                    // Usuário não está logado, mostrar painel de login
-                    if (loginPanel) {
-                        loginPanel.style.display = 'flex';
-                        
-                        // Verificar se "lembrar de mim" estava ativado
-                        if (localStorage.getItem('rememberMe') === 'true') {
-                            const email = localStorage.getItem('userEmail');
-                            if (email) {
-                                const loginEmail = document.getElementById('loginEmail');
-                                const rememberMe = document.getElementById('rememberMe');
-                                
-                                if (loginEmail) loginEmail.value = email;
-                                if (rememberMe) rememberMe.checked = true;
-                            }
-                        }
-                    }
-                    
+                    // Usuário não está logado, redirecionar para a página de login
+                    window.location.href = 'login.html';
                     return false; // Usuário não está logado
                 } catch (error) {
                     console.error('Erro ao verificar status de autenticação:', error);
                     localStorage.removeItem('user'); // Limpar dados corrompidos
+                    window.location.href = 'login.html'; // Redirecionar para login em caso de erro
                     return false;
                 }
             }
@@ -756,40 +704,7 @@
             // ===== INICIALIZAÇÃO =====
             // Configurar event listeners
             function setupEventListeners() {
-                // Login
-                if (loginForm) {
-                    loginForm.addEventListener('submit', handleEmailPasswordLogin);
-                }
-                
-                // Botão de registro
-                if (showRegisterBtn) {
-                    showRegisterBtn.addEventListener('click', function() {
-                        showNotification('Funcionalidade de registro em desenvolvimento.', 'info');
-                    });
-                }
-                
-                // Botão de login com Google
-                if (googleSignInButton) {
-                    googleSignInButton.addEventListener('click', function() {
-                        showNotification('Login com Google em desenvolvimento.', 'info');
-                    });
-                }
-            }
-            
-            // Adicionar manipulador de eventos para o botão de gráficos
-            if (chartsButton) {
-                chartsButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Fechar o menu
-                    menuPanel.classList.remove('active');
-                    menuOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                    
-                    // Navegar para a página de gráficos na mesma janela
-                    window.location.href = 'charts.html';
-                });
+                // Nenhum event listener relacionado ao login aqui
             }
             
             // Inicializar aplicação

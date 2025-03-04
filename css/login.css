@@ -1,59 +1,99 @@
-.login-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f5;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+html, body {
     height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+:root {
+    --primary-color: #0066cc;
+    --primary-hover: #0055b3;
+}
+
+.login-panel {
+    min-height: 100vh;
+    padding: 20px 0;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-    background-color: rgba(245, 245, 245, 0.9);
 }
 
 .login-container {
+    width: 90%;
+    max-width: 500px;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    display: flex;
-    animation: fadeIn 0.3s ease-out;
+    margin: 0 auto;
 }
 
 .login-content {
     display: flex;
+    flex-direction: column;
     width: 100%;
-    height: 100%;
 }
 
 .login-side,
 .register-side {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
+    padding: 30px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
 }
 
 .login-side {
     background-color: #ffffff;
-    color: #333333;
-    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .register-side {
     background-color: #ffffff;
     color: #333333;
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.section-divider {
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.section-divider hr {
+    border: none;
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 0;
 }
 
 .login-side h2 {
     color: #333333;
     font-size: 1.8rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     font-weight: 600;
-    text-align: left;
+    text-align: center;
 }
 
 .register-side h2 {
@@ -61,159 +101,220 @@
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    text-align: center;
+    text-align: right;
 }
 
-.register-side h3 {
-    color: #333333;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+.register-side .register-subtitle {
+    color: #666666;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    text-align: right;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    width: 100%;
+    max-width: 500px;
+}
+
+.register-side .benefits-list {
+    align-items: flex-end;
+}
+
+.register-side .benefit-item {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.create-account-btn {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 24px;
+    background-color: #0066cc;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
     font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
     text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    align-self: flex-end;
+}
+
+.create-account-btn:hover {
+    background-color: #0055aa;
 }
 
 .login-options {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    flex: 1;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
 .google-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    background-color: #f2f2f2;
-    color: #333333;
-    padding: 12px 24px;
-    border-radius: 4px;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #ffffff;
     border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #757575;
     cursor: pointer;
-    font-weight: 500;
     transition: all 0.3s ease;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+.google-btn i {
+    margin-right: 10px;
+    color: #4285F4;
 }
 
 .google-btn:hover {
-    background-color: #e6e6e6;
+    background-color: #f5f5f5;
 }
 
 .login-divider {
-    display: flex;
-    align-items: center;
-    margin: 1rem 0;
-    color: #777777;
+    position: relative;
+    text-align: center;
+    margin: 20px 0;
 }
 
 .login-divider::before,
 .login-divider::after {
     content: "";
-    flex: 1;
+    position: absolute;
+    top: 50%;
+    width: 45%;
     height: 1px;
     background-color: #e0e0e0;
 }
 
+.login-divider::before {
+    left: 0;
+}
+
+.login-divider::after {
+    right: 0;
+}
+
 .login-divider span {
-    padding: 0 1rem;
-    font-size: 0.9rem;
+    display: inline-block;
+    padding: 0 10px;
+    background-color: #ffffff;
+    position: relative;
+    color: #757575;
 }
 
 .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .form-group {
-    text-align: left;
+    margin-bottom: 20px;
+    position: relative;
 }
 
 .form-group input {
     width: 100%;
-    padding: 12px;
+    height: 45px;
+    padding: 10px 15px;
     border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    color: #333333;
-    font-size: 1rem;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
 .form-group input:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
     outline: none;
-    border-color: var(--primary-color);
-    background-color: #ffffff;
 }
 
 .password-input-group {
     position: relative;
-    width: 100%;
+}
+
+.password-input-group input {
+    padding-right: 40px;
 }
 
 .password-toggle {
     position: absolute;
-    right: 12px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #777777;
+    color: #757575;
     cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    z-index: 10;
 }
 
 .form-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0.5rem 0;
+    margin-bottom: 20px;
 }
 
 .remember-me {
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
 .remember-me input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
+    margin-right: 5px;
 }
 
 .remember-me label {
-    color: #555555;
-    font-size: 0.9rem;
+    font-size: 14px;
+    color: #757575;
 }
 
 .forgot-password {
-    color: #555555;
-    font-size: 0.9rem;
+    font-size: 14px;
+    color: #0066cc;
     text-decoration: none;
-    margin-left: auto;
+    transition: all 0.3s ease;
 }
 
 .forgot-password:hover {
-    color: var(--primary-color);
     text-decoration: underline;
 }
 
 .login-btn {
     width: 100%;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 12px;
+    height: 45px;
+    background-color: #0066cc;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1rem;
-    margin-top: 1rem;
+    transition: all 0.3s ease;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .login-btn:hover {
-    background-color: #0055b3;
+    background-color: #0055aa;
 }
 
 .terms-agreement {
@@ -233,17 +334,11 @@
 }
 
 .register-benefits {
-    color: var(--primary-color);
+    color: #0066cc;
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 1.5rem;
     text-align: center;
-}
-
-.benefits-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 2rem 0;
 }
 
 .benefits-list li {
@@ -256,28 +351,23 @@
 }
 
 .benefits-list li i {
-    color: var(--primary-color);
+    color: #0066cc;
     font-size: 1.2rem;
     margin-top: 2px;
 }
 
 .create-account-btn {
-    width: 100%;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
+    color: #0066cc;
+    text-decoration: none;
     font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
     font-size: 1rem;
-    margin-top: 1rem;
-    text-transform: uppercase;
+    text-align: center;
 }
 
 .create-account-btn:hover {
-    background-color: #0055b3;
+    text-decoration: underline;
 }
 
 @keyframes fadeIn {
@@ -291,21 +381,224 @@
     }
 }
 
+.login-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 15px 0;
+    text-align: center;
+}
+
+.login-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.login-footer .footer-link {
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.login-footer .footer-link:hover {
+    color: #0066cc;
+}
+
+.login-footer .footer-link i {
+    font-size: 1rem;
+}
+
+.login-footer-links span {
+    color: white;
+}
+
+/* Estilos para notificações */
+.notification {
+    display: none !important;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 280px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    color: #333;
+    border-left: 3px solid #0066cc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.95;
+    transform: translateX(120%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.notification.success {
+    border-left-color: #28a745;
+}
+
+.notification.error {
+    border-left-color: #dc3545;
+}
+
+.notification.info {
+    border-left-color: #17a2b8;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification i {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.notification span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 @media (max-width: 768px) {
     .login-container {
-        flex-direction: column;
-        height: auto;
-        max-width: 100%;
+        width: 90%;
+        max-width: 500px;
+        margin: 20px auto;
     }
     
     .login-content {
         flex-direction: column;
     }
     
-    .login-side,
+    .login-side, 
     .register-side {
         width: 100%;
-        padding: 30px;
+        padding: 25px;
+    }
+    
+    .login-side h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .register-side h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    .register-side .register-subtitle {
+        font-size: 16px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    .section-divider {
+        width: 100%;
+        padding: 0 25px;
+        box-sizing: border-box;
+        margin: 0;
+    }
+    
+    .section-divider hr {
+        border: none;
+        height: 1px;
+        background-color: #e0e0e0;
+        margin: 0;
+    }
+    
+    .login-btn, 
+    .create-account-btn,
+    .google-btn {
+        width: 100%;
+        height: 45px;
+        font-size: 15px;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .forgot-password {
+        margin-top: 10px;
+    }
+    
+    .benefits-list {
+        margin: 15px 0;
+    }
+    
+    .register-side .create-account-btn {
+        width: 100%;
+        height: 45px;
+        font-size: 0.9rem;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        width: 95%;
+        margin: 10px auto;
+        padding: 0;
+    }
+    
+    .login-side,
+    .register-side {
+        padding: 20px;
+    }
+    
+    .login-side h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .register-side h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+    
+    .register-side .register-subtitle {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .section-divider {
+        padding: 0 20px;
+    }
+    
+    .form-group input,
+    .password-input-group input,
+    .login-btn,
+    .create-account-btn,
+    .google-btn {
+        height: 44px;
+        font-size: 14px;
+    }
+    
+    .benefit-item {
+        margin-bottom: 10px;
+    }
+    
+    .benefit-item span {
+        font-size: 14px;
+    }
+    
+    .form-options {
+        margin-bottom: 15px;
+    }
+    
+    .password-toggle {
+        width: 44px;
     }
 }
 
@@ -552,19 +845,1157 @@
 }
 
 @media (max-width: 768px) {
+    .login-panel {
+        position: relative;
+        background-color: #ffffff;
+        min-height: 100vh;
+        padding: 0;
+        display: block;
+    }
+    
     .login-container {
-        flex-direction: column;
-        height: auto;
+        width: 100%;
         max-width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+        margin: 0;
+        padding: 0;
     }
     
     .login-content {
         flex-direction: column;
     }
     
-    .login-side,
+    .login-side, 
     .register-side {
         width: 100%;
-        padding: 30px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    .login-side h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .register-side h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        color: #333333;
+    }
+    
+    .register-side .register-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        color: #333333;
+    }
+    
+    .register-side .register-subtitle:nth-of-type(2) {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        color: #666666;
+    }
+    
+    .section-divider {
+        padding: 0;
+        margin: 10px 0;
+    }
+    
+    .section-divider hr {
+        height: 1px;
+        background-color: #e0e0e0;
+        margin: 0;
+    }
+    
+    .login-btn, 
+    .create-account-btn {
+        width: 100%;
+        height: 45px;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .form-options {
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 0.5rem 0 1rem;
+    }
+    
+    .forgot-password {
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .remember-me {
+        display: flex;
+        align-items: center;
+    }
+    
+    .remember-me input[type="checkbox"] {
+        margin-right: 5px;
+    }
+    
+    .remember-me label {
+        font-size: 0.8rem;
+        color: #555555;
+    }
+    
+    .benefits-list {
+        margin: 1rem 0;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0.8rem;
+        text-align: left;
+    }
+    
+    .benefit-item i {
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+        margin-top: 0.2rem;
+        font-size: 1rem;
+    }
+    
+    .benefit-item span {
+        font-size: 0.9rem;
+        color: #333333;
+        text-align: left;
+    }
+    
+    .google-btn {
+        width: 100%;
+        height: 40px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f2f2f2;
+        color: #333333;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+    }
+    
+    .google-btn i {
+        margin-right: 10px;
+    }
+    
+    .login-divider {
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        color: #777777;
+    }
+    
+    .login-divider::before,
+    .login-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: #e0e0e0;
+    }
+    
+    .login-divider span {
+        padding: 0 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group input {
+        width: 100%;
+        height: 40px;
+        font-size: 0.9rem;
+        padding: 0 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+    }
+    
+    .password-input-group {
+        position: relative;
+        width: 100%;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #777777;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-side,
+    .register-side {
+        padding: 15px;
+    }
+    
+    .login-side h2 {
+        font-size: 1.3rem;
+    }
+    
+    .register-side h2 {
+        font-size: 1.3rem;
+    }
+    
+    .register-side .register-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .section-divider {
+        margin: 5px 0;
+    }
+    
+    .form-group input,
+    .password-input-group input,
+    .google-btn,
+    .login-btn,
+    .create-account-btn {
+        height: 40px;
+        font-size: 0.85rem;
+    }
+    
+    .benefit-item {
+        margin-bottom: 0.6rem;
+    }
+    
+    .benefit-item span {
+        font-size: 0.85rem;
+    }
+    
+    .form-options {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .password-toggle {
+        right: 8px;
+    }
+}
+
+/* Estilos para a página de registro */
+.register-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.register-content {
+    padding: 40px;
+    text-align: center;
+}
+
+.register-content h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.register-content h3 {
+    color: #0066cc;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.register-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.benefits-list {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.benefit-item i {
+    color: #0066cc;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.benefit-item span {
+    font-size: 0.9rem;
+    color: #333333;
+}
+
+.create-account-btn {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    max-width: 300px;
+}
+
+.create-account-btn:hover {
+    background-color: #0055aa;
+}
+
+/* Responsividade para a página de registro */
+@media (max-width: 768px) {
+    .register-content {
+        padding: 30px 20px;
+    }
+    
+    .register-content h2 {
+        font-size: 22px;
+    }
+    
+    .register-content h3 {
+        font-size: 24px;
+    }
+    
+    .register-subtitle {
+        font-size: 16px;
+    }
+    
+    .benefit-item span {
+        font-size: 14px;
+    }
+}
+
+.login-link {
+    margin-top: 20px;
+}
+
+.login-link p {
+    color: #666;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para o formulário de registro */
+.register-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 20px;
+}
+
+.register-form .form-group {
+    margin-bottom: 15px;
+}
+
+.register-form .form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.register-form .form-group input:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+    outline: none;
+}
+
+.register-form .password-input-group {
+    position: relative;
+    width: 100%;
+}
+
+.register-form .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.register-form .password-toggle:hover {
+    color: #0066cc;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.terms-checkbox label {
+    font-size: 14px;
+    color: #666;
+}
+
+.terms-link {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .register-form {
+        padding: 0 10px;
+    }
+    
+    .register-form .form-group input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .terms-checkbox label {
+        font-size: 13px;
+    }
+}
+
+/* Estilos para a página de recuperação de senha */
+.reset-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+    padding: 20px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    position: relative;
+}
+
+.reset-container {
+    width: 90%;
+    max-width: 450px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px auto;
+}
+
+.reset-content {
+    padding: 30px;
+    text-align: center;
+}
+
+.reset-content h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.reset-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.reset-form {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.reset-form .form-group {
+    margin-bottom: 20px;
+}
+
+.reset-form .form-group input {
+    width: 100%;
+    height: 45px;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.reset-form .form-group input:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+    outline: none;
+}
+
+.reset-btn {
+    width: 100%;
+    height: 45px;
+    background-color: #0066cc;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reset-btn:hover {
+    background-color: #0055aa;
+}
+
+.back-link {
+    margin-top: 20px;
+}
+
+.back-link a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.3s;
+}
+
+.back-link a i {
+    margin-right: 5px;
+}
+
+.back-link a:hover {
+    color: #0066cc;
+}
+
+@media (max-width: 768px) {
+    .reset-panel {
+        padding: 15px 0;
+        align-items: flex-start;
+    }
+    
+    .reset-container {
+        width: 90%;
+        max-width: 400px;
+        padding: 15px;
+        margin: 10px auto;
+    }
+    
+    .reset-content {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .reset-panel {
+        padding: 10px 0;
+        display: block;
+        height: auto;
+        min-height: 100%;
+    }
+    
+    .reset-container {
+        width: 90%;
+        padding: 10px;
+        margin: 10px auto;
+    }
+    
+    .reset-content {
+        padding: 15px;
+    }
+}
+
+/* Estilos específicos para dispositivos móveis */
+body.mobile-device .login-content {
+    flex-direction: column;
+}
+
+body.mobile-device .login-side,
+body.mobile-device .register-side {
+    width: 100%;
+}
+
+body.mobile-device .section-divider {
+    display: block;
+    width: 100%;
+}
+
+body.mobile-device .login-btn,
+body.mobile-device .create-account-btn,
+body.mobile-device .google-btn {
+    width: 100%;
+    min-height: 44px; /* Tamanho mínimo para alvos de toque em dispositivos móveis */
+}
+
+body.mobile-device .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+body.mobile-device .forgot-password {
+    margin-top: 10px;
+}
+
+/* Ajustes adicionais para dispositivos móveis */
+@media (max-width: 768px) {
+    /* Garantir que o layout vertical seja aplicado apenas em dispositivos móveis */
+    .login-content {
+        flex-direction: column;
+    }
+    
+    /* Ajustar tamanho dos botões para facilitar o toque */
+    .login-btn, 
+    .create-account-btn,
+    .google-btn {
+        min-height: 44px;
+        font-size: 15px;
+    }
+    
+    /* Melhorar espaçamento e legibilidade */
+    .login-side h2,
+    .register-side h2 {
+        text-align: center;
+    }
+    
+    .register-side .register-subtitle {
+        text-align: center;
+    }
+    
+    /* Ajustar layout de formulários */
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+    
+    .forgot-password {
+        margin-top: 10px;
+    }
+}
+
+/* Ajustes específicos para telas muito pequenas */
+@media (max-width: 360px) {
+    .login-side,
+    .register-side {
+        padding: 15px;
+    }
+    
+    .login-side h2,
+    .register-side h2 {
+        font-size: 20px;
+    }
+    
+    .form-group input,
+    .password-input-group input {
+        font-size: 14px;
+    }
+    
+    .benefit-item span {
+        font-size: 13px;
+    }
+}
+
+/* Garantir que a seção de registro tenha fundo branco em dispositivos móveis */
+@media (max-width: 768px) {
+    .register-side {
+        background-color: #ffffff !important;
+        box-shadow: none;
+        border-top: none;
+        padding-top: 10px;
+    }
+    
+    .section-divider {
+        margin: 5px 0;
+    }
+    
+    /* Garantir que não haja diferença visual entre as seções */
+    .login-side, 
+    .register-side {
+        background-color: #ffffff !important;
+    }
+}
+
+/* Garantir que o modo escuro não afete a versão mobile */
+body.mobile-device .dark-mode .register-side {
+    background-color: #ffffff !important;
+    color: #333333;
+}
+
+body.mobile-device .dark-mode .register-side h2,
+body.mobile-device .dark-mode .register-side h3,
+body.mobile-device .dark-mode .register-side .register-subtitle {
+    color: #333333;
+}
+
+body.mobile-device .register-side {
+    background-color: #ffffff !important;
+    box-shadow: none;
+    border-top: none;
+}
+
+/* Ajustes finais para remover completamente o fundo cinzento em dispositivos móveis */
+@media (max-width: 768px) {
+    .login-content {
+        background-color: #ffffff;
+    }
+    
+    .register-side {
+        background: none !important;
+        background-color: #ffffff !important;
+    }
+    
+    .section-divider hr {
+        background-color: #e0e0e0;
+    }
+}
+
+/* Garantir que não haja diferença visual entre as seções em qualquer tamanho de tela */
+@media (max-width: 480px) {
+    .register-side {
+        background: none !important;
+        background-color: #ffffff !important;
+    }
+}
+
+/* Ajustes para os itens de benefício na versão web */
+.benefit-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.benefit-item i {
+    color: #0066cc;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.benefit-item span {
+    font-size: 0.9rem;
+    color: #333333;
+}
+
+/* VERSÃO WEB - Estilos específicos para telas maiores que 768px */
+@media (min-width: 769px) {
+    /* CSS fornecido pelo usuário para a versão web */
+    .login-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        background-color: rgba(245, 245, 245, 0.9);
+    }
+    
+    .login-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 900px;
+        overflow: hidden;
+        display: flex;
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .login-content {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: row;
+    }
+    
+    .login-side,
+    .register-side {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .login-side {
+        background-color: #ffffff;
+        color: #333333;
+        border-right: 1px solid #e0e0e0;
+    }
+    
+    .register-side {
+        background-color: #ffffff;
+        color: #333333;
+        justify-content: center;
+    }
+    
+    .login-side h2 {
+        color: #333;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        text-align: left;
+        line-height: 1.3;
+    }
+    
+    .register-side h2 {
+        color: #333;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        text-align: left;
+        line-height: 1.3;
+    }
+    
+    .register-side .register-subtitle:first-of-type {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        text-align: left;
+        font-weight: 500;
+        margin-top: -0.5rem;
+    }
+    
+    .register-side .register-subtitle:nth-of-type(2) {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        text-align: left;
+        font-weight: 500;
+    }
+    
+    .login-options {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+    
+    .google-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 45px;
+        background-color: white;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .google-btn i {
+        color: #4285F4;
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .login-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+        color: #777;
+        position: relative;
+        width: 100%;
+    }
+    
+    .login-divider::before,
+    .login-divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .login-divider span {
+        margin: 0 10px;
+        font-size: 0.9rem;
+        color: #777;
+    }
+    
+    .login-form {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+        color: #333333;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        background-color: #ffffff;
+    }
+    
+    .password-input-group {
+        position: relative;
+        width: 100%;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #777777;
+        cursor: pointer;
+    }
+    
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0.5rem 0;
+    }
+    
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .remember-me input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .remember-me label {
+        color: #555555;
+        font-size: 0.9rem;
+    }
+    
+    .forgot-password {
+        color: #555555;
+        font-size: 0.9rem;
+        text-decoration: none;
+        margin-left: auto;
+    }
+    
+    .forgot-password:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+    
+    .login-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 45px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-transform: uppercase;
+        margin-top: 1.5rem;
+    }
+    
+    .login-btn:hover {
+        background-color: #0055b3;
+    }
+    
+    .benefits-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .register-side .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+        color: #333;
+        line-height: 1.4;
+        justify-content: flex-end;
+        text-align: right;
+    }
+    
+    .register-side .benefit-item i {
+        color: var(--primary-color);
+        margin-left: 10px;
+        margin-right: 0;
+        font-size: 1rem;
+        margin-top: 3px;
+        order: 2;
+    }
+    
+    .register-side .benefit-item span {
+        flex: 1;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        order: 1;
+    }
+    
+    .register-side .create-account-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 45px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        text-transform: uppercase;
+        margin-top: 0;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .register-side .create-account-btn:hover {
+        background-color: #0055b3;
+    }
+    
+    /* Garantir que o modo escuro não afete a versão web */
+    .dark-mode .register-side {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+    }
+    
+    .dark-mode .register-side h2,
+    .dark-mode .register-side .register-subtitle {
+        color: #333333 !important;
+    }
+    
+    .dark-mode .register-side .benefit-item span {
+        color: #666666 !important;
+    }
+    
+    .dark-mode .register-side .benefit-item i {
+        color: var(--primary-color) !important;
+    }
+    
+    /* Ocultar a linha divisória horizontal */
+    .section-divider {
+        display: none;
+    }
+}
+
+/* Não modificar os estilos mobile abaixo deste ponto */
+
+/* Ajustes para a versão mobile - layout vertical */
+@media (max-width: 768px) {
+    .login-content {
+        flex-direction: column;
+    }
+    
+    .login-side, 
+    .register-side {
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    .register-side {
+        background-color: #ffffff !important;
+        box-shadow: none;
+        border-top: none;
+        border-left: none;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .register-side h2,
+    .register-side .register-subtitle {
+        text-align: center;
+    }
+    
+    .section-divider {
+        width: 100%;
+        height: auto;
+        padding: 0 25px;
+        margin: 0;
+        display: block;
+    }
+    
+    .section-divider hr {
+        width: 100%;
+        height: 1px;
+        margin: 0;
+    }
+    
+    .register-side .benefits-list {
+        align-items: center;
+    }
+    
+    .register-side .create-account-btn {
+        align-self: center;
     }
 } 

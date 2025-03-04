@@ -22,20 +22,8 @@ export function isCriticalLevel(value) {
 
 // Mostrar notificação
 export function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.innerHTML = `
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>${message}</span>
-    `;
-    
-    document.body.appendChild(notification);
-    setTimeout(() => notification.classList.add('show'), 100);
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
+    // Função desativada - não mostrar notificações
+    return;
 }
 
 // Carregar idioma salvo

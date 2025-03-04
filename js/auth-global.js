@@ -259,43 +259,19 @@ function switchForm(showRegister = false) {
 
 // Sign out
 function signOut() {
-    // Clear local storage
+    // Limpar dados do usuário
     localStorage.removeItem('user');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('rememberMe');
     
-    // Reset UI
-    document.getElementById('loginPanel').style.display = 'flex';
-    document.getElementById('userInfo').style.display = 'none';
-    
-    // Reset forms
-    document.getElementById('loginForm').reset();
-    document.getElementById('registerForm').reset();
-    switchForm(false);
-    
-    // Show notification
-    showNotification('Você saiu da sua conta', 'info');
+    // Redirecionar para a página de login
+    window.location.href = 'login.html';
 }
 
 // Show notification
 function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                       type === 'error' ? 'fa-exclamation-circle' : 
-                       'fa-info-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Show notification
-    setTimeout(() => notification.classList.add('show'), 100);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    // Função desativada - não mostrar notificações
+    return;
 }
 
 // Initialize when DOM is loaded

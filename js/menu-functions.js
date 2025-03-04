@@ -694,30 +694,8 @@ export class MenuManager {
 
     // Mostrar notificação
     showNotification(message, type = 'info') {
-        // Remover notificações existentes
-        const existingNotifications = document.querySelectorAll('.notification');
-        existingNotifications.forEach(notification => notification.remove());
-        
-        // Criar nova notificação
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                           type === 'error' ? 'fa-exclamation-circle' : 
-                           'fa-info-circle'}"></i>
-            <span>${message}</span>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Mostrar notificação
-        setTimeout(() => notification.classList.add('show'), 100);
-        
-        // Remover notificação após 3 segundos
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+        // Função desativada - não mostrar notificações
+        return;
     }
 }
 

@@ -1,14 +1,60 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" style="height: auto !important; overflow-y: auto !important;">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Login - EcoPonto</title>
     <link rel="icon" type="image/x-icon" href="photos/ec.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/login.css">
+    <style>
+        html, body {
+            height: auto !important;
+            min-height: 100% !important;
+            overflow-y: auto !important;
+            position: relative !important;
+        }
+        .login-panel {
+            min-height: auto !important;
+            height: auto !important;
+            overflow-y: visible !important;
+            position: relative !important;
+        }
+        .login-container {
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+            overflow-y: visible !important;
+        }
+        .login-content {
+            height: auto !important;
+            min-height: auto !important;
+            overflow-y: visible !important;
+        }
+        .login-side, .register-side {
+            height: auto !important;
+            min-height: auto !important;
+            overflow: visible !important;
+        }
+    </style>
+    <script>
+        // Script para forçar a rolagem em dispositivos móveis
+        (function() {
+            document.documentElement.style.height = 'auto';
+            document.documentElement.style.overflowY = 'auto';
+            document.body.style.height = 'auto';
+            document.body.style.overflowY = 'auto';
+            document.body.style.position = 'relative';
+            
+            // Forçar a atualização da visualização para dispositivos móveis
+            setTimeout(function() {
+                window.scrollTo(0, 1);
+                window.scrollTo(0, 0);
+            }, 100);
+        })();
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Detectar dispositivo móvel e adicionar classe
@@ -204,12 +250,12 @@
         });
     </script>
 </head>
-<body>
-    <div class="login-panel">
-        <div class="login-container">
-            <div class="login-content">
+<body style="height: auto !important; min-height: 100% !important; overflow-y: auto !important; position: relative !important;">
+    <div class="login-panel" style="height: auto !important; min-height: auto !important; overflow-y: visible !important; position: relative !important; padding-bottom: 50px !important;">
+        <div class="login-container" style="height: auto !important; min-height: auto !important; max-height: none !important; overflow-y: visible !important;">
+            <div class="login-content" style="height: auto !important; min-height: auto !important; overflow-y: visible !important; flex-direction: column !important;">
                 <!-- Seção de Login -->
-                <div class="login-side">
+                <div class="login-side" style="height: auto !important; min-height: auto !important; overflow: visible !important;">
                     <h2>Entra na tua conta EcoPonto!</h2>
                     
                     <div class="login-options">
@@ -253,28 +299,28 @@
                 </div>
                 
                 <!-- Seção de Registro -->
-                <div class="register-side">
+                <div class="register-side" style="height: auto !important; min-height: auto !important; overflow: visible !important; padding-bottom: 50px !important;">
                     <h2>Ainda não tens conta?</h2>
                     <p class="register-subtitle">Regista-te agora!</p>
                     
                     <p class="register-subtitle">Fácil e Rápido!</p>
                     
-                    <div class="benefits-list">
-                        <div class="benefit-item">
-                            <i class="fas fa-check"></i>
+                    <div class="benefits-list" style="height: auto !important; overflow: visible !important; margin-bottom: 20px !important;">
+                        <div class="benefit-item" style="margin-bottom: 15px !important; display: flex !important; align-items: flex-start !important;">
+                            <i class="fas fa-check" style="margin-right: 10px !important;"></i>
                             <span>Acompanha os níveis de enchimento em tempo real</span>
                         </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-check"></i>
+                        <div class="benefit-item" style="margin-bottom: 15px !important; display: flex !important; align-items: flex-start !important;">
+                            <i class="fas fa-check" style="margin-right: 10px !important;"></i>
                             <span>Recebe notificações quando os ecopontos estiverem quase cheios</span>
                         </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-check"></i>
+                        <div class="benefit-item" style="margin-bottom: 15px !important; display: flex !important; align-items: flex-start !important;">
+                            <i class="fas fa-check" style="margin-right: 10px !important;"></i>
                             <span>Acede a estatísticas e histórico de recolhas</span>
                         </div>
                     </div>
                     
-                    <a href="register.html" id="showRegister" class="create-account-btn">CRIAR CONTA</a>
+                    <a href="register.html" id="showRegister" class="create-account-btn" style="width: 100% !important; height: 45px !important; margin-top: 20px !important; margin-bottom: 30px !important; display: block !important;">CRIAR CONTA</a>
                 </div>
             </div>
         </div>

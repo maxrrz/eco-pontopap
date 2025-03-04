@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitorização em Tempo Real - Enchimento do Ecoponto</title>
+    <link rel="icon" type="image/x-icon" href="photos/ec.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="js/menu-functions.css">
+    <link rel="stylesheet" href="js/charts-module.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="module" src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded: Inicializando script de atualização de status');
+            
+            // Função para atualizar o status
+            function updateStatus() {
+                const statusDot = document.getElementById('status-dot');
+                const statusText = document.getElementById('status');
+                
+                if (statusDot && statusText) {
+                    if (statusText.textContent === 'Carregando...') {
+                        console.log('Atualizando status de "Carregando..." para "Conectado"');
+                        statusDot.classList.add('connected');
+                        statusText.textContent = 'Conectado';
+                    }
+                } else {
+                    console.warn('Elementos de status não encontrados');
+                }
+            }
+            
+            // Tentar atualizar o status imediatamente
+            updateStatus();
+            
+            // E também após um pequeno atraso para garantir que todos os elementos estejam carregados
+            setTimeout(updateStatus, 500);
+            
+            // Verificar periodicamente se os dados estão sendo atualizados
+            let lastUpdateTime = Date.now();
+            
+            // Verificar a cada 10 segundos se os dados foram atualizados nos últimos 7 segundos
+            const dataUpdateCheckInterval = setInterval(function() {
+                const now = Date.now();
+                const timeSinceLastUpdate = now - lastUpdateTime;
+                console.log(`Tempo desde a última atualização: ${timeSinceLastUpdate/1000} segundos`);
+                
+                // Se passaram mais de 7 segundos desde a última atualização, forçar uma nova
+                if (timeSinceLastUpdate > 7000) {
+                    console.warn('Dados não atualizados há mais de 7 segundos, forçando atualização...');
+                    
+                    // Forçar atualização usando nossa função global
+                    if (window.forceDataUpdate) {
+                        window.forceDataUpdate();
+                    }
+                    
+                    // Atualizar o timestamp
+                    lastUpdateTime = now;
+                }
+            }, 10000);  // Verificar a cada 10 segundos
+            
+            // Atualizar o timestamp quando os dados forem atualizados
+            // Monitorar mudanças nas barras de progresso
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        console.log('Detectada atualização nas barras de progresso');
+                        lastUpdateTime = Date.now();
+                    }
+                });
+            });
+            
+            // Observar mudanças nas barras de progresso
+            const bars = [
+                document.getElementById('yellow-bar'),
+                document.getElementById('green-bar'),
+                document.getElementById('blue-bar')
+            ];
+            
+            bars.forEach(function(bar) {
+                if (bar) {
+                    observer.observe(bar, { attributes: true });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1 id="title">
+                        <i class="fas fa-leaf"></i>
+                        EcoPonto
+                        <span class="subtitle">Monitorização Inteligente</span>
+                    </h1>
+                </div>
+                <div class="header-info">
+                    <div id="userInfo" class="user-info">
+                        <span>Olá, <span id="userName">[Nome do Usuário]</span>!</span>
+                        <button id="logoutButton" class="logout-btn">Sair</button>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot" id="status-dot"></div>
+                        <i class="fas fa-signal"></i>
+                        <span id="status">Carregando...</span>
+                    </div>
+                    <button class="menu-button" id="menu-button">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Panel -->
+        <div id="loginPanel" class="login-panel">
+            <div class="login-container">
+                <div class="login-content">
+                    <!-- Lado esquerdo - Login -->
+                    <div class="login-side">
+                        <h2>Entra na tua conta EcoPonto!</h2>
+                        
+                        <div class="login-options">
+                            <button id="googleSignInButton" class="google-btn">
+                                <i class="fab fa-google"></i>
+                                Entrar com o Google
+                            </button>
+                            
+                            <div class="login-divider">
+                                <span>ou</span>
+                            </div>
+                            
+                            <form class="login-form" id="loginForm">
+                                <div class="form-group">
+                                    <input type="email" id="loginEmail" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="password-input-group">
+                                        <input type="password" id="loginPassword" placeholder="Password" required>
+                                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-options">
+                                    <div class="remember-me">
+                                        <input type="checkbox" id="rememberMe">
+                                        <label for="rememberMe">Guardar sessão</label>
+                                    </div>
+                                    <a href="#" class="forgot-password">Esqueceste-te da palavra-passe?</a>
+                                </div>
+                                <button type="submit" class="login-btn">INICIAR SESSÃO</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Lado direito - Registro -->
+                    <div class="register-side">
+                        <h2>Ainda não tens conta?</h2>
+                        <h3>Regista-te agora!</h3>
+                        
+                        <p class="register-benefits">Fácil e Rápido!</p>
+                        
+                        <ul class="benefits-list">
+                            <li><i class="fas fa-check"></i> Acompanha os níveis de enchimento em tempo real</li>
+                            <li><i class="fas fa-check"></i> Recebe notificações quando os ecopontos estiverem quase cheios</li>
+                            <li><i class="fas fa-check"></i> Acede a estatísticas e histórico de recolhas</li>
+                        </ul>
+                        
+                        <button id="showRegister" class="create-account-btn">CRIAR CONTA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-overlay"></div>
+        <div class="menu-panel">
+            <div class="menu-header">
+                <h3>Menu</h3>
+                <button class="menu-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="menu-items">
+                <a href="#" class="menu-item" data-menu-id="dashboard">
+                    <i class="fas fa-home" style="color: #0066cc;"></i>
+                    <span>Painel de controlo</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" data-menu-id="notifications">
+                    <i class="fas fa-bell" style="color: #0066cc;"></i>
+                    <span>Notificações</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" data-menu-id="charts" id="charts-menu-button">
+                    <i class="fas fa-chart-line" style="color: #0066cc;"></i>
+                    <span>Gráficos</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" id="language-menu-item" data-menu-id="language-menu-item">
+                    <i class="fas fa-language" style="color: #0066cc;"></i>
+                    <span>Idiomas</span>
+                    <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; color: #0066cc;"></i>
+                </a>
+                <div class="language-submenu" style="display: none; padding: 0 10px;">
+                    <a href="#" class="menu-item language-option" data-lang="pt">
+                        <i class="fas fa-check" style="color: #0066cc; visibility: visible;"></i>
+                        <span>Português</span>
+                    </a>
+                    <a href="#" class="menu-item language-option" data-lang="es">
+                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                        <span>Español</span>
+                    </a>
+                    <a href="#" class="menu-item language-option" data-lang="de">
+                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                        <span>Deutsch</span>
+                    </a>
+                    <a href="#" class="menu-item language-option" data-lang="fr">
+                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                        <span>Français</span>
+                    </a>
+                    <a href="#" class="menu-item language-option" data-lang="ja">
+                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                        <span>日本語</span>
+                    </a>
+                </div>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" data-menu-id="user">
+                    <i class="fas fa-user" style="color: #0066cc;"></i>
+                    <span>Utilizador</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" data-menu-id="settings">
+                    <i class="fas fa-cog" style="color: #0066cc;"></i>
+                    <span>Configurações</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" data-menu-id="logout" onclick="signOut()">
+                    <i class="fas fa-sign-out-alt" style="color: #0066cc;"></i>
+                    <span>Logout</span>
+                </a>
+                <div class="menu-divider"></div>
+                <div class="theme-toggle-container">
+                    <i class="fas fa-moon" style="color: #0066cc;"></i>
+                    <span>Modo Escuro</span>
+                    <input type="checkbox" id="theme-toggle" checked>
+                </div>
+            </div>
+        </div>
+
+        <div class="welcome-message">
+            <h2>Olá, <span id="userName">[Nome do Usuário]</span>!</h2>
+            <p>Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-chart-pie"></i>
+                <div class="stat-title">Média de Enchimento</div>
+                <div class="stat-value" id="average-fill">0%</div>
+                <div class="stat-trend">
+                    <i class="fas fa-clock"></i>
+                    <span>Em tempo real</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-arrow-trend-up"></i>
+                <div class="stat-title">Contentor Mais Cheio</div>
+                <div class="stat-value" id="most-full">-</div>
+                <div class="stat-trend">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Monitorização ativa</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock-rotate-left"></i>
+                <div class="stat-title">Última Atualização</div>
+                <div class="stat-value" id="last-update">-</div>
+                <div class="stat-trend">
+                    <i class="fas fa-rotate"></i>
+                    <span>Atualização automática</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ecoponto-info-message" style="margin-bottom: 20px;">
+            <p>Aqui você pode ver os níveis de enchimento dos ecopontos.</p>
+        </div>
+        <div class="ecoponto">
+            <div id="yellow-container">
+                <div class="ecoponto-header">
+                    <div class="ecoponto-title-container">
+                        <div class="ecoponto-icon-wrapper">
+                            <i class="fas fa-jug-detergent ecoponto-icon" style="color: var(--warning-color);"></i>
+                        </div>
+                        <div class="ecoponto-info">
+                            <span id="yellow-label" class="ecoponto-title">Plástico e Metal</span>
+                            <span class="ecoponto-subtitle">Embalagens e recipientes</span>
+                        </div>
+                    </div>
+                    <div id="yellow-percentage" class="ecoponto-percentage">0%</div>
+                </div>
+                <div class="bar-container">
+                    <div id="yellow-bar" class="bar"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ecoponto">
+            <div id="green-container">
+                <div class="ecoponto-header">
+                    <div class="ecoponto-title-container">
+                        <div class="ecoponto-icon-wrapper">
+                            <i class="fas fa-wine-bottle ecoponto-icon" style="color: var(--success-color);"></i>
+                        </div>
+                        <div class="ecoponto-info">
+                            <span id="green-label" class="ecoponto-title">Vidro</span>
+                            <span class="ecoponto-subtitle">Garrafas e frascos</span>
+                        </div>
+                    </div>
+                    <div id="green-percentage" class="ecoponto-percentage">0%</div>
+                </div>
+                <div class="bar-container">
+                    <div id="green-bar" class="bar"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ecoponto">
+            <div id="blue-container">
+                <div class="ecoponto-header">
+                    <div class="ecoponto-title-container">
+                        <div class="ecoponto-icon-wrapper">
+                            <i class="fas fa-newspaper ecoponto-icon" style="color: var(--primary-color);"></i>
+                        </div>
+                        <div class="ecoponto-info">
+                            <span id="blue-label" class="ecoponto-title">Papel e Cartão</span>
+                            <span class="ecoponto-subtitle">Jornais e embalagens</span>
+                        </div>
+                    </div>
+                    <div id="blue-percentage" class="ecoponto-percentage">0%</div>
+                </div>
+                <div class="bar-container">
+                    <div id="blue-bar" class="bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Histórico de Enchimento</span>
+                </h2>
+                <div class="chart-actions">
+                    <button class="chart-btn">
+                        <i class="fas fa-calendar-days"></i>
+                        <span>Últimas 24h</span>
+                    </button>
+                </div>
+            </div>
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <i class="fas fa-graduation-cap"></i>
+                <p id="footer-text">Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
+            </div>
+            <div class="footer-images">
+                <img id="theme-image" src="photos/tgeiclaro.png" alt="Imagem do Tema" class="theme-logo">
+                <img src="photos/Cabecalho.JPG" alt="Logotipos de apoio ao projeto" class="support-logos">
+            </div>
+            <div class="footer-links">
+                <a href="about.html" class="footer-link">
+                    <i class="fas fa-info-circle"></i>
+                    Sobre
+                </a>
+                <a href="docs.html" class="footer-link">
+                    <i class="fas fa-code"></i>
+                    Documentação
+                </a>
+                <a href="contact.html" class="footer-link">
+                    <i class="fas fa-envelope"></i>
+                    Contato
+                </a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== ELEMENTOS DO DOM =====
+            // Login e autenticação
+            const loginPanel = document.getElementById('loginPanel');
+            const loginForm = document.getElementById('loginForm');
+            const userInfo = document.getElementById('userInfo');
+            const showRegisterBtn = document.getElementById('showRegister');
+            const googleSignInButton = document.getElementById('googleSignInButton');
+            
+            // Menu lateral
+            const menuButton = document.getElementById('menu-button');
+            const menuPanel = document.querySelector('.menu-panel');
+            const menuOverlay = document.querySelector('.menu-overlay');
+            const menuClose = document.querySelector('.menu-close');
+            const languageMenuItem = document.getElementById('language-menu-item');
+            const languageSubmenu = document.querySelector('.language-submenu');
+            const languageOptions = document.querySelectorAll('.language-option');
+            const chartsButton = document.getElementById('charts-menu-button');
+            
+            // ===== FUNÇÕES UTILITÁRIAS =====
+            // Função para mostrar notificações
+            function showNotification(message, type = 'info') {
+                // Remover notificações existentes
+                const existingNotifications = document.querySelectorAll('.notification');
+                existingNotifications.forEach(notification => notification.remove());
+                
+                // Criar nova notificação
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                   type === 'error' ? 'fa-exclamation-circle' : 
+                                   'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Mostrar notificação
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Remover notificação após 3 segundos
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            // Alternar visibilidade da senha
+            window.togglePasswordVisibility = function(inputId, buttonEl) {
+                const input = document.getElementById(inputId);
+                const icon = buttonEl.querySelector('i');
+                
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                }
+            };
+            
+            // ===== AUTENTICAÇÃO =====
+            // Função para atualizar a UI após login bem-sucedido
+            function updateUIAfterLogin(user) {
+                // Ocultar painel de login
+                if (loginPanel) {
+                    loginPanel.style.display = 'none';
+                }
+                
+                // Atualizar nome do usuário na mensagem de boas-vindas
+                document.querySelectorAll('#userName').forEach(el => {
+                    el.textContent = user.name;
+                });
+                
+                // Atualizar informações do usuário no cabeçalho
+                if (userInfo) {
+                    userInfo.innerHTML = `
+                        <img src="${user.picture}" alt="${user.name}" class="user-avatar">
+                        <span class="user-name">${user.name}</span>
+                        <button onclick="signOut()" class="sign-out-button">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    `;
+                    userInfo.style.display = 'flex';
+                }
+                
+                // Mostrar notificação de boas-vindas
+                showNotification(`Bem-vindo, ${user.name}!`, 'success');
+            }
+            
+            // Função para sair
+            window.signOut = function() {
+                // Limpar dados do usuário do localStorage
+                localStorage.removeItem('user');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('rememberMe');
+                
+                // Atualizar UI
+                if (userInfo) {
+                    userInfo.innerHTML = '';
+                    userInfo.style.display = 'none';
+                }
+                
+                // Mostrar painel de login
+                if (loginPanel) {
+                    loginPanel.style.display = 'flex';
+                    
+                    // Resetar formulários
+                    if (loginForm) loginForm.reset();
+                }
+                
+                // Mostrar notificação de logout
+                showNotification('Sessão terminada com sucesso', 'info');
+            };
+            
+            // Verificar se o usuário já está logado
+            function checkAuthStatus() {
+                try {
+                    const userData = localStorage.getItem('user');
+                    
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        if (user && user.name && user.email) {
+                            updateUIAfterLogin(user);
+                            return true; // Usuário está logado
+                        }
+                    }
+                    
+                    // Usuário não está logado, mostrar painel de login
+                    if (loginPanel) {
+                        loginPanel.style.display = 'flex';
+                        
+                        // Verificar se "lembrar de mim" estava ativado
+                        if (localStorage.getItem('rememberMe') === 'true') {
+                            const email = localStorage.getItem('userEmail');
+                            if (email) {
+                                const loginEmail = document.getElementById('loginEmail');
+                                const rememberMe = document.getElementById('rememberMe');
+                                
+                                if (loginEmail) loginEmail.value = email;
+                                if (rememberMe) rememberMe.checked = true;
+                            }
+                        }
+                    }
+                    
+                    return false; // Usuário não está logado
+                } catch (error) {
+                    console.error('Erro ao verificar status de autenticação:', error);
+                    localStorage.removeItem('user'); // Limpar dados corrompidos
+                    return false;
+                }
+            }
+            
+            // Processar login com email/senha
+            function handleEmailPasswordLogin(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const rememberMe = document.getElementById('rememberMe')?.checked || false;
+                
+                // Validação básica
+                if (!email || !password) {
+                    showNotification('Por favor, preencha todos os campos.', 'error');
+                    return;
+                }
+                
+                // Validação de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showNotification('Por favor, insira um email válido.', 'error');
+                    return;
+                }
+                
+                // Mostrar estado de carregamento
+                const submitButton = document.querySelector('#loginForm .login-btn');
+                if (submitButton) {
+                    const originalButtonText = submitButton.textContent;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
+                    submitButton.disabled = true;
+                    
+                    // Simular chamada de API com timeout
+                    setTimeout(() => {
+                        // Simular login bem-sucedido
+                        const userData = {
+                            name: email.split('@')[0],
+                            email: email,
+                            picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(email.split('@')[0]) + '&background=0066cc&color=fff',
+                            provider: 'email'
+                        };
+                        
+                        // Armazenar preferência de "lembrar de mim"
+                        if (rememberMe) {
+                            localStorage.setItem('rememberMe', 'true');
+                            localStorage.setItem('userEmail', email);
+                        } else {
+                            localStorage.removeItem('rememberMe');
+                            localStorage.removeItem('userEmail');
+                        }
+                        
+                        // Armazenar dados do usuário no localStorage
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        
+                        // Atualizar UI
+                        updateUIAfterLogin(userData);
+                        
+                        // Resetar formulário
+                        if (loginForm) loginForm.reset();
+                        
+                        // Resetar botão
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    }, 1000);
+                }
+            }
+            
+            // ===== MENU LATERAL =====
+            // Inicializar menu lateral
+            function setupMenuListeners() {
+                if (menuButton && menuPanel && menuOverlay && menuClose) {
+                    const toggleMenu = () => {
+                        menuButton.classList.toggle('active');
+                        menuPanel.classList.toggle('active');
+                        menuOverlay.classList.toggle('active');
+                        document.body.style.overflow = menuPanel.classList.contains('active') ? 'hidden' : '';
+                    };
+                    
+                    menuButton.addEventListener('click', toggleMenu);
+                    menuClose.addEventListener('click', toggleMenu);
+                    menuOverlay.addEventListener('click', function(e) {
+                        // Fechar qualquer submenu aberto
+                        if (languageSubmenu && languageSubmenu.classList.contains('active')) {
+                            languageSubmenu.classList.remove('active');
+                            languageSubmenu.style.display = 'none';
+                            if (languageMenuItem) languageMenuItem.classList.remove('active');
+                        }
+                        toggleMenu();
+                    });
+                    
+                    document.addEventListener('keydown', (event) => {
+                        if (event.key === 'Escape' && menuPanel.classList.contains('active')) {
+                            // Fechar qualquer submenu aberto primeiro
+                            if (languageSubmenu && languageSubmenu.classList.contains('active')) {
+                                languageSubmenu.classList.remove('active');
+                                languageSubmenu.style.display = 'none';
+                                if (languageMenuItem) languageMenuItem.classList.remove('active');
+                            } else {
+                                toggleMenu();
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Configurar submenu de idiomas
+            function setupLanguageSubmenu() {
+                // Manipulador do submenu de idiomas
+                if (languageMenuItem && languageSubmenu) {
+                    languageMenuItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation(); // Impedir que o evento se propague para o menu principal
+                        this.classList.toggle('active');
+                        languageSubmenu.classList.toggle('active');
+                        languageSubmenu.style.display = languageSubmenu.classList.contains('active') ? 'block' : 'none';
+                    });
+                }
+                
+                // Manipulador das opções de idioma
+                if (languageOptions) {
+                    languageOptions.forEach(option => {
+                        option.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation(); // Impedir que o evento se propague para o menu principal
+                            const lang = this.getAttribute('data-lang');
+                            
+                            // Atualizar visibilidade dos ícones de verificação
+                            languageOptions.forEach(opt => {
+                                opt.querySelector('i').style.visibility = 'hidden';
+                            });
+                            this.querySelector('i').style.visibility = 'visible';
+                            
+                            // Armazenar preferência de idioma
+                            localStorage.setItem('language', lang);
+                            
+                            // Fechar o submenu após selecionar o idioma
+                            languageSubmenu.classList.remove('active');
+                            languageSubmenu.style.display = 'none';
+                            
+                            // Recarregar a página para aplicar o novo idioma
+                            // location.reload();
+                        });
+                    });
+                }
+            }
+            
+            // ===== TEMA =====
+            // Configurar tema escuro/claro
+            function setupThemeToggle() {
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    // Verificar tema salvo
+                    const savedTheme = localStorage.getItem('theme');
+                    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+                    
+                    // Aplicar tema salvo ou preferência do sistema
+                    if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+                        document.body.classList.add('dark-mode');
+                        themeToggle.checked = true;
+                        
+                        // Atualizar imagem do tema
+                        const themeImage = document.getElementById('theme-image');
+                        if (themeImage) {
+                            themeImage.src = 'photos/tgeiescuro.png';
+                        }
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                        themeToggle.checked = false;
+                        
+                        // Atualizar imagem do tema
+                        const themeImage = document.getElementById('theme-image');
+                        if (themeImage) {
+                            themeImage.src = 'photos/tgeiclaro.png';
+                        }
+                    }
+                    
+                    // Adicionar evento de alteração do tema
+                    themeToggle.addEventListener('change', function() {
+                        if (this.checked) {
+                            document.body.classList.add('dark-mode');
+                            localStorage.setItem('theme', 'dark');
+                            
+                            // Atualizar imagem do tema
+                            const themeImage = document.getElementById('theme-image');
+                            if (themeImage) {
+                                themeImage.src = 'photos/tgeiescuro.png';
+                            }
+                        } else {
+                            document.body.classList.remove('dark-mode');
+                            localStorage.setItem('theme', 'light');
+                            
+                            // Atualizar imagem do tema
+                            const themeImage = document.getElementById('theme-image');
+                            if (themeImage) {
+                                themeImage.src = 'photos/tgeiclaro.png';
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // ===== INICIALIZAÇÃO =====
+            // Configurar event listeners
+            function setupEventListeners() {
+                // Login
+                if (loginForm) {
+                    loginForm.addEventListener('submit', handleEmailPasswordLogin);
+                }
+                
+                // Botão de registro
+                if (showRegisterBtn) {
+                    showRegisterBtn.addEventListener('click', function() {
+                        showNotification('Funcionalidade de registro em desenvolvimento.', 'info');
+                    });
+                }
+                
+                // Botão de login com Google
+                if (googleSignInButton) {
+                    googleSignInButton.addEventListener('click', function() {
+                        showNotification('Login com Google em desenvolvimento.', 'info');
+                    });
+                }
+            }
+            
+            // Adicionar manipulador de eventos para o botão de gráficos
+            if (chartsButton) {
+                chartsButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Fechar o menu
+                    menuPanel.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    
+                    // Navegar para a página de gráficos na mesma janela
+                    window.location.href = 'charts.html';
+                });
+            }
+            
+            // Inicializar aplicação
+            function initApp() {
+                setupMenuListeners();
+                setupLanguageSubmenu();
+                setupThemeToggle();
+                setupEventListeners();
+                checkAuthStatus();
+                
+                // Atualizar o status de conexão
+                updateInitialConnectionStatus();
+                
+                // Forçar atualização de dados na inicialização
+                setTimeout(() => {
+                    console.log('Forçando atualização de dados na inicialização...');
+                    if (window.forceDataUpdate) {
+                        window.forceDataUpdate();
+                    }
+                }, 1000);
+            }
+            
+            // Função para atualizar o status de conexão inicial
+            function updateInitialConnectionStatus() {
+                console.log('Atualizando status de conexão inicial');
+                
+                const statusDot = document.getElementById('status-dot');
+                const statusText = document.getElementById('status');
+                
+                if (statusDot && statusText) {
+                    // Verificar se o texto atual é "Carregando..."
+                    if (statusText.textContent === 'Carregando...') {
+                        console.log('Substituindo "Carregando..." por "Conectado"');
+                        
+                        // Simular conexão bem-sucedida
+                        statusDot.classList.add('connected');
+                        statusText.textContent = 'Conectado';
+                        
+                        console.log('Status de conexão atualizado: Conectado');
+                    } else {
+                        console.log('Status atual não é "Carregando...": ' + statusText.textContent);
+                    }
+                } else {
+                    console.warn('Elementos de status não encontrados no DOM');
+                }
+                
+                // Tentar novamente após um pequeno atraso se ainda estiver "Carregando..."
+                setTimeout(function() {
+                    const statusTextCheck = document.getElementById('status');
+                    if (statusTextCheck && statusTextCheck.textContent === 'Carregando...') {
+                        console.log('Status ainda é "Carregando..." após atraso, tentando atualizar novamente');
+                        
+                        const statusDotCheck = document.getElementById('status-dot');
+                        if (statusDotCheck) {
+                            statusDotCheck.classList.add('connected');
+                            statusTextCheck.textContent = 'Conectado';
+                            console.log('Status de conexão atualizado após atraso: Conectado');
+                        }
+                    }
+                }, 1500);
+            }
+            
+            // Iniciar aplicação
+            initApp();
+            
+            // Configurar atualização periódica das barras de progresso
+            setInterval(() => {
+                console.log('Atualizando dados periodicamente...');
+                window.forceDataUpdate();
+            }, 5000); // Atualizar a cada 5 segundos
+        });
+    </script>
+    
+    <!-- Script para garantir que as barras de progresso sejam atualizadas -->
+    <script>
+        // Forçar uma atualização inicial
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando sistema de atualização de dados da API');
+            
+            // Implementar nossa própria função fetchData que busca APENAS dados reais da API
+            window.localFetchData = async function() {
+                console.log('Executando fetchData local para buscar dados reais da API');
+                
+                try {
+                    // Buscar dados da API
+                    const response = await fetch('https://ecopontos-server.onrender.com/dados');
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erro na resposta da API: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Dados recebidos da API:', data);
+                    
+                    // Processar os dados recebidos no formato {"yellow":16,"green":15,"blue":18}
+                    if (data && typeof data === 'object') {
+                        // Extrair valores diretamente do objeto
+                        const yellowValue = Math.round(data.yellow || 0);
+                        const greenValue = Math.round(data.green || 0);
+                        const blueValue = Math.round(data.blue || 0);
+                        
+                        console.log('Valores extraídos:', { yellowValue, greenValue, blueValue });
+                        
+                        // Atualizar barras de progresso
+                        updateBarsDirectly(yellowValue, greenValue, blueValue);
+                        
+                        return {
+                            yellow: yellowValue,
+                            green: greenValue,
+                            blue: blueValue
+                        };
+                    } else {
+                        throw new Error('Formato de dados inválido');
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar dados da API:', error);
+                    return null;
+                }
+            };
+            
+            // Função para atualizar barras diretamente com valores específicos
+            function updateBarsDirectly(yellowValue, greenValue, blueValue) {
+                console.log('Atualizando barras com dados reais da API:', yellowValue, greenValue, blueValue);
+                
+                // Obter elementos das barras de progresso
+                const yellowBar = document.getElementById('yellow-bar');
+                const greenBar = document.getElementById('green-bar');
+                const blueBar = document.getElementById('blue-bar');
+                
+                // Obter elementos de porcentagem
+                const yellowPercentage = document.getElementById('yellow-percentage');
+                const greenPercentage = document.getElementById('green-percentage');
+                const bluePercentage = document.getElementById('blue-percentage');
+                
+                // Atualizar largura das barras
+                if (yellowBar) yellowBar.style.width = `${yellowValue}%`;
+                if (greenBar) greenBar.style.width = `${greenValue}%`;
+                if (blueBar) blueBar.style.width = `${blueValue}%`;
+                
+                // Atualizar texto de porcentagem
+                if (yellowPercentage) yellowPercentage.textContent = `${yellowValue}%`;
+                if (greenPercentage) greenPercentage.textContent = `${greenValue}%`;
+                if (bluePercentage) bluePercentage.textContent = `${blueValue}%`;
+                
+                // Atualizar estatísticas
+                updateStatistics(yellowValue, greenValue, blueValue);
+            }
+            
+            // Função para atualizar estatísticas
+            function updateStatistics(yellowValue, greenValue, blueValue) {
+                // Calcular média de enchimento
+                const averageFill = Math.round((yellowValue + greenValue + blueValue) / 3);
+                const averageFillElement = document.getElementById('average-fill');
+                if (averageFillElement) {
+                    averageFillElement.textContent = `${averageFill}%`;
+                }
+                
+                // Determinar contentor mais cheio
+                let mostFullValue = Math.max(yellowValue, greenValue, blueValue);
+                let mostFullContainer = '';
+                
+                if (mostFullValue === yellowValue) {
+                    mostFullContainer = 'Plástico e Metal';
+                } else if (mostFullValue === greenValue) {
+                    mostFullContainer = 'Vidro';
+                } else if (mostFullValue === blueValue) {
+                    mostFullContainer = 'Papel e Cartão';
+                }
+                
+                const mostFullElement = document.getElementById('most-full');
+                if (mostFullElement) {
+                    mostFullElement.textContent = `${mostFullContainer} (${mostFullValue}%)`;
+                }
+                
+                // Atualizar última atualização
+                const lastUpdateElement = document.getElementById('last-update');
+                if (lastUpdateElement) {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString();
+                    lastUpdateElement.textContent = timeString;
+                }
+            }
+            
+            // Função para forçar atualização de dados
+            window.forceDataUpdate = async function() {
+                console.log('Forçando atualização de dados reais da API');
+                
+                try {
+                    // Usar diretamente nossa implementação local que busca apenas dados reais
+                    const data = await window.localFetchData();
+                    
+                    if (data) {
+                        console.log('Dados atualizados com sucesso:', data);
+                        // Atualizar o timestamp da última atualização
+                        const lastUpdateElement = document.getElementById('last-update');
+                        if (lastUpdateElement) {
+                            const now = new Date();
+                            const timeString = now.toLocaleTimeString();
+                            lastUpdateElement.textContent = timeString;
+                        }
+                    } else {
+                        console.error('Falha ao obter dados da API');
+                    }
+                } catch (error) {
+                    console.error('Erro ao atualizar dados:', error);
+                }
+            };
+            
+            // Forçar atualização após um pequeno atraso para garantir que o DOM esteja carregado
+            setTimeout(window.forceDataUpdate, 1000);
+            
+            // Verificar se as barras foram atualizadas após 3 segundos
+            setTimeout(function() {
+                const yellowBar = document.getElementById('yellow-bar');
+                
+                if (yellowBar && yellowBar.style.width === '0%') {
+                    console.log('Barras ainda em 0%, forçando nova atualização da API');
+                    window.forceDataUpdate();
+                }
+            }, 3000);
+            
+            // Configurar atualização periódica
+            setInterval(window.forceDataUpdate, 5000); // Atualizar a cada 5 segundos
+            
+            // Executar imediatamente para garantir que os dados sejam carregados
+            window.localFetchData();
+        });
+    </script>
+</body>
+</html> 

@@ -14,6 +14,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -467,6 +468,27 @@ html, body {
 }
 
 @media (max-width: 768px) {
+    .login-panel {
+        min-height: 100%;
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: 20px;
+    }
+    
+    .login-container {
+        height: auto;
+        min-height: 100%;
+        max-height: none;
+        overflow-y: visible;
+        padding-bottom: 30px;
+    }
+    
+    .login-content {
+        height: auto;
+        overflow-y: visible;
+        padding-bottom: 40px;
+    }
+    
     .login-container {
         width: 90%;
         max-width: 500px;
@@ -570,6 +592,12 @@ html, body {
 }
 
 @media (max-width: 480px) {
+    .login-panel {
+        padding: 10px 0 30px;
+        height: auto;
+        min-height: 100%;
+    }
+    
     .login-container {
         width: 95%;
         margin: 10px auto;
@@ -870,12 +898,24 @@ html, body {
 
 @media (max-width: 768px) {
     .login-panel {
-        min-height: 100vh;
-        padding: 20px 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #fff;
+        min-height: 100%;
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: 20px;
+    }
+    
+    .login-container {
+        height: auto;
+        min-height: 100%;
+        max-height: none;
+        overflow-y: visible;
+        padding-bottom: 30px;
+    }
+    
+    .login-content {
+        height: auto;
+        overflow-y: visible;
+        padding-bottom: 40px;
     }
     
     .login-container {
@@ -974,7 +1014,9 @@ html, body {
 
 @media (max-width: 480px) {
     .login-panel {
-        padding: 15px 10px;
+        padding: 10px 0 30px;
+        height: auto;
+        min-height: 100%;
     }
     
     .login-side,
@@ -1549,4 +1591,28 @@ body.mobile-device .register-side {
     .register-side .create-account-btn {
         align-self: center;
     }
+}
+
+body.mobile-device {
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
+body.mobile-device .login-panel {
+    height: auto !important;
+    min-height: 100%;
+    overflow-y: auto !important;
+    position: relative;
+    padding-bottom: 50px;
+}
+
+body.mobile-device .login-container {
+    height: auto !important;
+    overflow-y: visible !important;
+    max-height: none !important;
+}
+
+body.mobile-device .login-content {
+    height: auto !important;
+    overflow-y: visible !important;
 } 

@@ -1,6 +1,6 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     color: #333333;
     margin: 0;
     padding: 0;
@@ -11,10 +11,7 @@ body {
 }
 
 html, body {
-    height: auto !important;
-    min-height: 100% !important;
-    overflow-y: auto !important;
-    position: relative !important;
+    height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
@@ -27,52 +24,35 @@ html, body {
 }
 
 .login-panel {
-    min-height: auto !important;
-    height: auto !important;
-    overflow-y: visible !important;
-    position: relative !important;
-    padding: 20px 15px 50px !important;
-    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #ffffff;
 }
 
 .login-container {
-    width: 90%;
-    max-width: 500px;
+    width: 100%;
+    max-width: 900px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin: 0 auto;
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow-y: visible !important;
 }
 
 .login-content {
     display: flex;
-    flex-direction: column;
     width: 100%;
-    height: auto !important;
-    min-height: auto !important;
-    overflow-y: visible !important;
 }
 
 .login-side,
 .register-side {
-    width: 100% !important;
-    height: auto !important;
-    min-height: auto !important;
-    overflow: visible !important;
-    padding: 20px 15px !important;
+    width: 50%;
+    padding: 40px;
     box-sizing: border-box;
-}
-
-.full-width {
-    width: 100%;
 }
 
 .login-side {
@@ -80,6 +60,7 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-right: 1px solid #e0e0e0;
 }
 
 .register-side {
@@ -91,6 +72,7 @@ html, body {
 }
 
 .section-divider {
+    display: none;
     width: 100%;
     padding: 0;
     box-sizing: border-box;
@@ -117,14 +99,18 @@ html, body {
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    text-align: right;
+    text-align: left;
 }
 
 .register-side .register-subtitle {
     color: #666666;
     font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+.register-side .register-subtitle:last-of-type {
     margin-bottom: 2rem;
-    text-align: right;
 }
 
 .benefits-list {
@@ -132,44 +118,50 @@ html, body {
     padding: 0;
     margin: 0 0 2rem 0;
     width: 100%;
-    max-width: 500px;
-    height: auto !important;
-    overflow: visible !important;
-    margin-bottom: 20px !important;
 }
 
-.register-side .benefits-list {
-    align-items: flex-end;
+.benefit-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
 }
 
-.register-side .benefit-item {
-    justify-content: flex-end;
-    text-align: right;
+.benefit-item i {
+    color: #0066cc;
+    margin-right: 10px;
+    font-size: 16px;
+    min-width: 16px;
+    margin-top: 3px;
+}
+
+.benefit-item span {
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 .create-account-btn {
-    display: block;
-    width: 100%;
-    max-width: 300px;
-    padding: 12px 24px;
-    background-color: #0066cc;
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: white;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
+    padding: 10px 20px;
+    font-size: 0.9rem;
     font-weight: 600;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
     text-align: center;
     text-decoration: none;
-    text-transform: uppercase;
-    align-self: flex-end;
-    margin-top: 20px !important;
-    margin-bottom: 30px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 45px;
+    margin: 0;
 }
 
 .create-account-btn:hover {
-    background-color: #0055aa;
+    background-color: var(--primary-hover);
 }
 
 .login-options {
@@ -184,7 +176,7 @@ html, body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 10px 15px;
+    padding: 12px 15px;
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 5px;
@@ -194,11 +186,13 @@ html, body {
     transition: all 0.3s ease;
     text-decoration: none;
     margin-bottom: 20px;
+    height: 45px;
 }
 
-.google-btn i {
+.google-btn img {
     margin-right: 10px;
-    color: #4285F4;
+    width: 18px;
+    height: 18px;
 }
 
 .google-btn:hover {
@@ -249,28 +243,21 @@ html, body {
 
 .form-group input {
     width: 100%;
-    height: 45px;
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
+    padding: 12px;
+    border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
-    color: #333;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease;
     box-sizing: border-box;
 }
 
 .form-group input:focus {
-    border-color: #0066cc;
-    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+    border-color: var(--primary-color);
     outline: none;
 }
 
 .password-input-group {
     position: relative;
-}
-
-.password-input-group input {
-    padding-right: 40px;
 }
 
 .password-toggle {
@@ -280,11 +267,8 @@ html, body {
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #757575;
     cursor: pointer;
-    font-size: 16px;
-    padding: 5px;
-    z-index: 10;
+    color: #757575;
 }
 
 .form-options {
@@ -292,6 +276,7 @@ html, body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    font-size: 14px;
 }
 
 .remember-me {
@@ -299,220 +284,48 @@ html, body {
     align-items: center;
 }
 
-.remember-me input[type="checkbox"] {
-    margin-right: 5px;
-}
-
-.remember-me label {
-    font-size: 14px;
-    color: #757575;
+.remember-me input {
+    margin-right: 8px;
 }
 
 .forgot-password {
-    font-size: 14px;
-    color: #0066cc;
+    color: var(--primary-color);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease;
 }
 
 .forgot-password:hover {
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
 .login-btn {
-    width: 100%;
-    height: 45px;
-    background-color: #0066cc;
-    color: #fff;
+    background-color: var(--primary-color);
+    color: white;
     border: none;
     border-radius: 5px;
-    font-size: 14px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .login-btn:hover {
-    background-color: #0055aa;
-}
-
-.terms-agreement {
-    margin-top: 1.5rem;
-    font-size: 0.8rem;
-    color: var(--dark-text-secondary);
-    text-align: center;
-}
-
-.terms-agreement a {
-    color: var(--dark-text-secondary);
-    text-decoration: underline;
-}
-
-.terms-agreement a:hover {
-    color: var(--primary-color);
-}
-
-.register-benefits {
-    color: #0066cc;
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.benefits-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    color: #666666;
-}
-
-.benefits-list li i {
-    color: #0066cc;
-    font-size: 1.2rem;
-    margin-top: 2px;
-}
-
-.create-account-btn {
-    color: #0066cc;
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 1rem;
-    text-align: center;
-}
-
-.create-account-btn:hover {
-    text-decoration: underline;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.login-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #1a1a1a;
-    padding: 15px 0;
-    text-align: center;
-}
-
-.login-footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-}
-
-.login-footer .footer-link {
-    color: #ffffff;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
-}
-
-.login-footer .footer-link:hover {
-    color: #0066cc;
-}
-
-.login-footer .footer-link i {
-    font-size: 1rem;
-}
-
-.login-footer-links span {
-    color: white;
-}
-
-/* Estilos para notificações */
-.notification {
-    display: none !important;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    max-width: 280px;
-    padding: 8px 12px;
-    background-color: #f8f9fa;
-    color: #333;
-    border-left: 3px solid #0066cc;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
-    font-size: 13px;
-    line-height: 1.4;
-    opacity: 0.95;
-    transform: translateX(120%);
-    transition: transform 0.3s ease-in-out;
-}
-
-.notification.success {
-    border-left-color: #28a745;
-}
-
-.notification.error {
-    border-left-color: #dc3545;
-}
-
-.notification.info {
-    border-left-color: #17a2b8;
-}
-
-.notification.show {
-    transform: translateX(0);
-}
-
-.notification i {
-    margin-right: 8px;
-    font-size: 14px;
-}
-
-.notification span {
-    display: inline-block;
-    vertical-align: middle;
+    background-color: var(--primary-hover);
 }
 
 @media (max-width: 768px) {
-    body, html {
-        height: auto !important;
-        overflow-y: auto !important;
-    }
-    
-    .login-panel {
-        height: auto !important;
-        min-height: auto !important;
-        overflow-y: visible !important;
-    }
-    
     .login-container {
-        height: auto !important;
-        overflow-y: visible !important;
-    }
-    
-    .login-content {
-        height: auto !important;
-        overflow-y: visible !important;
-    }
-    
-    .login-container {
-        width: 90%;
         max-width: 500px;
-        margin: 20px auto;
+        box-shadow: none;
+        border-radius: 0;
     }
     
     .login-content {
@@ -522,47 +335,45 @@ html, body {
     .login-side, 
     .register-side {
         width: 100%;
-        padding: 25px;
+        padding: 20px;
     }
     
-    .login-side h2 {
-        font-size: 24px;
-        margin-bottom: 20px;
-        text-align: center;
+    .login-side {
+        border-right: none;
+    }
+    
+    .section-divider {
+        display: block;
     }
     
     .register-side h2 {
-        font-size: 24px;
-        margin-bottom: 15px;
         text-align: center;
     }
     
     .register-side .register-subtitle {
-        font-size: 16px;
-        margin-bottom: 15px;
         text-align: center;
     }
     
-    .section-divider {
-        width: 100%;
-        padding: 0 25px;
-        box-sizing: border-box;
-        margin: 0;
+    .benefits-list {
+        margin: 0 auto 2rem;
     }
     
-    .section-divider hr {
-        border: none;
-        height: 1px;
-        background-color: #e0e0e0;
-        margin: 0;
+    .benefit-item {
+        justify-content: center;
     }
     
-    .login-btn, 
-    .create-account-btn,
-    .google-btn {
+    .create-account-btn {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-panel {
+        padding: 10px;
+    }
+    
+    .login-container {
         width: 100%;
-        height: 45px;
-        font-size: 15px;
     }
     
     .form-options {
@@ -572,105 +383,6 @@ html, body {
     
     .forgot-password {
         margin-top: 10px;
-    }
-    
-    .benefits-list {
-        margin: 15px 0;
-    }
-    
-    .register-side .create-account-btn {
-        width: 100%;
-        height: 45px;
-        font-size: 0.9rem;
-        margin-left: 0;
-        margin-right: 0;
-    }
-    
-    .register-side .benefit-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 0.8rem;
-        justify-content: flex-start;
-        text-align: left;
-    }
-    
-    .register-side .benefit-item i {
-        color: var(--primary-color);
-        margin-right: 10px;
-        margin-left: 0;
-        font-size: 1rem;
-        margin-top: 2px;
-        order: 1;
-    }
-    
-    .register-side .benefit-item span {
-        flex: 1;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        order: 2;
-    }
-}
-
-@media (max-width: 480px) {
-    .login-panel {
-        padding: 10px 0 30px;
-        height: auto;
-        min-height: 100%;
-    }
-    
-    .login-container {
-        width: 95%;
-        margin: 10px auto;
-        padding: 0;
-    }
-    
-    .login-side,
-    .register-side {
-        padding: 20px;
-    }
-    
-    .login-side h2 {
-        font-size: 22px;
-        margin-bottom: 15px;
-    }
-    
-    .register-side h2 {
-        font-size: 22px;
-        margin-bottom: 10px;
-    }
-    
-    .register-side .register-subtitle {
-        font-size: 15px;
-        margin-bottom: 12px;
-    }
-    
-    .section-divider {
-        padding: 0 20px;
-    }
-    
-    .form-group input,
-    .password-input-group input,
-    .login-btn,
-    .create-account-btn,
-    .google-btn {
-        height: 44px;
-        font-size: 14px;
-    }
-    
-    .benefit-item {
-        margin-bottom: 10px;
-    }
-    
-    .benefit-item span {
-        font-size: 14px;
-    }
-    
-    .form-options {
-        margin-bottom: 15px;
-    }
-    
-    .password-toggle {
-        width: 44px;
     }
 }
 
@@ -850,7 +562,7 @@ html, body {
 }
 
 .dark-mode .login-panel {
-    background-color: rgba(26, 26, 26, 0.9);
+    background-color: #ffffff;
 }
 
 .dark-mode .login-side {
@@ -1237,327 +949,84 @@ body.mobile-device .register-side {
 
 /* VERSÃO WEB - Estilos específicos para telas maiores que 768px */
 @media (min-width: 769px) {
-    /* CSS fornecido pelo usuário para a versão web */
     .login-panel {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1000;
-        background-color: rgba(245, 245, 245, 0.9);
-    }
-    
-    .login-container {
+        min-height: 100vh;
+        padding: 20px;
         background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-container {
         width: 100%;
         max-width: 900px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        display: flex;
-        animation: fadeIn 0.3s ease-out;
     }
-    
+
     .login-content {
         display: flex;
-        width: 100%;
-        height: 100%;
         flex-direction: row;
+        width: 100%;
     }
-    
+
     .login-side,
     .register-side {
-        flex: 1;
+        width: 50%;
         padding: 40px;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .login-side {
-        background-color: #ffffff;
-        color: #333333;
-        border-right: 1px solid #e0e0e0;
-    }
-    
-    .register-side {
-        background-color: #ffffff;
-        color: #333333;
-        justify-content: center;
-    }
-    
-    .login-side h2 {
-        color: #333;
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        text-align: left;
-        line-height: 1.3;
-    }
-    
-    .register-side h2 {
-        color: #333;
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        text-align: left;
-        line-height: 1.3;
-    }
-    
-    .register-side .register-subtitle:first-of-type {
-        color: #555;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-        text-align: left;
-        font-weight: 500;
-        margin-top: -0.5rem;
-    }
-    
-    .register-side .register-subtitle:nth-of-type(2) {
-        color: #555;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-        text-align: left;
-        font-weight: 500;
-    }
-    
-    .login-options {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 1.5rem;
-    }
-    
-    .google-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 45px;
-        background-color: white;
-        color: #333;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        text-decoration: none;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-    
-    .google-btn i {
-        color: #4285F4;
-        margin-right: 10px;
-        font-size: 1.1rem;
-    }
-    
-    .login-divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 1.5rem 0;
-        color: #777;
-        position: relative;
-        width: 100%;
-    }
-    
-    .login-divider::before,
-    .login-divider::after {
-        content: "";
-        flex: 1;
-        border-bottom: 1px solid #ddd;
-    }
-    
-    .login-divider span {
-        margin: 0 10px;
-        font-size: 0.9rem;
-        color: #777;
-    }
-    
-    .login-form {
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-    
-    .form-group {
-        margin-bottom: 1.2rem;
-    }
-    
-    .form-group input {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        background-color: #f9f9f9;
-        color: #333333;
-        font-size: 1rem;
         box-sizing: border-box;
     }
-    
-    .form-group input:focus {
-        outline: none;
-        border-color: var(--primary-color);
+
+    .login-side {
+        border-right: 1px solid #e0e0e0;
+    }
+
+    .register-side {
         background-color: #ffffff;
     }
-    
-    .password-input-group {
-        position: relative;
-        width: 100%;
-    }
-    
-    .password-toggle {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: #777777;
-        cursor: pointer;
-    }
-    
-    .form-options {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 0.5rem 0;
-    }
-    
-    .remember-me {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .remember-me input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .remember-me label {
-        color: #555555;
-        font-size: 0.9rem;
-    }
-    
-    .forgot-password {
-        color: #555555;
-        font-size: 0.9rem;
-        text-decoration: none;
-        margin-left: auto;
-    }
-    
-    .forgot-password:hover {
-        color: var(--primary-color);
-        text-decoration: underline;
-    }
-    
-    .login-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 45px;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        text-transform: uppercase;
-        margin-top: 1.5rem;
-    }
-    
-    .login-btn:hover {
-        background-color: #0055b3;
-    }
-    
-    .benefits-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 2.5rem;
-    }
-    
-    .register-side .benefit-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 0;
-        font-size: 0.95rem;
-        color: #333;
-        line-height: 1.4;
-        justify-content: flex-end;
-        text-align: right;
-    }
-    
-    .register-side .benefit-item i {
-        color: var(--primary-color);
-        margin-left: 10px;
-        margin-right: 0;
-        font-size: 1rem;
-        margin-top: 3px;
-        order: 2;
-    }
-    
-    .register-side .benefit-item span {
-        flex: 1;
-        font-size: 0.95rem;
-        line-height: 1.4;
-        order: 1;
-    }
-    
-    .register-side .create-account-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 45px;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        text-decoration: none;
-        text-transform: uppercase;
-        margin-top: 0;
-        margin-left: 0;
-        margin-right: 0;
-    }
-    
-    .register-side .create-account-btn:hover {
-        background-color: #0055b3;
-    }
-    
-    /* Garantir que o modo escuro não afete a versão web */
-    .dark-mode .register-side {
-        background-color: #ffffff !important;
-        color: #333333 !important;
-    }
-    
-    .dark-mode .register-side h2,
-    .dark-mode .register-side .register-subtitle {
-        color: #333333 !important;
-    }
-    
-    .dark-mode .register-side .benefit-item span {
-        color: #666666 !important;
-    }
-    
-    .dark-mode .register-side .benefit-item i {
-        color: var(--primary-color) !important;
-    }
-    
-    /* Ocultar a linha divisória horizontal */
+
     .section-divider {
         display: none;
+    }
+
+    .register-side h2 {
+        text-align: left;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .register-side .register-subtitle {
+        text-align: left;
+        margin-bottom: 2rem;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        justify-content: flex-start;
+    }
+
+    .benefit-item i {
+        color: #0066cc;
+        margin-right: 10px;
+        font-size: 16px;
+        min-width: 16px;
+        margin-top: 3px;
+    }
+
+    .benefit-item span {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .create-account-btn {
+        width: 100%;
+        height: 45px;
+        margin: 0;
     }
 }
 

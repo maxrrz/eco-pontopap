@@ -2,15 +2,55 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Registo - EcoPonto</title>
     <link rel="icon" type="image/x-icon" href="photos/ec.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/register.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Detectar dispositivo móvel e adicionar classe
+            function detectMobileDevice() {
+                const isMobile = window.innerWidth <= 768 || 
+                                 /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    document.body.classList.add('mobile-device');
+                } else {
+                    document.body.classList.remove('mobile-device');
+                }
+            }
+            
+            // Executar na inicialização
+            detectMobileDevice();
+            
+            // Executar quando a janela for redimensionada
+            window.addEventListener('resize', detectMobileDevice);
+            
+            // Verificar se o usuário já está logado
+            function checkAuthStatus() {
+                try {
+                    const userData = localStorage.getItem('user');
+                    
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        if (user && user.name && user.email) {
+                            // Redirecionar para a página principal
+                            window.location.href = 'index.html';
+                            return true; // Usuário está logado
+                        }
+                    }
+                    
+                    return false; // Usuário não está logado
+                } catch (error) {
+                    console.error('Erro ao verificar status de autenticação:', error);
+                    localStorage.removeItem('user'); // Limpar dados corrompidos
+                    return false;
+                }
+            }
+            
             // Função para mostrar notificações
             function showNotification(message, type = 'info') {
                 // Função desativada - não mostrar notificações
@@ -36,7 +76,7 @@
             };
             
             // Processar registro
-            function handleRegistration(event) {
+            function handleRegister(event) {
                 event.preventDefault();
                 
                 const name = document.getElementById('registerName').value;
@@ -64,15 +104,15 @@
                     return;
                 }
                 
-                // Confirmação de senha
+                // Verificar se as senhas coincidem
                 if (password !== confirmPassword) {
                     showNotification('As senhas não coincidem.', 'error');
                     return;
                 }
                 
-                // Termos e condições
+                // Verificar se os termos foram aceitos
                 if (!termsAgree) {
-                    showNotification('Você deve concordar com os Termos e Condições.', 'error');
+                    showNotification('Você deve aceitar os termos e condições.', 'error');
                     return;
                 }
                 
@@ -96,42 +136,29 @@
                         // Armazenar dados do usuário no localStorage
                         localStorage.setItem('user', JSON.stringify(userData));
                         
-                        // Mostrar notificação de sucesso
-                        showNotification('Conta criada com sucesso! Redirecionando...', 'success');
-                        
-                        // Redirecionar para a página principal após 2 segundos
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 2000);
+                        // Redirecionar para a página principal
+                        window.location.href = 'index.html';
                         
                         // Resetar botão
                         submitButton.innerHTML = originalButtonText;
                         submitButton.disabled = false;
-                    }, 1500);
+                    }, 1000);
                 }
             }
             
             // Configurar event listeners
             function setupEventListeners() {
-                // Formulário de registro
+                // Registro
                 const registerForm = document.getElementById('registerForm');
                 if (registerForm) {
-                    registerForm.addEventListener('submit', handleRegistration);
-                }
-                
-                // Link de termos e condições
-                const termsLink = document.querySelector('.terms-link');
-                if (termsLink) {
-                    termsLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        showNotification('Termos e condições em desenvolvimento.', 'info');
-                    });
+                    registerForm.addEventListener('submit', handleRegister);
                 }
             }
             
             // Inicializar aplicação
             function initApp() {
                 setupEventListeners();
+                checkAuthStatus();
             }
             
             // Iniciar aplicação

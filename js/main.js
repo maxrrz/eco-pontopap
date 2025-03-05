@@ -1,6 +1,7 @@
 import { CONFIG, translations } from './config.js';
 import * as helpers from '../src/utils/helpers.js';
 import { MenuManager } from './menu-functions.js';
+import { initLanguageHandler, loadSavedLanguage, applyLanguage, updateChartLabels } from './language-handler.js';
 
 console.log('Módulo main.js carregado!');
 console.log('CONFIG.IS_LOCAL_DEV:', CONFIG.IS_LOCAL_DEV);
@@ -25,9 +26,19 @@ const state = {
     }
 };
 
+// Tornar o estado acessível globalmente para o language-handler.js
+window.state = state;
+
+// Variáveis para controle de tentativas de conexão
+let consecutiveFailures = 0;
+let isRetryDelayActive = false;
+
 // Inicializar a aplicação quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM carregado, inicializando aplicação...');
+    
+    // Inicializar o manipulador de idiomas
+    initLanguageHandler();
     
     try {
         // Carregar tema salvo
@@ -133,7 +144,7 @@ function setupEventListeners() {
                 this.querySelector('i').style.visibility = 'visible';
                 
                 // Atualizar idioma
-                updateLanguage(lang);
+                applyLanguage(lang);
                 
                 // Fechar o submenu após selecionar o idioma
                 languageSubmenu.classList.remove('active');
@@ -304,7 +315,7 @@ function setupEventListeners() {
                     event.stopPropagation();
                     const lang = option.dataset.lang;
                     if (lang && translations[lang]) {
-                        updateLanguage(lang);
+                        applyLanguage(lang);
                         closeMenu();
                     }
                 });
@@ -343,87 +354,6 @@ function updateThemeUI(isDark) {
             themeImage.src = 'photos/tgeiclaro.png';
         }
     }
-}
-
-// Função para atualizar o idioma
-function updateLanguage(lang) {
-    if (!translations[lang]) return;
-
-    document.documentElement.lang = lang;
-    localStorage.setItem('language', lang);
-
-    // Atualizar textos da interface
-    updateInterfaceTexts(lang);
-    
-    // Atualizar labels do gráfico se ele existir
-    if (state.chart) {
-        updateChartLabels(lang);
-    }
-}
-
-// Atualizar textos da interface
-function updateInterfaceTexts(lang) {
-    const elements = {
-        title: { selector: '#title', text: 'title' },
-        subtitle: { selector: '.subtitle', text: 'subtitle' },
-        status: { selector: '#status', text: 'status' },
-        averageFill: { selector: '.stat-card:nth-child(1) .stat-title', text: 'averageFill' },
-        mostFull: { selector: '.stat-card:nth-child(2) .stat-title', text: 'mostFull' },
-        lastUpdate: { selector: '.stat-card:nth-child(3) .stat-title', text: 'lastUpdate' },
-        realTime: { selector: '.stat-card:nth-child(1) .stat-trend span', text: 'realTime' },
-        monitoring: { selector: '.stat-card:nth-child(2) .stat-trend span', text: 'monitoring' },
-        autoUpdate: { selector: '.stat-card:nth-child(3) .stat-trend span', text: 'autoUpdate' },
-        yellowLabel: { selector: '#yellow-label', text: 'yellowLabel' },
-        yellowSubtitle: { selector: '#yellow-container .ecoponto-subtitle', text: 'yellowSubtitle' },
-        greenLabel: { selector: '#green-label', text: 'greenLabel' },
-        greenSubtitle: { selector: '#green-container .ecoponto-subtitle', text: 'greenSubtitle' },
-        blueLabel: { selector: '#blue-label', text: 'blueLabel' },
-        blueSubtitle: { selector: '#blue-container .ecoponto-subtitle', text: 'blueSubtitle' },
-        historyTitle: { selector: '.chart-title span', text: 'historyTitle' },
-        last24h: { selector: '.chart-btn span', text: 'last24h' },
-        footerText: { selector: '#footer-text', text: 'footerText' },
-        language: { selector: '.language-toggle span', text: 'language' },
-        about: { selector: 'a[href="about.html"]', text: 'about' },
-        documentation: { selector: 'a[href="docs.html"]', text: 'documentation' },
-        contact: { selector: 'a[href="contact.html"]', text: 'contact' }
-    };
-
-    for (const [key, { selector, text }] of Object.entries(elements)) {
-        const element = document.querySelector(selector);
-        if (element && translations[lang][text]) {
-            element.textContent = translations[lang][text];
-        }
-    }
-
-    // Atualizar o texto do botão de tema
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        const isDark = document.body.classList.contains('dark-mode');
-        const themeText = themeToggle.querySelector('span');
-        if (themeText) {
-            themeText.textContent = isDark ? translations[lang].themeLight : translations[lang].themeDark;
-        }
-    }
-}
-
-// Atualizar labels do gráfico
-function updateChartLabels(lang) {
-    if (!state.chart) return;
-    
-    state.chart.data.datasets[0].label = translations[lang].yellowLabel || 'Plástico/Metal';
-    state.chart.data.datasets[1].label = translations[lang].greenLabel || 'Vidro';
-    state.chart.data.datasets[2].label = translations[lang].blueLabel || 'Papel/Cartão';
-    
-    // Atualizar títulos dos eixos se existirem
-    if (state.chart.options.scales.y.title) {
-        state.chart.options.scales.y.title.text = translations[lang].fillLevel || 'Nível de Enchimento (%)';
-    }
-    
-    if (state.chart.options.scales.x.title) {
-        state.chart.options.scales.x.title.text = translations[lang].time || 'Tempo';
-    }
-    
-    state.chart.update();
 }
 
 // Inicializar o módulo quando o DOM estiver carregado
@@ -853,13 +783,28 @@ function updateProgressBars(data) {
 async function fetchData() {
     console.log('Iniciando busca de dados da API...');
     
+    // Se estiver no período de espera após falhas consecutivas, não tenta novamente
+    if (isRetryDelayActive) {
+        console.log('Em período de espera após falhas consecutivas. Pulando tentativa.');
+        return null;
+    }
+    
     try {
         // Construir URL da API
-        const apiUrl = `${CONFIG.API_URL}?token=${CONFIG.API_TOKEN}`;
+        const apiUrl = `${CONFIG.API_URL}${CONFIG.API_TOKEN ? `?token=${CONFIG.API_TOKEN}` : ''}`;
         console.log('URL da API:', apiUrl);
         
-        // Buscar dados da API
-        const response = await fetch(apiUrl);
+        // Configurar timeout para a requisição
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
+        
+        // Buscar dados da API com timeout
+        const response = await fetch(apiUrl, { 
+            signal: controller.signal 
+        });
+        
+        // Limpar timeout
+        clearTimeout(timeoutId);
         
         // Verificar se a resposta foi bem-sucedida
         if (!response.ok) {
@@ -889,10 +834,45 @@ async function fetchData() {
         // Atualizar a interface com os dados processados
         updateData(processedData);
         
+        // Resetar contador de falhas consecutivas
+        consecutiveFailures = 0;
+        
+        // Atualizar status de conexão para indicar sucesso
+        updateConnectionStatus(true);
+        
         console.log('Busca de dados concluída com sucesso');
         return processedData;
     } catch (error) {
         console.error('Erro ao buscar dados:', error);
+        
+        // Incrementar contador de falhas consecutivas
+        consecutiveFailures++;
+        console.log(`Falha consecutiva #${consecutiveFailures}`);
+        
+        // Verificar se atingiu o limite de falhas consecutivas
+        if (consecutiveFailures >= CONFIG.MAX_CONSECUTIVE_FAILURES && !isRetryDelayActive) {
+            console.log(`Atingido limite de ${CONFIG.MAX_CONSECUTIVE_FAILURES} falhas consecutivas. Ativando período de espera.`);
+            
+            // Ativar período de espera
+            isRetryDelayActive = true;
+            
+            // Mostrar mensagem de status especial
+            const statusText = document.getElementById('status');
+            const currentLang = localStorage.getItem('language') || 'pt';
+            if (statusText) {
+                statusText.textContent = translations[currentLang].server_unavailable || 'Servidor indisponível';
+            }
+            
+            // Programar fim do período de espera
+            setTimeout(() => {
+                console.log('Período de espera concluído. Retomando tentativas normais.');
+                isRetryDelayActive = false;
+                consecutiveFailures = 0;
+                
+                // Tentar novamente após o período de espera
+                fetchData();
+            }, CONFIG.RETRY_DELAY);
+        }
         
         // Atualizar status de conexão para indicar erro
         updateConnectionStatus(false);
@@ -917,24 +897,38 @@ function updateConnectionStatus(isConnected) {
     
     const statusDot = document.getElementById('status-dot');
     const statusText = document.getElementById('status');
+    const statusIndicator = document.querySelector('.status-indicator');
     const currentLang = localStorage.getItem('language') || 'pt';
 
     if (statusDot && statusText) {
         // Atualizar classe do indicador de status
         if (isConnected) {
             statusDot.classList.add('connected');
+            statusDot.classList.remove('disconnected');
+            if (statusIndicator) {
+                statusIndicator.classList.add('connected');
+                statusIndicator.classList.remove('disconnected');
+            }
         } else {
             statusDot.classList.remove('connected');
+            statusDot.classList.add('disconnected');
+            if (statusIndicator) {
+                statusIndicator.classList.remove('connected');
+                statusIndicator.classList.add('disconnected');
+            }
         }
         
-        // Atualizar texto de status
-        const statusMessage = isConnected ? 
-            translations[currentLang].connected : 
-            translations[currentLang].disconnected;
+        // Não atualizar o texto se estiver no período de espera
+        if (!isRetryDelayActive) {
+            // Atualizar texto de status
+            const statusMessage = isConnected ? 
+                translations[currentLang].connected : 
+                translations[currentLang].disconnected;
+                
+            statusText.textContent = statusMessage;
             
-        statusText.textContent = statusMessage;
-        
-        console.log('Status atualizado para:', statusMessage);
+            console.log('Status atualizado para:', statusMessage);
+        }
     } else {
         console.warn('Elementos de status não encontrados no DOM');
     }
@@ -951,34 +945,48 @@ function startDataUpdate() {
             clearInterval(window.dataUpdateInterval);
         }
         
-        // Definir intervalo de atualização com base na configuração
-        const updateInterval = CONFIG.UPDATE_INTERVAL_CONNECTED;
-        console.log(`Configurando atualização a cada ${updateInterval/1000} segundos`);
-        
         // Buscar dados imediatamente
         fetchData();
         
-        // Configurar atualização periódica
-        window.dataUpdateInterval = setInterval(() => {
-            console.log('Executando atualização periódica de dados');
-            fetchData();
-        }, updateInterval);
+        // Configurar atualização periódica com intervalo adaptativo
+        function scheduleNextUpdate() {
+            // Determinar intervalo com base no status de conexão e falhas
+            let updateInterval;
+            
+            if (isRetryDelayActive) {
+                // Se estiver no período de espera, usar intervalo mais longo
+                updateInterval = CONFIG.RETRY_DELAY;
+            } else if (consecutiveFailures > 0) {
+                // Se houver falhas, usar intervalo para desconectado
+                updateInterval = CONFIG.UPDATE_INTERVAL_DISCONNECTED;
+            } else {
+                // Caso contrário, usar intervalo normal
+                updateInterval = CONFIG.UPDATE_INTERVAL_CONNECTED;
+            }
+            
+            console.log(`Agendando próxima atualização em ${updateInterval/1000} segundos`);
+            
+            // Limpar qualquer timeout existente
+            if (window.dataUpdateTimeout) {
+                clearTimeout(window.dataUpdateTimeout);
+            }
+            
+            // Agendar próxima atualização
+            window.dataUpdateTimeout = setTimeout(() => {
+                console.log('Executando atualização agendada');
+                fetchData().then(() => {
+                    // Agendar próxima atualização após concluir esta
+                    scheduleNextUpdate();
+                });
+            }, updateInterval);
+        }
         
-        // Forçar uma atualização após 2 segundos para garantir que os dados sejam carregados
-        setTimeout(() => {
-            console.log('Forçando atualização após atraso inicial');
-            fetchData();
-        }, 2000);
+        // Iniciar agendamento de atualizações
+        scheduleNextUpdate();
         
-        // Forçar outra atualização após 5 segundos
-        setTimeout(() => {
-            console.log('Forçando segunda atualização após atraso');
-            fetchData();
-        }, 5000);
-        
-        console.log('Sistema de atualização de dados iniciado com sucesso');
+        console.log('Sistema de atualização periódica iniciado com sucesso');
     } catch (error) {
-        console.error('Erro ao iniciar atualização de dados:', error);
+        console.error('Erro ao iniciar sistema de atualização periódica:', error);
     }
 }
 
@@ -1052,7 +1060,5 @@ async function updateChartTheme(isDark) {
 // Exportar funções para uso em outros módulos e para o escopo global
 export {
     setupEventListeners,
-    updateLanguage,
-    updateThemeUI,
     fetchData
 }; 

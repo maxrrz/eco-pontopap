@@ -1,0 +1,33 @@
+/* Correção para alinhamento horizontal dos cards */
+.stats-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    margin-bottom: 30px !important;
+    gap: 20px !important;
+}
+
+.stat-card {
+    flex: 1 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .stats-container {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    .stat-card {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+} 

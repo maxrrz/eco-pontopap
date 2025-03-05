@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitorização em Tempo Real - Enchimento do Ecoponto</title>
+    <title>Ecoponto Inteligente - Monitorização em tempo real</title>
     <link rel="icon" type="image/x-icon" href="photos/ec.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -11,11 +11,21 @@
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="js/menu-functions.css">
     <link rel="stylesheet" href="js/charts-module.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/restore-design.css">
+    <link rel="stylesheet" href="css/fix-alignment.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="js/user-display.js"></script>
     <script type="module" src="js/main.js"></script>
     <script>
+        // Garantir que o título da página seja sempre o correto
+        document.title = "Ecoponto Inteligente - Monitorização em tempo real";
+        
         document.addEventListener('DOMContentLoaded', function() {
+            // Definir o título novamente após o carregamento completo da página
+            document.title = "Ecoponto Inteligente - Monitorização em tempo real";
+            
             console.log('DOMContentLoaded: Inicializando script de atualização de status');
             
             // Função para atualizar o status
@@ -96,8 +106,8 @@
                 <div class="header-title">
                     <h1 id="title">
                         <i class="fas fa-leaf"></i>
-                        EcoPonto
-                        <span class="subtitle">Monitorização Inteligente</span>
+                        Ecoponto Inteligente
+                        <span class="subtitle">Monitorização em tempo real</span>
                     </h1>
                 </div>
                 <div class="header-info">
@@ -107,7 +117,6 @@
                     </div>
                     <div class="status-indicator">
                         <div class="status-dot" id="status-dot"></div>
-                        <i class="fas fa-signal"></i>
                         <span id="status">Carregando...</span>
                     </div>
                     <button class="menu-button" id="menu-button">
@@ -260,32 +269,29 @@
             <p>Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.</p>
         </div>
 
-        <div class="stats-container">
-            <div class="stat-card">
-                <i class="fas fa-chart-pie"></i>
-                <div class="stat-title">Média de Enchimento</div>
-                <div class="stat-value" id="average-fill">0%</div>
-                <div class="stat-trend">
-                    <i class="fas fa-clock"></i>
-                    <span>Em tempo real</span>
+        <div class="stats-container" style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: nowrap; width: 100%; gap: 20px; margin-bottom: 30px;">
+            <div class="stat-card" style="flex: 1; min-width: 0; margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <i class="fas fa-chart-pie" style="color: #007bff;"></i>
+                <div class="stat-title">MÉDIA DE ENCHIMENTO</div>
+                <div class="stat-value" id="average-fill">16%</div>
+                <div class="status-text">
+                    <i class="fas fa-circle"></i> Em tempo real
                 </div>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-arrow-trend-up"></i>
-                <div class="stat-title">Contentor Mais Cheio</div>
-                <div class="stat-value" id="most-full">-</div>
-                <div class="stat-trend">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Monitorização ativa</span>
+            <div class="stat-card" style="flex: 1; min-width: 0; margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <i class="fas fa-arrow-trend-up" style="color: #007bff;"></i>
+                <div class="stat-title">CONTENTOR MAIS CHEIO</div>
+                <div class="stat-value" id="most-full">Papel e Cartão (18%)</div>
+                <div class="status-text">
+                    <i class="fas fa-chart-line"></i> Monitorização ativa
                 </div>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-clock-rotate-left"></i>
-                <div class="stat-title">Última Atualização</div>
-                <div class="stat-value" id="last-update">-</div>
-                <div class="stat-trend">
-                    <i class="fas fa-rotate"></i>
-                    <span>Atualização automática</span>
+            <div class="stat-card" style="flex: 1; min-width: 0; margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <i class="fas fa-clock-rotate-left" style="color: #007bff;"></i>
+                <div class="stat-title">ÚLTIMA ATUALIZAÇÃO</div>
+                <div class="stat-value" id="last-update">01:00:05</div>
+                <div class="status-text">
+                    <i class="fas fa-sync"></i> Atualização automática
                 </div>
             </div>
         </div>
@@ -635,12 +641,14 @@
                             // Armazenar preferência de idioma
                             localStorage.setItem('language', lang);
                             
+                            // Atualizar o nome do usuário com o novo idioma
+                            if (typeof window.updateUserNameDisplay === 'function') {
+                                window.updateUserNameDisplay();
+                            }
+                            
                             // Fechar o submenu após selecionar o idioma
                             languageSubmenu.classList.remove('active');
                             languageSubmenu.style.display = 'none';
-                            
-                            // Recarregar a página para aplicar o novo idioma
-                            // location.reload();
                         });
                     });
                 }
@@ -883,7 +891,10 @@
                 const lastUpdateElement = document.getElementById('last-update');
                 if (lastUpdateElement) {
                     const now = new Date();
-                    const timeString = now.toLocaleTimeString();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const timeString = `${hours}:${minutes}:${seconds}`;
                     lastUpdateElement.textContent = timeString;
                 }
             }
@@ -902,7 +913,10 @@
                         const lastUpdateElement = document.getElementById('last-update');
                         if (lastUpdateElement) {
                             const now = new Date();
-                            const timeString = now.toLocaleTimeString();
+                            const hours = String(now.getHours()).padStart(2, '0');
+                            const minutes = String(now.getMinutes()).padStart(2, '0');
+                            const seconds = String(now.getSeconds()).padStart(2, '0');
+                            const timeString = `${hours}:${minutes}:${seconds}`;
                             lastUpdateElement.textContent = timeString;
                         }
                     } else {
@@ -931,6 +945,319 @@
             
             // Executar imediatamente para garantir que os dados sejam carregados
             window.localFetchData();
+        });
+    </script>
+    
+    <!-- Script para garantir que o nome do usuário seja exibido corretamente -->
+    <script>
+        // Garantir que o nome do usuário seja exibido corretamente em todas as partes da interface
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se a função updateUserNameDisplay está disponível (do arquivo user-display.js)
+            if (typeof window.updateUserNameDisplay === 'function') {
+                console.log('Chamando updateUserNameDisplay do script user-display.js');
+                window.updateUserNameDisplay();
+                
+                // Tentar novamente após um pequeno atraso
+                setTimeout(window.updateUserNameDisplay, 1000);
+            } else {
+                console.warn('Função updateUserNameDisplay não encontrada, usando fallback');
+                
+                // Fallback: implementação básica para atualizar o nome do usuário
+                try {
+                    const userData = localStorage.getItem('user');
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        if (user && user.name) {
+                            // Atualizar todos os elementos com o ID userName
+                            document.querySelectorAll('#userName').forEach(el => {
+                                el.textContent = user.name;
+                            });
+                            
+                            // Atualizar a mensagem de boas-vindas principal
+                            const welcomeMessage = document.querySelector('.welcome-message h2');
+                            if (welcomeMessage) {
+                                welcomeMessage.innerHTML = `Olá, <span id="userName">${user.name}</span>!`;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao atualizar nome do usuário (fallback):', error);
+                }
+            }
+        });
+    </script>
+    
+    <!-- Script para garantir que o título da página seja mantido -->
+    <script>
+        // Garantir que o título seja mantido mesmo após a aplicação das traduções
+        setInterval(function() {
+            if (document.title !== "Ecoponto Inteligente - Monitorização em tempo real") {
+                console.log('Corrigindo título da página:', document.title, '→ Ecoponto Inteligente - Monitorização em tempo real');
+                document.title = "Ecoponto Inteligente - Monitorização em tempo real";
+            }
+            
+            // Corrigir o título na barra superior
+            const headerTitle = document.querySelector('.header-title h1');
+            if (headerTitle) {
+                // Verificar se o texto do título não contém "Ecoponto Inteligente"
+                const titleText = headerTitle.textContent.trim();
+                if (!titleText.includes('Ecoponto Inteligente')) {
+                    console.log('Corrigindo título na barra superior:', titleText, '→ Ecoponto Inteligente');
+                    
+                    // Manter o ícone e a classe
+                    const icon = headerTitle.querySelector('i');
+                    const subtitle = headerTitle.querySelector('.subtitle');
+                    
+                    // Limpar o conteúdo atual
+                    headerTitle.innerHTML = '';
+                    
+                    // Adicionar o ícone de volta
+                    if (icon) {
+                        headerTitle.appendChild(icon);
+                    } else {
+                        const newIcon = document.createElement('i');
+                        newIcon.className = 'fas fa-leaf';
+                        headerTitle.appendChild(newIcon);
+                    }
+                    
+                    // Adicionar o novo texto
+                    headerTitle.appendChild(document.createTextNode(' Ecoponto Inteligente '));
+                    
+                    // Adicionar o subtítulo de volta
+                    if (subtitle) {
+                        headerTitle.appendChild(subtitle);
+                    } else {
+                        const newSubtitle = document.createElement('span');
+                        newSubtitle.className = 'subtitle';
+                        newSubtitle.textContent = 'Monitorização em tempo real';
+                        headerTitle.appendChild(newSubtitle);
+                    }
+                }
+            }
+            
+            // Remover notificações de idioma alterado
+            const notifications = document.querySelectorAll('div[style*="position: fixed"]');
+            notifications.forEach(notification => {
+                if (notification.textContent.includes('Idioma alterado') || 
+                    notification.textContent.includes('日本語') ||
+                    notification.textContent.includes('Español') ||
+                    notification.textContent.includes('Deutsch') ||
+                    notification.textContent.includes('Français')) {
+                    notification.remove();
+                }
+            });
+        }, 1000); // Verificar a cada segundo
+    </script>
+    
+    <!-- Script para remover notificações de idioma alterado -->
+    <script>
+        // Função para remover notificações
+        function removeLanguageNotifications() {
+            // Remover notificações com fundo azul
+            const blueNotifications = Array.from(document.body.children).filter(el => {
+                if (el.nodeType === 1 && el.tagName === 'DIV') {
+                    const style = window.getComputedStyle(el);
+                    const bgColor = style.backgroundColor;
+                    const position = style.position;
+                    
+                    // Verificar se é uma div com fundo azul e posição fixa
+                    return (bgColor.includes('rgb(0, 102, 204)') || 
+                            bgColor.includes('#0066cc') || 
+                            bgColor.includes('blue')) && 
+                           position === 'fixed';
+                }
+                return false;
+            });
+            
+            // Remover as notificações encontradas
+            blueNotifications.forEach(notification => {
+                notification.remove();
+                console.log('Notificação de idioma removida');
+            });
+            
+            // Remover qualquer elemento que contenha texto sobre idioma alterado
+            document.querySelectorAll('div').forEach(div => {
+                if (div.textContent.includes('Idioma alterado para') || 
+                    div.textContent.includes('日本語') ||
+                    div.textContent.includes('idioma')) {
+                    div.style.display = 'none';
+                    console.log('Texto de notificação de idioma ocultado');
+                }
+            });
+            
+            // Remover especificamente a notificação azul que aparece na imagem
+            const blueFixedDivs = document.querySelectorAll('body > div');
+            blueFixedDivs.forEach(div => {
+                // Verificar se é a notificação azul
+                if (div.style.position === 'fixed' && 
+                    div.style.backgroundColor === 'rgb(0, 102, 204)' &&
+                    div.textContent.includes('Idioma alterado para')) {
+                    div.remove();
+                    console.log('Notificação azul específica removida');
+                }
+                
+                // Verificar por texto específico
+                if (div.textContent.trim() === 'Idioma alterado para 日本語' ||
+                    div.textContent.includes('Idioma alterado para')) {
+                    div.remove();
+                    console.log('Notificação com texto específico removida');
+                }
+            });
+        }
+        
+        // Executar imediatamente
+        removeLanguageNotifications();
+        
+        // E também periodicamente para pegar notificações que possam aparecer depois
+        setInterval(removeLanguageNotifications, 100);
+        
+        // Observar mudanças no DOM para remover notificações assim que aparecerem
+        const observer = new MutationObserver(mutations => {
+            removeLanguageNotifications();
+        });
+        
+        // Iniciar observação
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true 
+        });
+        
+        // Sobrescrever qualquer função que possa estar criando a notificação
+        window.showNotification = function() { return false; };
+        window.showToast = function() { return false; };
+        window.showAlert = function() { return false; };
+    </script>
+    
+    <!-- Script para garantir que os ícones dos cards de estatísticas sejam os corretos -->
+    <script>
+        // Garantir que os ícones dos cards de estatísticas sejam os corretos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se os cards de estatísticas existem
+            const statCards = document.querySelectorAll('.stat-card');
+            
+            if (statCards.length > 0) {
+                // Adicionar ícones corretos se não existirem
+                const titles = document.querySelectorAll('.stat-title');
+                
+                titles.forEach(title => {
+                    const card = title.closest('.stat-card');
+                    let icon = card.querySelector('i');
+                    
+                    // Se não existir ícone, criar um
+                    if (!icon) {
+                        icon = document.createElement('i');
+                        card.insertBefore(icon, card.firstChild);
+                    }
+                    
+                    // Definir o ícone correto com base no título
+                    if (title.textContent.includes('MÉDIA DE ENCHIMENTO')) {
+                        icon.className = 'fas fa-chart-pie';
+                        icon.style.color = '#007bff';
+                    } else if (title.textContent.includes('CONTENTOR MAIS CHEIO')) {
+                        icon.className = 'fas fa-arrow-trend-up';
+                        icon.style.color = '#007bff';
+                    } else if (title.textContent.includes('ÚLTIMA ATUALIZAÇÃO')) {
+                        icon.className = 'fas fa-clock-rotate-left';
+                        icon.style.color = '#007bff';
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Script para garantir que os textos de status estejam corretos -->
+    <script>
+        // Garantir que os textos de status estejam corretos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se os cards de estatísticas existem
+            const statCards = document.querySelectorAll('.stat-card');
+            
+            if (statCards.length > 0) {
+                // Adicionar textos de status corretos
+                const titles = document.querySelectorAll('.stat-title');
+                
+                titles.forEach(title => {
+                    const card = title.closest('.stat-card');
+                    const statValue = card.querySelector('.stat-value');
+                    
+                    // Verificar se já existe um elemento de status
+                    let statusText = card.querySelector('.status-text');
+                    
+                    // Se não existir, criar um
+                    if (!statusText) {
+                        statusText = document.createElement('div');
+                        statusText.className = 'status-text';
+                        
+                        // Inserir após o valor da estatística
+                        if (statValue && statValue.nextSibling) {
+                            card.insertBefore(statusText, statValue.nextSibling);
+                        } else {
+                            card.appendChild(statusText);
+                        }
+                    }
+                    
+                    // Definir o texto e ícone corretos com base no título
+                    if (title.textContent.includes('MÉDIA DE ENCHIMENTO')) {
+                        statusText.innerHTML = '<i class="fas fa-circle"></i> Em tempo real';
+                    } else if (title.textContent.includes('CONTENTOR MAIS CHEIO')) {
+                        statusText.innerHTML = '<i class="fas fa-chart-line"></i> Monitorização ativa';
+                    } else if (title.textContent.includes('ÚLTIMA ATUALIZAÇÃO')) {
+                        statusText.innerHTML = '<i class="fas fa-sync"></i> Atualização automática';
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Script para forçar alinhamento horizontal dos cards -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Forçar alinhamento horizontal dos cards
+            const statsContainer = document.querySelector('.stats-container');
+            if (statsContainer) {
+                statsContainer.style.display = 'flex';
+                statsContainer.style.flexDirection = 'row';
+                statsContainer.style.justifyContent = 'space-between';
+                statsContainer.style.flexWrap = 'nowrap';
+                statsContainer.style.width = '100%';
+                statsContainer.style.gap = '20px';
+                
+                // Aplicar estilos aos cards
+                const statCards = document.querySelectorAll('.stat-card');
+                statCards.forEach(card => {
+                    card.style.flex = '1';
+                    card.style.minWidth = '0';
+                    card.style.margin = '0';
+                    card.style.display = 'flex';
+                    card.style.flexDirection = 'column';
+                    card.style.alignItems = 'center';
+                    card.style.textAlign = 'center';
+                });
+                
+                // Verificar se os cards estão alinhados corretamente após um pequeno atraso
+                setTimeout(function() {
+                    // Se algum card não estiver visível na mesma linha, forçar novamente
+                    const containerRect = statsContainer.getBoundingClientRect();
+                    let needsAdjustment = false;
+                    
+                    statCards.forEach(card => {
+                        const cardRect = card.getBoundingClientRect();
+                        if (cardRect.top > containerRect.bottom || cardRect.bottom < containerRect.top) {
+                            needsAdjustment = true;
+                        }
+                    });
+                    
+                    if (needsAdjustment) {
+                        console.log('Ajustando cards que não estão alinhados corretamente');
+                        statsContainer.style.display = 'flex';
+                        statsContainer.style.flexDirection = 'row';
+                        statsContainer.style.justifyContent = 'space-between';
+                        statsContainer.style.flexWrap = 'nowrap';
+                        statsContainer.style.width = '100%';
+                        statsContainer.style.gap = '20px';
+                    }
+                }, 500);
+            }
         });
     </script>
 </body>

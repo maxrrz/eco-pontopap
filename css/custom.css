@@ -1,0 +1,67 @@
+/* Garantir que o conteúdo principal seja exibido */
+.container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 100vh;
+    z-index: 1;
+}
+
+.welcome-message,
+.stats-container,
+.ecoponto,
+.chart-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1;
+}
+
+/* Corrigir o seletor que pode estar ocultando conteúdo não intencional */
+body > div:not(.container):not(.menu-panel):not(.menu-overlay):not(.footer):not(.header):not(.login-panel):not(.welcome-message):not(.stats-container):not(.ecoponto):not(.chart-container):not(.ecoponto-info-message) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Ocultar notificação de idioma alterado */
+.language-notification {
+    display: none !important;
+}
+
+/* Estilo específico para ocultar a notificação azul que aparece na tela */
+body::before {
+    content: none !important;
+}
+
+/* Remover qualquer notificação flutuante */
+[class*="notification"],
+[class*="toast"],
+[class*="alert"],
+[id*="notification"],
+[id*="toast"],
+[id*="alert"] {
+    display: none !important;
+}
+
+/* Estilo específico para a notificação azul que aparece na imagem */
+body > div[style*="position: fixed"][style*="background"] {
+    display: none !important;
+}
+
+/* Remover qualquer elemento com texto de idioma alterado */
+div:has(> *:contains("Idioma alterado")),
+div:has(> *:contains("日本語")) {
+    display: none !important;
+}
+
+/* Remover qualquer notificação flutuante */
+.notification-container,
+.toast-container,
+.alert-container,
+[class*="notification-"],
+[class*="toast-"],
+[class*="alert-"] {
+    display: none !important;
+} 

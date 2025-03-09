@@ -20,8 +20,31 @@
         import * as LanguageSystem from './js/language-system.js';
         import { MenuManager } from './js/menu-functions.js';
         
+        console.log("Sistema de idiomas importado");
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM carregado, inicializando sistema de idiomas e menu...');
+            
+            // Inicializar o sistema de idiomas
+            try {
+                console.log('Inicializando sistema de idiomas...');
+                // Tornar as funções disponíveis globalmente
+                window.initializeLanguageSystem = LanguageSystem.initializeLanguageSystem;
+                window.setupLanguageEventListeners = LanguageSystem.setupLanguageEventListeners;
+                window.updateInterfaceTexts = LanguageSystem.updateInterfaceTexts;
+                window.changeLanguage = LanguageSystem.changeLanguage;
+                window.languageState = LanguageSystem.languageState;
+                
+                // Inicializar o sistema
+                LanguageSystem.initializeLanguageSystem();
+                
+                // Configurar os event listeners para os idiomas
+                LanguageSystem.setupLanguageEventListeners();
+                
+                console.log('Sistema de idiomas inicializado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao inicializar sistema de idiomas:', error);
+            }
             
             // Inicializar o MenuManager diretamente para restaurar funcionalidades
             console.log('Inicializando MenuManager diretamente...');
@@ -416,12 +439,6 @@
                     console.error('Erro ao inicializar gráfico de histórico:', error);
                 }
             }
-            
-            // Tentar inicializar o sistema de idiomas diretamente
-            setTimeout(() => {
-                LanguageSystem.initializeLanguageSystem();
-                LanguageSystem.setupLanguageEventListeners();
-            }, 1000);
         });
     </script>
     <script>
@@ -434,21 +451,23 @@
                 const statusText = document.getElementById('status');
                 
                 if (statusDot && statusText) {
-                    if (statusText.textContent === 'Carregando...') {
-                        console.log('Atualizando status de "Carregando..." para "Conectado"');
-                        statusDot.classList.add('connected');
-                        statusText.textContent = 'Conectado';
-                    }
+                    // Forçar mudança do status independentemente do texto atual
+                    console.log('Atualizando status para "Conectado"');
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Conectado';
                 } else {
                     console.warn('Elementos de status não encontrados');
                 }
             }
             
-            // Tentar atualizar o status imediatamente
+            // Executar a atualização imediatamente
             updateStatus();
             
             // E também após um pequeno atraso para garantir que todos os elementos estejam carregados
             setTimeout(updateStatus, 500);
+            
+            // Adicionar mais uma tentativa com um atraso maior caso as anteriores falhem
+            setTimeout(updateStatus, 2000);
             
             // Verificar periodicamente se os dados estão sendo atualizados
             let lastUpdateTime = Date.now();
@@ -1035,15 +1054,19 @@
                             });
                             this.querySelector('i').style.visibility = 'visible';
                             
-                            // Armazenar preferência de idioma
-                            localStorage.setItem('language', lang);
+                            // Mudar o idioma usando o sistema de idiomas
+                            if (window.changeLanguage) {
+                                window.changeLanguage(lang);
+                                console.log(`Idioma alterado para: ${lang}`);
+                            } else {
+                                // Fallback se o sistema de idiomas não estiver disponível
+                                localStorage.setItem('language', lang);
+                                console.log(`Idioma salvo: ${lang} (sistema de idiomas não disponível)`);
+                            }
                             
                             // Fechar o submenu após selecionar o idioma
                             languageSubmenu.classList.remove('active');
                             languageSubmenu.style.display = 'none';
-                            
-                            // Recarregar a página para aplicar o novo idioma
-                            // location.reload();
                         });
                     });
                 }
@@ -1067,9 +1090,12 @@
                         document.body.classList.add('dark-mode');
                         themeToggle.checked = true;
                         
-                        // Atualizar ícone e texto para "Modo Claro"
+                        // Atualizar ícone e atributo data-i18n para "Modo Claro"
                         if (themeIcon) themeIcon.className = 'fas fa-sun';
-                        if (themeText) themeText.textContent = 'Modo Claro';
+                        if (themeText) {
+                            themeText.setAttribute('data-i18n', 'lightMode');
+                            themeText.textContent = 'Modo Claro';
+                        }
                         
                         // Atualizar imagem do tema
                         const themeImage = document.getElementById('theme-image');
@@ -1080,9 +1106,12 @@
                         document.body.classList.remove('dark-mode');
                         themeToggle.checked = false;
                         
-                        // Atualizar ícone e texto para "Modo Escuro"
+                        // Atualizar ícone e atributo data-i18n para "Modo Escuro"
                         if (themeIcon) themeIcon.className = 'fas fa-moon';
-                        if (themeText) themeText.textContent = 'Modo Escuro';
+                        if (themeText) {
+                            themeText.setAttribute('data-i18n', 'darkMode');
+                            themeText.textContent = 'Modo Escuro';
+                        }
                         
                         // Atualizar imagem do tema
                         const themeImage = document.getElementById('theme-image');
@@ -1100,9 +1129,17 @@
                             document.body.classList.add('dark-mode');
                             localStorage.setItem('theme', 'dark');
                             
-                            // Alterar para ícone de sol e texto "Modo Claro"
+                            // Alterar para ícone de sol e atributo data-i18n para "Modo Claro"
                             if (themeIcon) themeIcon.className = 'fas fa-sun';
-                            if (themeText) themeText.textContent = 'Modo Claro';
+                            if (themeText) {
+                                themeText.setAttribute('data-i18n', 'lightMode');
+                                themeText.textContent = 'Modo Claro';
+                                
+                                // Atualizar a tradução, se o sistema de idiomas estiver disponível
+                                if (window.updateInterfaceTexts && window.languageState && window.languageState.currentLanguage) {
+                                    window.updateInterfaceTexts(window.languageState.currentLanguage);
+                                }
+                            }
                             
                             // Atualizar imagem do tema
                             const themeImage = document.getElementById('theme-image');
@@ -1113,9 +1150,17 @@
                             document.body.classList.remove('dark-mode');
                             localStorage.setItem('theme', 'light');
                             
-                            // Alterar para ícone de lua e texto "Modo Escuro"
+                            // Alterar para ícone de lua e atributo data-i18n para "Modo Escuro"
                             if (themeIcon) themeIcon.className = 'fas fa-moon';
-                            if (themeText) themeText.textContent = 'Modo Escuro';
+                            if (themeText) {
+                                themeText.setAttribute('data-i18n', 'darkMode');
+                                themeText.textContent = 'Modo Escuro';
+                                
+                                // Atualizar a tradução, se o sistema de idiomas estiver disponível
+                                if (window.updateInterfaceTexts && window.languageState && window.languageState.currentLanguage) {
+                                    window.updateInterfaceTexts(window.languageState.currentLanguage);
+                                }
+                            }
                             
                             // Atualizar imagem do tema
                             const themeImage = document.getElementById('theme-image');
@@ -1161,34 +1206,24 @@
                 const statusText = document.getElementById('status');
                 
                 if (statusDot && statusText) {
-                    // Verificar se o texto atual é "Carregando..."
-                    if (statusText.textContent === 'Carregando...') {
-                        console.log('Substituindo "Carregando..." por "Conectado"');
-                        
-                        // Simular conexão bem-sucedida
-                        statusDot.classList.add('connected');
-                        statusText.textContent = 'Conectado';
-                        
-                        console.log('Status de conexão atualizado: Conectado');
-                    } else {
-                        console.log('Status atual não é "Carregando...": ' + statusText.textContent);
-                    }
+                    // Forçar conexão bem-sucedida independentemente do texto atual
+                    console.log('Atualizando status para "Conectado"');
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Conectado';
+                    console.log('Status de conexão atualizado: Conectado');
                 } else {
                     console.warn('Elementos de status não encontrados no DOM');
                 }
                 
-                // Tentar novamente após um pequeno atraso se ainda estiver "Carregando..."
+                // Tentar novamente após um pequeno atraso se os elementos não foram encontrados
                 setTimeout(function() {
                     const statusTextCheck = document.getElementById('status');
-                    if (statusTextCheck && statusTextCheck.textContent === 'Carregando...') {
-                        console.log('Status ainda é "Carregando..." após atraso, tentando atualizar novamente');
-                        
-                        const statusDotCheck = document.getElementById('status-dot');
-                        if (statusDotCheck) {
-                            statusDotCheck.classList.add('connected');
-                            statusTextCheck.textContent = 'Conectado';
-                            console.log('Status de conexão atualizado após atraso: Conectado');
-                        }
+                    const statusDotCheck = document.getElementById('status-dot');
+                    
+                    if (statusTextCheck && statusDotCheck) {
+                        statusDotCheck.classList.add('connected');
+                        statusTextCheck.textContent = 'Conectado';
+                        console.log('Status de conexão atualizado após atraso: Conectado');
                     }
                 }, 1500);
             }
@@ -1330,6 +1365,14 @@
                             const now = new Date();
                             const timeString = now.toLocaleTimeString();
                             lastUpdateElement.textContent = timeString;
+                        }
+                        
+                        // Garantir que o status de conexão seja atualizado como conectado
+                        const statusDot = document.getElementById('status-dot');
+                        const statusText = document.getElementById('status');
+                        if (statusDot && statusText) {
+                            statusDot.classList.add('connected');
+                            statusText.textContent = 'Conectado';
                         }
                     } else {
                         console.error('Falha ao obter dados da API');

@@ -76,6 +76,8 @@ export const translations = {
         languages: 'Idiomas',
         menu: 'Menu',
         user: 'Utilizador',
+        darkMode: 'Modo Escuro',
+        lightMode: 'Modo Claro',
         
         // Ecopontos
         ecopointTypes: {
@@ -134,6 +136,11 @@ export const translations = {
         ecopointManagement: 'Ecopoint Management',
         userManagement: 'User Management',
         settings: 'Settings',
+        languages: 'Languages',
+        menu: 'Menu',
+        user: 'User',
+        darkMode: 'Dark Mode',
+        lightMode: 'Light Mode',
         
         // Ecopoints
         ecopointTypes: {
@@ -202,6 +209,8 @@ export const translations = {
         languages: 'Idiomas',
         menu: 'Menú',
         user: 'Usuario',
+        darkMode: 'Modo Oscuro',
+        lightMode: 'Modo Claro',
         
         // Ecopuntos
         ecopointTypes: {
@@ -265,6 +274,8 @@ export const translations = {
         languages: 'Sprachen',
         menu: 'Menü',
         user: 'Benutzer',
+        darkMode: 'Dunkler Modus',
+        lightMode: 'Hellmodus',
         
         // Ecopunkte
         ecopointTypes: {
@@ -328,6 +339,8 @@ export const translations = {
         languages: 'Langues',
         menu: 'Menu',
         user: 'Utilisateur',
+        darkMode: 'Mode Sombre',
+        lightMode: 'Mode Clair',
         
         // Éco-points
         ecopointTypes: {
@@ -391,6 +404,8 @@ export const translations = {
         languages: '言語',
         menu: 'メニュー',
         user: 'ユーザー',
+        darkMode: 'ダークモード',
+        lightMode: 'ライトモード',
         
         // エコポイント
         ecopointTypes: {

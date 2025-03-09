@@ -61,9 +61,9 @@ export const translations = {
         login: 'Entrar',
         logout: 'Sair',
         email: 'Email',
-        password: 'Senha',
-        forgotPassword: 'Esqueceu a senha?',
-        rememberMe: 'Lembrar-me',
+        password: 'Password',
+        forgotPassword: 'Esqueceste-te da palavra-passe?',
+        rememberMe: 'Guardar sessão',
         createAccount: 'Criar conta',
         
         // Menu

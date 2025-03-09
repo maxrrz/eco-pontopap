@@ -400,6 +400,16 @@ html {
         -webkit-overflow-scrolling: touch;
         width: 100%;
         overflow-x: hidden;
+        overflow-y: auto !important;
+        height: auto;
+        min-height: 100%;
+        position: relative;
+    }
+    
+    html {
+        overflow-y: auto !important;
+        height: auto;
+        position: relative;
     }
     
     .login-container {
@@ -410,21 +420,35 @@ html {
         border-radius: 0;
         height: auto;
         width: 100%;
+        overflow: visible;
     }
     
     .login-content {
         flex-direction: column;
         height: auto;
         width: 100%;
+        overflow: visible;
+    }
+    
+    .login-panel {
+        min-height: 100vh;
+        height: auto;
+        padding: 0;
+        display: block;
+        width: 100%;
+        overflow-y: auto;
+        position: relative;
     }
     
     .login-side, 
     .register-side {
         width: 100%;
-        padding: 16px;
+        padding: 24px 20px;
         box-sizing: border-box;
         text-align: center;
         background-color: #ffffff;
+        height: auto;
+        overflow: visible;
     }
 
     .login-side h2,
@@ -432,7 +456,7 @@ html {
         font-size: 24px;
         padding: 0;
         word-break: break-word;
-        margin-bottom: 20px;
+        margin-bottom: 28px;
         width: 100%;
         text-align: center;
     }
@@ -440,7 +464,7 @@ html {
     .section-divider {
         width: 100%;
         height: 1px;
-        margin: 10px 0;
+        margin: 20px 0;
     }
     
     .login-panel {
@@ -454,8 +478,8 @@ html {
     .form-options {
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 15px;
+        gap: 15px;
+        margin-bottom: 24px;
         width: 100%;
         text-align: center;
     }
@@ -463,15 +487,22 @@ html {
     .forgot-password {
         margin-left: 0;
         text-align: center;
+        font-size: 14px;
+        padding: 5px;
     }
     
     .remember-me {
         justify-content: center;
+        padding: 5px 0;
+    }
+
+    .remember-me label {
+        font-size: 14px;
     }
 
     /* Correção específica para lista de benefícios */
     .benefits-list {
-        margin: 16px 0;
+        margin: 24px 0;
         padding: 0;
         width: 100%;
         box-sizing: border-box;
@@ -480,7 +511,7 @@ html {
     
     .benefit-item {
         display: flex;
-        margin-bottom: 12px;
+        margin-bottom: 18px;
         padding: 0 0 0 5px;
         box-sizing: border-box;
         width: 100%;
@@ -493,7 +524,7 @@ html {
         width: 20px;
         height: 20px;
         font-size: 16px;
-        margin-right: 12px;
+        margin-right: 16px;
         flex-shrink: 0;
     }
 
@@ -508,42 +539,54 @@ html {
 
     .register-side .register-subtitle {
         font-size: 16px;
-        margin-bottom: 3px;
+        margin-bottom: 8px;
         text-align: center;
         width: 100%;
     }
 
     .create-account-btn,
     .login-btn {
-        height: 44px;
-        font-size: 14px;
+        height: 48px;
+        font-size: 15px;
         width: 100%;
         max-width: 100%;
         text-align: center;
+        margin-top: 10px;
     }
     
     .google-btn {
-        font-size: 13px;
-        height: 40px;
+        font-size: 14px;
+        height: 44px;
         width: 100%;
         text-align: center;
+        margin-bottom: 20px;
     }
     
     .login-form {
-        margin-top: 5px;
+        margin-top: 10px;
         width: 100%;
         max-width: 100%;
     }
     
     .form-group {
-        margin-bottom: 12px;
+        margin-bottom: 18px;
         width: 100%;
     }
     
     .form-group input {
-        height: 40px;
+        height: 44px;
         width: 100%;
         max-width: 100%;
+        font-size: 15px;
+    }
+    
+    .login-divider {
+        margin: 25px 0;
+    }
+    
+    .login-divider span {
+        font-size: 15px;
+        padding: 0 15px;
     }
 }
 

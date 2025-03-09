@@ -265,160 +265,165 @@ export class MenuManager {
 
     // Mostrar notificações
     showNotifications() {
-        console.log('Mostrando notificações');
+        console.log('Mostrando painel de notificações');
         
-        // Criar e mostrar o painel de notificações
-        const notificationsPanel = document.createElement('div');
-        notificationsPanel.className = 'notifications-panel';
-        
-        // Cabeçalho do painel
-        const header = document.createElement('div');
-        header.className = 'notifications-header';
-        header.innerHTML = `
-            <h3>Notificações</h3>
-            <button class="close-notifications">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        
-        // Lista de notificações
-        const notificationsList = document.createElement('div');
-        notificationsList.className = 'notifications-list';
-        
-        if (this.notifications.length === 0) {
-            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
-        } else {
-            // Ordenar notificações por data (mais recentes primeiro)
-            const sortedNotifications = [...this.notifications].sort((a, b) => 
-                new Date(b.timestamp) - new Date(a.timestamp)
-            );
-            
-            sortedNotifications.forEach(notification => {
-                const notificationItem = document.createElement('div');
-                notificationItem.className = `notification-item ${notification.read ? 'read' : 'unread'} ${notification.type}`;
-                
-                const date = new Date(notification.timestamp);
-                const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-                
-                notificationItem.innerHTML = `
-                    <div class="notification-icon">
-                        <i class="fas ${this.getNotificationIcon(notification.type)}"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">${notification.title}</div>
-                        <div class="notification-message">${notification.message}</div>
-                        <div class="notification-time">${formattedDate}</div>
-                    </div>
-                    <div class="notification-actions">
-                        <button class="mark-read" data-id="${notification.id}">
-                            <i class="fas ${notification.read ? 'fa-envelope-open' : 'fa-envelope'}"></i>
-                        </button>
-                        <button class="delete-notification" data-id="${notification.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                
-                notificationsList.appendChild(notificationItem);
-            });
+        // Verificar permissões
+        if (!this.permissions.canViewNotifications) {
+            this.showNotification('Você não tem permissão para acessar esta função.', 'error');
+            return;
         }
         
-        // Rodapé do painel
-        const footer = document.createElement('div');
-        footer.className = 'notifications-footer';
-        footer.innerHTML = `
-            <button class="mark-all-read">Marcar todas como lidas</button>
-            <button class="clear-all">Limpar todas</button>
-        `;
-        
-        // Montar o painel
-        notificationsPanel.appendChild(header);
-        notificationsPanel.appendChild(notificationsList);
-        notificationsPanel.appendChild(footer);
-        
-        // Adicionar ao corpo do documento
-        document.body.appendChild(notificationsPanel);
-        
-        // Adicionar manipuladores de eventos
-        const closeButton = notificationsPanel.querySelector('.close-notifications');
-        closeButton.addEventListener('click', () => {
-            notificationsPanel.remove();
-        });
-        
-        const markReadButtons = notificationsPanel.querySelectorAll('.mark-read');
-        markReadButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const id = parseInt(button.getAttribute('data-id'));
-                this.markNotificationAsRead(id);
-                this.updateNotificationBadge();
-                
-                // Atualizar ícone
-                const icon = button.querySelector('i');
-                icon.classList.remove('fa-envelope');
-                icon.classList.add('fa-envelope-open');
-                
-                // Atualizar classe do item
-                const notificationItem = button.closest('.notification-item');
-                notificationItem.classList.remove('unread');
-                notificationItem.classList.add('read');
-            });
-        });
-        
-        const deleteButtons = notificationsPanel.querySelectorAll('.delete-notification');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const id = parseInt(button.getAttribute('data-id'));
-                this.deleteNotification(id);
-                
-                // Remover item da lista
-                const notificationItem = button.closest('.notification-item');
-                notificationItem.remove();
-                
-                // Atualizar badge
-                this.updateNotificationBadge();
-                
-                // Verificar se a lista está vazia
-                if (this.notifications.length === 0) {
-                    notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
-                }
-            });
-        });
-        
-        const markAllReadButton = notificationsPanel.querySelector('.mark-all-read');
-        markAllReadButton.addEventListener('click', () => {
-            this.markAllNotificationsAsRead();
+        try {
+            // Criar painel de notificações
+            const notificationsPanel = document.createElement('div');
+            notificationsPanel.className = 'notifications-panel';
             
-            // Atualizar UI
-            const unreadItems = notificationsPanel.querySelectorAll('.notification-item.unread');
-            unreadItems.forEach(item => {
-                item.classList.remove('unread');
-                item.classList.add('read');
-                
-                const icon = item.querySelector('.mark-read i');
-                if (icon) {
-                    icon.classList.remove('fa-envelope');
-                    icon.classList.add('fa-envelope-open');
-                }
-            });
+            // Criar cabeçalho
+            const header = document.createElement('div');
+            header.className = 'notifications-header';
+            header.innerHTML = `
+                <h3>Notificações</h3>
+                <button class="close-notifications">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
             
-            this.updateNotificationBadge();
-        });
-        
-        const clearAllButton = notificationsPanel.querySelector('.clear-all');
-        clearAllButton.addEventListener('click', () => {
-            this.clearAllNotifications();
-            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
-            this.updateNotificationBadge();
-        });
-        
-        // Marcar notificações como lidas quando visualizadas
-        this.notifications.forEach(notification => {
-            if (!notification.read) {
-                notification.read = true;
+            // Criar lista de notificações
+            const notificationsList = document.createElement('div');
+            notificationsList.className = 'notifications-list';
+            
+            if (this.notifications.length === 0) {
+                notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+            } else {
+                // Ordenar notificações por data (mais recentes primeiro)
+                const sortedNotifications = [...this.notifications].sort((a, b) =>
+                    new Date(b.timestamp) - new Date(a.timestamp)
+                );
+                
+                // Adicionar cada notificação à lista
+                sortedNotifications.forEach(notification => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = `notification-item ${notification.read ? 'read' : 'unread'}`;
+                    notificationItem.setAttribute('data-id', notification.id);
+                    
+                    const iconClass = this.getNotificationIcon(notification.type);
+                    
+                    notificationItem.innerHTML = `
+                        <div class="notification-icon ${notification.type}">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">${notification.title}</div>
+                            <div class="notification-message">${notification.message}</div>
+                            <div class="notification-date">${notification.timestamp}</div>
+                        </div>
+                        <div class="notification-actions">
+                            ${!notification.read ? '<button class="mark-read" title="Marcar como lida"><i class="fas fa-check"></i></button>' : ''}
+                            <button class="delete-notification" title="Excluir"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    
+                    notificationsList.appendChild(notificationItem);
+                });
             }
-        });
-        
-        this.updateNotificationBadge();
+            
+            // Criar rodapé
+            const footer = document.createElement('div');
+            footer.className = 'notifications-footer';
+            footer.innerHTML = `
+                <button class="mark-all-read">Marcar todas como lidas</button>
+                <button class="clear-all">Limpar todas</button>
+            `;
+            
+            // Montar o painel
+            notificationsPanel.appendChild(header);
+            notificationsPanel.appendChild(notificationsList);
+            notificationsPanel.appendChild(footer);
+            
+            // Adicionar o painel ao DOM
+            document.body.appendChild(notificationsPanel);
+            
+            // Adicionar event listener para fechar o painel
+            const closeButton = notificationsPanel.querySelector('.close-notifications');
+            closeButton.addEventListener('click', () => {
+                notificationsPanel.remove();
+            });
+            
+            // Adicionar event listeners para marcar como lida
+            const markReadButtons = notificationsPanel.querySelectorAll('.mark-read');
+            markReadButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const notificationItem = button.closest('.notification-item');
+                    const id = parseInt(notificationItem.getAttribute('data-id'));
+                    
+                    this.markNotificationAsRead(id);
+                    
+                    // Atualizar UI
+                    notificationItem.classList.remove('unread');
+                    notificationItem.classList.add('read');
+                    button.remove();
+                    
+                    this.updateNotificationBadge();
+                });
+            });
+            
+            // Adicionar event listeners para excluir
+            const deleteButtons = notificationsPanel.querySelectorAll('.delete-notification');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const notificationItem = button.closest('.notification-item');
+                    const id = parseInt(notificationItem.getAttribute('data-id'));
+                    
+                    this.deleteNotification(id);
+                    
+                    // Atualizar UI
+                    notificationItem.classList.add('deleting');
+                    setTimeout(() => {
+                        notificationItem.remove();
+                        if (this.notifications.length === 0) {
+                            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                        }
+                        this.updateNotificationBadge();
+                    }, 300);
+                });
+            });
+            
+            // Adicionar event listener para marcar todas como lidas
+            const markAllReadButton = notificationsPanel.querySelector('.mark-all-read');
+            markAllReadButton.addEventListener('click', () => {
+                this.markAllNotificationsAsRead();
+                
+                // Atualizar UI
+                const unreadItems = notificationsPanel.querySelectorAll('.notification-item.unread');
+                unreadItems.forEach(item => {
+                    item.classList.remove('unread');
+                    item.classList.add('read');
+                    const markReadButton = item.querySelector('.mark-read');
+                    if (markReadButton) {
+                        markReadButton.remove();
+                    }
+                });
+                
+                this.updateNotificationBadge();
+            });
+            
+            // Adicionar event listener para limpar todas
+            const clearAllButton = notificationsPanel.querySelector('.clear-all');
+            clearAllButton.addEventListener('click', () => {
+                this.clearAllNotifications();
+                notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                this.updateNotificationBadge();
+            });
+            
+            // Se estamos aqui, a função foi bem-sucedida
+            return true;
+        } catch (error) {
+            console.error('Erro ao mostrar notificações:', error);
+            this.showNotification('Ocorreu um erro ao mostrar as notificações. Por favor, tente novamente.', 'error');
+            return false;
+        }
     }
 
     // Obter ícone para tipo de notificação

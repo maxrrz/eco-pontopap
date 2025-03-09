@@ -14,6 +14,416 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        // Importar o sistema de idiomas diretamente para inicialização e depuração
+        import * as LanguageSystem from './js/language-system.js';
+        import { MenuManager } from './js/menu-functions.js';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado, inicializando sistema de idiomas e menu...');
+            
+            // Inicializar o MenuManager diretamente para restaurar funcionalidades
+            console.log('Inicializando MenuManager diretamente...');
+            const menuManager = new MenuManager();
+            
+            console.log('Chamando menuManager.init()...');
+            menuManager.init();
+            
+            // Verificar se o menuManager foi inicializado corretamente
+            console.log('MenuManager inicializado:', menuManager);
+            console.log('Notificações disponíveis:', menuManager.notifications);
+            
+            // Adicionar algumas notificações de demonstração, caso o MenuManager não tenha nenhuma
+            if (!menuManager.notifications || menuManager.notifications.length === 0) {
+                console.log('Adicionando notificações de demonstração...');
+                // Adicionar notificações de exemplo
+                menuManager.notifications = [
+                    {
+                        id: 1,
+                        title: 'Ecoponto Amarelo',
+                        message: 'O Ecoponto Amarelo (Plástico/Metal) atingiu 85% da capacidade.',
+                        timestamp: new Date().toLocaleString(),
+                        read: false,
+                        type: 'warning'
+                    },
+                    {
+                        id: 2,
+                        title: 'Nova Funcionalidade',
+                        message: 'O sistema multilíngue foi atualizado com novos idiomas: Alemão, Francês e Japonês.',
+                        timestamp: new Date().toLocaleString(),
+                        read: false,
+                        type: 'info'
+                    },
+                    {
+                        id: 3,
+                        title: 'Manutenção Programada',
+                        message: 'Haverá manutenção programada no sistema no próximo domingo.',
+                        timestamp: new Date().toLocaleString(),
+                        read: true,
+                        type: 'info'
+                    }
+                ];
+                
+                // Criar ou substituir a função updateNotificationBadge
+                menuManager.updateNotificationBadge = function() {
+                    try {
+                        // Contagem de notificações não lidas
+                        const unreadCount = this.notifications.filter(n => !n.read).length;
+                        console.log(`Atualizando badge: ${unreadCount} notificações não lidas`);
+                        
+                        // Encontrar o elemento do botão de notificações
+                        const notificationButton = document.querySelector('[data-menu-id="notifications"]');
+                        if (!notificationButton) return;
+                        
+                        // Verificar se já existe um badge
+                        let badge = notificationButton.querySelector('.notification-badge');
+                        
+                        if (unreadCount > 0) {
+                            // Criar badge se não existir
+                            if (!badge) {
+                                badge = document.createElement('span');
+                                badge.className = 'notification-badge';
+                                notificationButton.appendChild(badge);
+                            }
+                            
+                            // Atualizar contagem
+                            badge.textContent = unreadCount;
+                            badge.style.display = 'flex';
+                        } else if (badge) {
+                            // Esconder badge se não houver notificações não lidas
+                            badge.style.display = 'none';
+                        }
+                    } catch (error) {
+                        console.error('Erro ao atualizar badge de notificações:', error);
+                    }
+                };
+                
+                // Atualizar o badge de notificações
+                menuManager.updateNotificationBadge();
+            }
+            
+            // Tornar o menuManager global para permitir que outras partes do código o acessem
+            console.log('Tornando menuManager global...');
+            window.menuManager = menuManager;
+            
+            // Configurar evento para o botão de notificações
+            const notificationsButton = document.querySelector('[data-menu-id="notifications"]');
+            if (notificationsButton) {
+                notificationsButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Implementar nossa própria versão da função showNotifications
+                    console.log('Botão de notificações clicado. Exibindo notificações...');
+                    
+                    try {
+                        // Verificar se o menuManager tem notificações
+                        if (!menuManager.notifications || !Array.isArray(menuManager.notifications)) {
+                            console.error('menuManager.notifications não é um array válido');
+                            return;
+                        }
+                        
+                        // Remover painel de notificações anterior se existir
+                        let existingPanel = document.querySelector('.notifications-panel');
+                        if (existingPanel) {
+                            existingPanel.remove();
+                        }
+                        
+                        // Criar painel de notificações
+                        const notificationsPanel = document.createElement('div');
+                        notificationsPanel.className = 'notifications-panel';
+                        
+                        // Criar cabeçalho
+                        const header = document.createElement('div');
+                        header.className = 'notifications-header';
+                        header.innerHTML = `
+                            <h3>Notificações</h3>
+                            <button class="close-notifications">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        
+                        // Criar lista de notificações
+                        const notificationsList = document.createElement('div');
+                        notificationsList.className = 'notifications-list';
+                        
+                        if (menuManager.notifications.length === 0) {
+                            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                        } else {
+                            // Ordenar notificações por data (mais recentes primeiro)
+                            const sortedNotifications = [...menuManager.notifications].sort((a, b) => 
+                                new Date(b.timestamp) - new Date(a.timestamp)
+                            );
+                            
+                            // Adicionar cada notificação à lista
+                            sortedNotifications.forEach(notification => {
+                                const notificationItem = document.createElement('div');
+                                notificationItem.className = `notification-item ${notification.read ? 'read' : 'unread'} ${notification.type || ''}`;
+                                notificationItem.setAttribute('data-id', notification.id);
+                                
+                                // Determinar o ícone com base no tipo
+                                let iconClass = 'fa-bell';
+                                if (notification.type === 'warning') {
+                                    iconClass = 'fa-exclamation-triangle';
+                                } else if (notification.type === 'error') {
+                                    iconClass = 'fa-times-circle';
+                                } else if (notification.type === 'success') {
+                                    iconClass = 'fa-check-circle';
+                                } else if (notification.type === 'info') {
+                                    iconClass = 'fa-info-circle';
+                                }
+                                
+                                notificationItem.innerHTML = `
+                                    <div class="notification-icon">
+                                        <i class="fas ${iconClass}"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">${notification.title}</div>
+                                        <div class="notification-message">${notification.message}</div>
+                                        <div class="notification-date">${notification.timestamp}</div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        ${!notification.read ? 
+                                            '<button class="mark-read" title="Marcar como lida"><i class="fas fa-check"></i></button>' 
+                                            : ''}
+                                        <button class="delete-notification" title="Excluir"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                `;
+                                
+                                notificationsList.appendChild(notificationItem);
+                            });
+                        }
+                        
+                        // Criar rodapé
+                        const footer = document.createElement('div');
+                        footer.className = 'notifications-footer';
+                        footer.innerHTML = `
+                            <button class="mark-all-read">Marcar todas como lidas</button>
+                            <button class="clear-all">Limpar todas</button>
+                        `;
+                        
+                        // Montar o painel
+                        notificationsPanel.appendChild(header);
+                        notificationsPanel.appendChild(notificationsList);
+                        notificationsPanel.appendChild(footer);
+                        
+                        // Adicionar o painel ao DOM
+                        document.body.appendChild(notificationsPanel);
+                        
+                        // Adicionar event listener para fechar o painel
+                        const closeButton = notificationsPanel.querySelector('.close-notifications');
+                        closeButton.addEventListener('click', () => {
+                            notificationsPanel.remove();
+                        });
+                        
+                        // Adicionar event listeners para marcar como lida
+                        const markReadButtons = notificationsPanel.querySelectorAll('.mark-read');
+                        markReadButtons.forEach(button => {
+                            button.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const notificationItem = button.closest('.notification-item');
+                                const id = parseInt(notificationItem.getAttribute('data-id'));
+                                
+                                // Marcar como lida
+                                const notification = menuManager.notifications.find(n => n.id === id);
+                                if (notification) {
+                                    notification.read = true;
+                                }
+                                
+                                // Atualizar UI
+                                notificationItem.classList.remove('unread');
+                                notificationItem.classList.add('read');
+                                button.remove();
+                                
+                                // Atualizar o badge
+                                if (typeof menuManager.updateNotificationBadge === 'function') {
+                                    menuManager.updateNotificationBadge();
+                                }
+                            });
+                        });
+                        
+                        // Adicionar event listeners para excluir
+                        const deleteButtons = notificationsPanel.querySelectorAll('.delete-notification');
+                        deleteButtons.forEach(button => {
+                            button.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const notificationItem = button.closest('.notification-item');
+                                const id = parseInt(notificationItem.getAttribute('data-id'));
+                                
+                                // Remover a notificação do array
+                                menuManager.notifications = menuManager.notifications.filter(n => n.id !== id);
+                                
+                                // Atualizar UI
+                                notificationItem.classList.add('deleting');
+                                setTimeout(() => {
+                                    notificationItem.remove();
+                                    if (menuManager.notifications.length === 0) {
+                                        notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                                    }
+                                    
+                                    // Atualizar o badge
+                                    if (typeof menuManager.updateNotificationBadge === 'function') {
+                                        menuManager.updateNotificationBadge();
+                                    }
+                                }, 300);
+                            });
+                        });
+                        
+                        // Adicionar event listener para marcar todas como lidas
+                        const markAllReadButton = notificationsPanel.querySelector('.mark-all-read');
+                        markAllReadButton.addEventListener('click', () => {
+                            // Marcar todas as notificações como lidas
+                            menuManager.notifications.forEach(notification => {
+                                notification.read = true;
+                            });
+                            
+                            // Atualizar UI
+                            const unreadItems = notificationsPanel.querySelectorAll('.notification-item.unread');
+                            unreadItems.forEach(item => {
+                                item.classList.remove('unread');
+                                item.classList.add('read');
+                                const markReadButton = item.querySelector('.mark-read');
+                                if (markReadButton) {
+                                    markReadButton.remove();
+                                }
+                            });
+                            
+                            // Atualizar o badge
+                            if (typeof menuManager.updateNotificationBadge === 'function') {
+                                menuManager.updateNotificationBadge();
+                            }
+                        });
+                        
+                        // Adicionar event listener para limpar todas
+                        const clearAllButton = notificationsPanel.querySelector('.clear-all');
+                        clearAllButton.addEventListener('click', () => {
+                            // Limpar todas as notificações
+                            menuManager.notifications = [];
+                            
+                            // Atualizar UI
+                            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                            
+                            // Atualizar o badge
+                            if (typeof menuManager.updateNotificationBadge === 'function') {
+                                menuManager.updateNotificationBadge();
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Erro ao mostrar notificações:', error);
+                    }
+                });
+            }
+            
+            // Configurar evento para o botão de gráficos
+            const chartsButton = document.getElementById('charts-menu-button');
+            if (chartsButton) {
+                chartsButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Evitar o redirecionamento automático e mostrar os gráficos na página atual
+                    // Focar na seção de gráficos existente
+                    const chartContainer = document.querySelector('.chart-container');
+                    if (chartContainer) {
+                        // Fechar o menu
+                        const menuPanel = document.querySelector('.menu-panel');
+                        const menuOverlay = document.querySelector('.menu-overlay');
+                        if (menuPanel) menuPanel.classList.remove('active');
+                        if (menuOverlay) menuOverlay.classList.remove('active');
+                        
+                        // Rolar suavemente para a seção de gráficos
+                        chartContainer.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+            
+            // Inicializar o gráfico de histórico, se existir
+            const historyChartCanvas = document.getElementById('historyChart');
+            if (historyChartCanvas && typeof Chart !== 'undefined') {
+                console.log('Inicializando gráfico de histórico...');
+                
+                try {
+                    // Configuração básica do gráfico
+                    const ctx = historyChartCanvas.getContext('2d');
+                    const chartData = {
+                        labels: ['Agora', '-1h', '-2h', '-3h', '-4h', '-5h', '-6h', '-7h', '-8h', '-9h'],
+                        datasets: [
+                            {
+                                label: 'Plástico/Metal',
+                                data: [25, 30, 35, 40, 38, 34, 28, 25, 27, 30],
+                                borderColor: '#FFD700',
+                                backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Vidro',
+                                data: [15, 18, 20, 22, 25, 28, 32, 30, 28, 25],
+                                borderColor: '#32CD32',
+                                backgroundColor: 'rgba(50, 205, 50, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Papel/Cartão',
+                                data: [40, 38, 35, 30, 32, 35, 38, 42, 45, 48],
+                                borderColor: '#1E90FF',
+                                backgroundColor: 'rgba(30, 144, 255, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.3
+                            }
+                        ]
+                    };
+                    
+                    const chartOptions = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Nível de Enchimento (%)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tempo'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        }
+                    };
+                    
+                    // Criar o gráfico
+                    window.historyChart = new Chart(ctx, {
+                        type: 'line',
+                        data: chartData,
+                        options: chartOptions
+                    });
+                    
+                    console.log('Gráfico de histórico inicializado com sucesso!');
+                } catch (error) {
+                    console.error('Erro ao inicializar gráfico de histórico:', error);
+                }
+            }
+            
+            // Tentar inicializar o sistema de idiomas diretamente
+            setTimeout(() => {
+                LanguageSystem.initializeLanguageSystem();
+                LanguageSystem.setupLanguageEventListeners();
+            }, 1000);
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOMContentLoaded: Inicializando script de atualização de status');
@@ -94,21 +504,21 @@
         <div class="header">
             <div class="header-content">
                 <div class="header-title">
-                    <h1 id="title">
+                    <h1 id="title" data-i18n="title">
                         <i class="fas fa-leaf"></i>
                         EcoPonto
-                        <span class="subtitle">Monitorização Inteligente</span>
+                        <span class="subtitle" data-i18n="subtitle">Monitorização Inteligente</span>
                     </h1>
                 </div>
                 <div class="header-info">
                     <div id="userInfo" class="user-info">
                         <span>Olá, <span id="userName">[Nome do Usuário]</span>!</span>
-                        <button id="logoutButton" class="logout-btn">Sair</button>
+                        <button id="logoutButton" class="logout-btn" data-i18n="logout">Sair</button>
                     </div>
                     <div class="status-indicator">
                         <div class="status-dot" id="status-dot"></div>
                         <i class="fas fa-signal"></i>
-                        <span id="status">Carregando...</span>
+                        <span id="status" data-i18n="status">Carregando...</span>
                     </div>
                     <button class="menu-button" id="menu-button">
                         <span></span>
@@ -125,10 +535,10 @@
                 <div class="login-content">
                     <!-- Lado esquerdo - Login -->
                     <div class="login-side">
-                        <h2>Entra na tua conta EcoPonto!</h2>
+                        <h2 data-i18n="loginTitle">Entra na tua conta EcoPonto!</h2>
                         
                         <div class="login-options">
-                            <button id="googleSignInButton" class="google-btn">
+                            <button id="googleSignInButton" class="google-btn" data-btn-i18n="googleLogin">
                                 <i class="fab fa-google"></i>
                                 Entrar com o Google
                             </button>
@@ -139,11 +549,11 @@
                             
                             <form class="login-form" id="loginForm">
                                 <div class="form-group">
-                                    <input type="email" id="loginEmail" placeholder="Email" required>
+                                    <input type="email" id="loginEmail" placeholder="Email" data-placeholder-i18n="email" required>
                                 </div>
                                 <div class="form-group">
                                     <div class="password-input-group">
-                                        <input type="password" id="loginPassword" placeholder="Password" required>
+                                        <input type="password" id="loginPassword" placeholder="Password" data-placeholder-i18n="password" required>
                                         <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)">
                                             <i class="fas fa-eye"></i>
                                         </button>
@@ -152,29 +562,37 @@
                                 <div class="form-options">
                                     <div class="remember-me">
                                         <input type="checkbox" id="rememberMe">
-                                        <label for="rememberMe">Guardar sessão</label>
+                                        <label for="rememberMe" data-i18n="rememberMe">Guardar sessão</label>
                                     </div>
-                                    <a href="#" class="forgot-password">Esqueceste-te da palavra-passe?</a>
+                                    <a href="#" class="forgot-password" data-i18n="forgotPassword">Esqueceste-te da palavra-passe?</a>
                                 </div>
-                                <button type="submit" class="login-btn">INICIAR SESSÃO</button>
+                                <button type="submit" class="login-btn" data-i18n="loginButton">INICIAR SESSÃO</button>
                             </form>
                         </div>
                     </div>
                     
                     <!-- Lado direito - Registro -->
                     <div class="register-side">
-                        <h2>Ainda não tens conta?</h2>
-                        <h3>Regista-te agora!</h3>
-                        
-                        <p class="register-benefits">Fácil e Rápido!</p>
+                        <h2 data-i18n="registerTitle">Ainda não tens conta?</h2>
+                        <p class="register-subtitle" data-i18n="registerSubtitle1">Regista-te agora!</p>
+                        <p class="register-subtitle" data-i18n="registerSubtitle2">Fácil e Rápido!</p>
                         
                         <ul class="benefits-list">
-                            <li><i class="fas fa-check"></i> Acompanha os níveis de enchimento em tempo real</li>
-                            <li><i class="fas fa-check"></i> Recebe notificações quando os ecopontos estiverem quase cheios</li>
-                            <li><i class="fas fa-check"></i> Acede a estatísticas e histórico de recolhas</li>
+                            <li class="benefit-item">
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="benefit1">Acompanha os níveis de enchimento em tempo real</span>
+                            </li>
+                            <li class="benefit-item">
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="benefit2">Recebe notificações quando os ecopontos estiverem quase cheios</span>
+                            </li>
+                            <li class="benefit-item">
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="benefit3">Acede a estatísticas e histórico de recolhas</span>
+                            </li>
                         </ul>
                         
-                        <button id="showRegister" class="create-account-btn">CRIAR CONTA</button>
+                        <button id="showRegister" class="create-account-btn" data-i18n="createAccount">CRIAR CONTA</button>
                     </div>
                 </div>
             </div>
@@ -183,7 +601,7 @@
         <div class="menu-overlay"></div>
         <div class="menu-panel">
             <div class="menu-header">
-                <h3>Menu</h3>
+                <h3 data-i18n="menu">Menu</h3>
                 <button class="menu-close">
                     <i class="fas fa-times"></i>
                 </button>
@@ -191,22 +609,22 @@
             <div class="menu-items">
                 <a href="#" class="menu-item" data-menu-id="dashboard">
                     <i class="fas fa-home" style="color: #0066cc;"></i>
-                    <span>Painel de controlo</span>
+                    <span data-i18n="dashboard">Painel de controlo</span>
                 </a>
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" data-menu-id="notifications">
                     <i class="fas fa-bell" style="color: #0066cc;"></i>
-                    <span>Notificações</span>
+                    <span data-i18n="notifications">Notificações</span>
                 </a>
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" data-menu-id="charts" id="charts-menu-button">
                     <i class="fas fa-chart-line" style="color: #0066cc;"></i>
-                    <span>Gráficos</span>
+                    <span data-i18n="charts">Gráficos</span>
                 </a>
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" id="language-menu-item" data-menu-id="language-menu-item">
                     <i class="fas fa-language" style="color: #0066cc;"></i>
-                    <span>Idiomas</span>
+                    <span data-i18n="languages">Idiomas</span>
                     <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; color: #0066cc;"></i>
                 </a>
                 <div class="language-submenu" style="display: none; padding: 0 10px;">
@@ -234,22 +652,22 @@
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" data-menu-id="user">
                     <i class="fas fa-user" style="color: #0066cc;"></i>
-                    <span>Utilizador</span>
+                    <span data-i18n="user">Utilizador</span>
                 </a>
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" data-menu-id="settings">
                     <i class="fas fa-cog" style="color: #0066cc;"></i>
-                    <span>Configurações</span>
+                    <span data-i18n="settings">Configurações</span>
                 </a>
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" data-menu-id="logout" onclick="handleSignOut()">
                     <i class="fas fa-sign-out-alt" style="color: #0066cc;"></i>
-                    <span>Logout</span>
+                    <span data-i18n="logout">Logout</span>
                 </a>
                 <div class="menu-divider"></div>
                 <div class="theme-toggle-container">
                     <i class="fas fa-moon" style="color: #0066cc;"></i>
-                    <span>Modo Escuro</span>
+                    <span data-i18n="darkMode">Modo Escuro</span>
                     <input type="checkbox" id="theme-toggle" checked>
                 </div>
             </div>
@@ -257,41 +675,41 @@
 
         <div class="welcome-message">
             <h2>Olá, <span id="userName">[Nome do Usuário]</span>!</h2>
-            <p>Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.</p>
+            <p data-i18n="welcomeMessage">Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.</p>
         </div>
 
         <div class="stats-container">
             <div class="stat-card">
                 <i class="fas fa-chart-pie"></i>
-                <div class="stat-title">Média de Enchimento</div>
+                <div class="stat-title" data-i18n="averageFill">Média de Enchimento</div>
                 <div class="stat-value" id="average-fill">0%</div>
                 <div class="stat-trend">
                     <i class="fas fa-clock"></i>
-                    <span>Em tempo real</span>
+                    <span data-i18n="realTime">Em tempo real</span>
                 </div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-arrow-trend-up"></i>
-                <div class="stat-title">Contentor Mais Cheio</div>
+                <div class="stat-title" data-i18n="mostFull">Contentor Mais Cheio</div>
                 <div class="stat-value" id="most-full">-</div>
                 <div class="stat-trend">
                     <i class="fas fa-chart-line"></i>
-                    <span>Monitorização ativa</span>
+                    <span data-i18n="activeMonitoring">Monitorização ativa</span>
                 </div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-clock-rotate-left"></i>
-                <div class="stat-title">Última Atualização</div>
+                <div class="stat-title" data-i18n="lastUpdate">Última Atualização</div>
                 <div class="stat-value" id="last-update">-</div>
                 <div class="stat-trend">
                     <i class="fas fa-rotate"></i>
-                    <span>Atualização automática</span>
+                    <span data-i18n="autoUpdate">Atualização automática</span>
                 </div>
             </div>
         </div>
 
         <div class="ecoponto-info-message" style="margin-bottom: 20px;">
-            <p>Aqui você pode ver os níveis de enchimento dos ecopontos.</p>
+            <p data-i18n="ecopointInfoMessage">Aqui você pode ver os níveis de enchimento dos ecopontos.</p>
         </div>
         <div class="ecoponto">
             <div id="yellow-container">
@@ -301,14 +719,14 @@
                             <i class="fas fa-jug-detergent ecoponto-icon" style="color: var(--warning-color);"></i>
                         </div>
                         <div class="ecoponto-info">
-                            <span id="yellow-label" class="ecoponto-title">Plástico e Metal</span>
-                            <span class="ecoponto-subtitle">Embalagens e recipientes</span>
+                            <span id="yellow-label" class="ecoponto-title" data-i18n="yellow-label">Plástico e Metal</span>
+                            <span class="ecoponto-subtitle" data-i18n="yellowSubtitle">Embalagens e recipientes</span>
                         </div>
                     </div>
-                    <div id="yellow-percentage" class="ecoponto-percentage">0%</div>
+                    <div id="yellow-percentage" class="ecoponto-percentage loading">0%</div>
                 </div>
                 <div class="bar-container">
-                    <div id="yellow-bar" class="bar"></div>
+                    <div id="yellow-bar" class="bar loading"></div>
                 </div>
             </div>
         </div>
@@ -321,14 +739,14 @@
                             <i class="fas fa-wine-bottle ecoponto-icon" style="color: var(--success-color);"></i>
                         </div>
                         <div class="ecoponto-info">
-                            <span id="green-label" class="ecoponto-title">Vidro</span>
-                            <span class="ecoponto-subtitle">Garrafas e frascos</span>
+                            <span id="green-label" class="ecoponto-title" data-i18n="green-label">Vidro</span>
+                            <span class="ecoponto-subtitle" data-i18n="greenSubtitle">Garrafas e frascos</span>
                         </div>
                     </div>
-                    <div id="green-percentage" class="ecoponto-percentage">0%</div>
+                    <div id="green-percentage" class="ecoponto-percentage loading">0%</div>
                 </div>
                 <div class="bar-container">
-                    <div id="green-bar" class="bar"></div>
+                    <div id="green-bar" class="bar loading"></div>
                 </div>
             </div>
         </div>
@@ -341,14 +759,14 @@
                             <i class="fas fa-newspaper ecoponto-icon" style="color: var(--primary-color);"></i>
                         </div>
                         <div class="ecoponto-info">
-                            <span id="blue-label" class="ecoponto-title">Papel e Cartão</span>
-                            <span class="ecoponto-subtitle">Jornais e embalagens</span>
+                            <span id="blue-label" class="ecoponto-title" data-i18n="blue-label">Papel e Cartão</span>
+                            <span class="ecoponto-subtitle" data-i18n="blueSubtitle">Jornais e embalagens</span>
                         </div>
                     </div>
-                    <div id="blue-percentage" class="ecoponto-percentage">0%</div>
+                    <div id="blue-percentage" class="ecoponto-percentage loading">0%</div>
                 </div>
                 <div class="bar-container">
-                    <div id="blue-bar" class="bar"></div>
+                    <div id="blue-bar" class="bar loading"></div>
                 </div>
             </div>
         </div>
@@ -357,12 +775,12 @@
             <div class="chart-header">
                 <h2 class="chart-title">
                     <i class="fas fa-chart-line"></i>
-                    <span>Histórico de Enchimento</span>
+                    <span data-i18n="chart-title">Histórico de Enchimento</span>
                 </h2>
                 <div class="chart-actions">
                     <button class="chart-btn">
                         <i class="fas fa-calendar-days"></i>
-                        <span>Últimas 24h</span>
+                        <span data-i18n="last24h">Últimas 24h</span>
                     </button>
                 </div>
             </div>
@@ -374,25 +792,11 @@
         <div class="footer-content">
             <div class="footer-info">
                 <i class="fas fa-graduation-cap"></i>
-                <p id="footer-text">Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
+                <p id="footer-text" data-i18n="footer-text">Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro</p>
             </div>
             <div class="footer-images">
                 <img id="theme-image" src="photos/tgeiclaro.png" alt="Imagem do Tema" class="theme-logo">
                 <img src="photos/Cabecalho.JPG" alt="Logotipos de apoio ao projeto" class="support-logos">
-            </div>
-            <div class="footer-links">
-                <a href="about.html" class="footer-link">
-                    <i class="fas fa-info-circle"></i>
-                    Sobre
-                </a>
-                <a href="docs.html" class="footer-link">
-                    <i class="fas fa-code"></i>
-                    Documentação
-                </a>
-                <a href="contact.html" class="footer-link">
-                    <i class="fas fa-envelope"></i>
-                    Contato
-                </a>
             </div>
         </div>
     </footer>
@@ -933,5 +1337,317 @@
             window.localFetchData();
         });
     </script>
+    
+    <!-- Estilos adicionais para notificações e badges -->
+    <style>
+        /* Badge de notificações */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #ff3b30;
+            color: white;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Posicionamento relativo para o botão de notificações */
+        [data-menu-id="notifications"] {
+            position: relative;
+        }
+        
+        /* Painel de notificações */
+        .notifications-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .dark-mode .notifications-panel {
+            background-color: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        
+        /* Cabeçalho do painel */
+        .notifications-header {
+            padding: 15px;
+            border-bottom: 1px solid #e1e1e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .dark-mode .notifications-header {
+            border-bottom: 1px solid #333;
+        }
+        
+        .notifications-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        .dark-mode .notifications-header h3 {
+            color: #fff;
+        }
+        
+        .close-notifications {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .close-notifications:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark-mode .close-notifications {
+            color: #ccc;
+        }
+        
+        .dark-mode .close-notifications:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Lista de notificações */
+        .notifications-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+        
+        .no-notifications {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .dark-mode .no-notifications {
+            color: #ccc;
+        }
+        
+        /* Item de notificação */
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #e1e1e1;
+            display: flex;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .notification-item {
+            border-bottom: 1px solid #333;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item.unread {
+            background-color: rgba(0, 102, 204, 0.05);
+        }
+        
+        .dark-mode .notification-item.unread {
+            background-color: rgba(0, 102, 204, 0.1);
+        }
+        
+        .notification-item.deleting {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        /* Ícone de notificação */
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #666;
+        }
+        
+        .dark-mode .notification-icon {
+            background-color: #333;
+            color: #ccc;
+        }
+        
+        .notification-icon.warning {
+            background-color: #fef5dc;
+            color: #e6a23c;
+        }
+        
+        .notification-icon.error {
+            background-color: #fee2e2;
+            color: #f56c6c;
+        }
+        
+        .notification-icon.success {
+            background-color: #e1f5e0;
+            color: #67c23a;
+        }
+        
+        .notification-icon.info {
+            background-color: #e0f0ff;
+            color: #409eff;
+        }
+        
+        .dark-mode .notification-icon.warning {
+            background-color: rgba(230, 162, 60, 0.2);
+        }
+        
+        .dark-mode .notification-icon.error {
+            background-color: rgba(245, 108, 108, 0.2);
+        }
+        
+        .dark-mode .notification-icon.success {
+            background-color: rgba(103, 194, 58, 0.2);
+        }
+        
+        .dark-mode .notification-icon.info {
+            background-color: rgba(64, 158, 255, 0.2);
+        }
+        
+        /* Conteúdo da notificação */
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .dark-mode .notification-title {
+            color: #fff;
+        }
+        
+        .notification-message {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .dark-mode .notification-message {
+            color: #ccc;
+        }
+        
+        .notification-date {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .dark-mode .notification-date {
+            color: #888;
+        }
+        
+        /* Ações da notificação */
+        .notification-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-left: 10px;
+        }
+        
+        .notification-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            transition: all 0.2s;
+        }
+        
+        .notification-actions button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark-mode .notification-actions button {
+            color: #ccc;
+        }
+        
+        .dark-mode .notification-actions button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .mark-read:hover {
+            color: #409eff !important;
+        }
+        
+        .delete-notification:hover {
+            color: #f56c6c !important;
+        }
+        
+        /* Rodapé do painel */
+        .notifications-footer {
+            padding: 15px;
+            border-top: 1px solid #e1e1e1;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .dark-mode .notifications-footer {
+            border-top: 1px solid #333;
+        }
+        
+        .notifications-footer button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #0066cc;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .notifications-footer button:hover {
+            background-color: rgba(0, 102, 204, 0.1);
+        }
+        
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .notifications-panel {
+                width: 95%;
+                max-height: 90vh;
+            }
+        }
+    </style>
 </body>
 </html> 

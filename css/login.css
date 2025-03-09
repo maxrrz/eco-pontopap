@@ -13,6 +13,12 @@ body {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 html {
@@ -21,6 +27,12 @@ html {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 :root {
@@ -251,6 +263,7 @@ html {
 }
 
 .section-divider hr {
+    display: none;
     height: 100%;
     width: 1px;
     border: none;
@@ -404,12 +417,24 @@ html {
         height: auto;
         min-height: 100%;
         position: relative;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    body::-webkit-scrollbar {
+        display: none;
     }
     
     html {
         overflow-y: auto !important;
         height: auto;
         position: relative;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    html::-webkit-scrollbar {
+        display: none;
     }
     
     .login-container {
@@ -438,6 +463,12 @@ html {
         width: 100%;
         overflow-y: auto;
         position: relative;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .login-panel::-webkit-scrollbar {
+        display: none;
     }
     
     .login-side, 
@@ -449,37 +480,36 @@ html {
         background-color: #ffffff;
         height: auto;
         overflow: visible;
-    }
-
-    .login-side h2,
-    .register-side h2 {
-        font-size: 24px;
-        padding: 0;
-        word-break: break-word;
-        margin-bottom: 28px;
-        width: 100%;
-        text-align: center;
+        border: none;
     }
     
     .section-divider {
         width: 100%;
         height: 1px;
         margin: 20px 0;
+        background-color: #f0f0f0;
+        border: none;
     }
     
-    .login-panel {
-        min-height: 100vh;
-        height: auto;
-        padding: 0;
-        display: block;
-        width: 100%;
+    .section-divider hr {
+        display: none;
     }
-
+    
+    .login-side h2,
+    .register-side h2 {
+        font-size: 24px;
+        padding: 0;
+        word-break: break-word;
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
+    }
+    
     .form-options {
         flex-direction: column;
         align-items: center;
-        gap: 15px;
-        margin-bottom: 24px;
+        gap: 10px;
+        margin-bottom: 15px;
         width: 100%;
         text-align: center;
     }
@@ -487,22 +517,15 @@ html {
     .forgot-password {
         margin-left: 0;
         text-align: center;
-        font-size: 14px;
-        padding: 5px;
     }
     
     .remember-me {
         justify-content: center;
-        padding: 5px 0;
-    }
-
-    .remember-me label {
-        font-size: 14px;
     }
 
     /* Correção específica para lista de benefícios */
     .benefits-list {
-        margin: 24px 0;
+        margin: 16px 0;
         padding: 0;
         width: 100%;
         box-sizing: border-box;
@@ -511,7 +534,7 @@ html {
     
     .benefit-item {
         display: flex;
-        margin-bottom: 18px;
+        margin-bottom: 12px;
         padding: 0 0 0 5px;
         box-sizing: border-box;
         width: 100%;
@@ -524,7 +547,7 @@ html {
         width: 20px;
         height: 20px;
         font-size: 16px;
-        margin-right: 16px;
+        margin-right: 12px;
         flex-shrink: 0;
     }
 
@@ -539,54 +562,42 @@ html {
 
     .register-side .register-subtitle {
         font-size: 16px;
-        margin-bottom: 8px;
+        margin-bottom: 3px;
         text-align: center;
         width: 100%;
     }
 
     .create-account-btn,
     .login-btn {
-        height: 48px;
-        font-size: 15px;
+        height: 44px;
+        font-size: 14px;
         width: 100%;
         max-width: 100%;
         text-align: center;
-        margin-top: 10px;
     }
     
     .google-btn {
-        font-size: 14px;
-        height: 44px;
+        font-size: 13px;
+        height: 40px;
         width: 100%;
         text-align: center;
-        margin-bottom: 20px;
     }
     
     .login-form {
-        margin-top: 10px;
+        margin-top: 5px;
         width: 100%;
         max-width: 100%;
     }
     
     .form-group {
-        margin-bottom: 18px;
+        margin-bottom: 12px;
         width: 100%;
     }
     
     .form-group input {
-        height: 44px;
+        height: 40px;
         width: 100%;
         max-width: 100%;
-        font-size: 15px;
-    }
-    
-    .login-divider {
-        margin: 25px 0;
-    }
-    
-    .login-divider span {
-        font-size: 15px;
-        padding: 0 15px;
     }
 }
 

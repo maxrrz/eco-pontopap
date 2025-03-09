@@ -659,17 +659,16 @@
                     <i class="fas fa-cog" style="color: #0066cc;"></i>
                     <span data-i18n="settings">Configurações</span>
                 </a>
+                <div class="theme-toggle-container" id="theme-toggle-container">
+                    <i class="fas fa-moon" id="theme-icon" style="color: #0066cc;"></i>
+                    <span id="theme-text" data-i18n="darkMode">Modo Escuro</span>
+                    <input type="checkbox" id="theme-toggle" checked style="display: none;">
+                </div>
                 <div class="menu-divider"></div>
                 <a href="#" class="menu-item" data-menu-id="logout" onclick="handleSignOut()">
                     <i class="fas fa-sign-out-alt" style="color: #0066cc;"></i>
                     <span data-i18n="logout">Logout</span>
                 </a>
-                <div class="menu-divider"></div>
-                <div class="theme-toggle-container">
-                    <i class="fas fa-moon" style="color: #0066cc;"></i>
-                    <span data-i18n="darkMode">Modo Escuro</span>
-                    <input type="checkbox" id="theme-toggle" checked>
-                </div>
             </div>
         </div>
 
@@ -1054,7 +1053,11 @@
             // Configurar tema escuro/claro
             function setupThemeToggle() {
                 const themeToggle = document.getElementById('theme-toggle');
-                if (themeToggle) {
+                const themeToggleContainer = document.getElementById('theme-toggle-container');
+                const themeIcon = document.getElementById('theme-icon');
+                const themeText = document.getElementById('theme-text');
+                
+                if (themeToggle && themeToggleContainer) {
                     // Verificar tema salvo
                     const savedTheme = localStorage.getItem('theme');
                     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -1063,6 +1066,10 @@
                     if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
                         document.body.classList.add('dark-mode');
                         themeToggle.checked = true;
+                        
+                        // Atualizar ícone e texto para "Modo Claro"
+                        if (themeIcon) themeIcon.className = 'fas fa-sun';
+                        if (themeText) themeText.textContent = 'Modo Claro';
                         
                         // Atualizar imagem do tema
                         const themeImage = document.getElementById('theme-image');
@@ -1073,6 +1080,10 @@
                         document.body.classList.remove('dark-mode');
                         themeToggle.checked = false;
                         
+                        // Atualizar ícone e texto para "Modo Escuro"
+                        if (themeIcon) themeIcon.className = 'fas fa-moon';
+                        if (themeText) themeText.textContent = 'Modo Escuro';
+                        
                         // Atualizar imagem do tema
                         const themeImage = document.getElementById('theme-image');
                         if (themeImage) {
@@ -1080,11 +1091,18 @@
                         }
                     }
                     
-                    // Adicionar evento de alteração do tema
-                    themeToggle.addEventListener('change', function() {
-                        if (this.checked) {
+                    // Adicionar evento de clique ao contêiner
+                    themeToggleContainer.addEventListener('click', function() {
+                        // Inverter o estado do checkbox
+                        themeToggle.checked = !themeToggle.checked;
+                        
+                        if (themeToggle.checked) {
                             document.body.classList.add('dark-mode');
                             localStorage.setItem('theme', 'dark');
+                            
+                            // Alterar para ícone de sol e texto "Modo Claro"
+                            if (themeIcon) themeIcon.className = 'fas fa-sun';
+                            if (themeText) themeText.textContent = 'Modo Claro';
                             
                             // Atualizar imagem do tema
                             const themeImage = document.getElementById('theme-image');
@@ -1094,6 +1112,10 @@
                         } else {
                             document.body.classList.remove('dark-mode');
                             localStorage.setItem('theme', 'light');
+                            
+                            // Alterar para ícone de lua e texto "Modo Escuro"
+                            if (themeIcon) themeIcon.className = 'fas fa-moon';
+                            if (themeText) themeText.textContent = 'Modo Escuro';
                             
                             // Atualizar imagem do tema
                             const themeImage = document.getElementById('theme-image');

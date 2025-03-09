@@ -143,4 +143,4 @@ export {
     showLoadingAnimation,
     hideLoadingAnimation,
     LanguageSystem
-};
+}; 

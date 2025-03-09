@@ -139,58 +139,33 @@ function ensureDarkModeTranslations() {
 
 // Função para mudar o idioma
 export function changeLanguage(lang) {
-    console.log("Mudando idioma para:", lang);
+    console.log("Alterando idioma para:", lang);
     
-    try {
-        // Se não temos traduções, carregá-las primeiro
-        if (!translations) {
-            loadTranslations().then(() => {
-                if (translations) {
-                    changeLanguageInternal(lang);
-                }
-            });
-        } else {
-            changeLanguageInternal(lang);
-        }
-    } catch (error) {
-        console.error("Erro ao mudar idioma:", error);
-    }
-}
-
-// Função interna para mudar o idioma (após garantir que as traduções estão carregadas)
-function changeLanguageInternal(lang) {
-    // Verificar se o idioma está disponível nas traduções
-    if (!translations || !translations[lang]) {
-        console.error(`Idioma não disponível: ${lang}`);
+    // Verificar se o idioma é suportado
+    if (!CONFIG || !CONFIG.SUPPORTED_LANGUAGES.includes(lang)) {
+        console.error(`Idioma não suportado: ${lang}`);
         return;
     }
     
-    // Atualizar o idioma atual
+    // Atualizar estado interno
     languageState.currentLanguage = lang;
     
-    // Salvar a preferência de idioma
-    if (CONFIG) {
-        localStorage.setItem(CONFIG.LANGUAGE_KEY, lang);
-    } else {
-        localStorage.setItem('language', lang);
-    }
+    // Salvar a preferência do usuário
+    localStorage.setItem(CONFIG.LANGUAGE_KEY, lang);
     
     // Atualizar os textos da interface
     updateInterfaceTextsInternal(lang);
     
-    // Atualizar ícones de verificação no menu de idiomas
+    // Atualizar as marcações de seleção
     updateLanguageCheckmarks(lang);
     
-    // Atualizar o parâmetro na URL
-    try {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('lang', lang);
-        window.history.pushState({}, "", currentUrl.toString());
-    } catch (error) {
-        console.error("Erro ao atualizar URL:", error);
+    // Forçar atualização dos dados para que elementos gerados dinamicamente sejam traduzidos
+    if (window.forceDataUpdate) {
+        console.log("Forçando atualização dos dados para aplicar traduções em elementos dinâmicos");
+        setTimeout(() => {
+            window.forceDataUpdate();
+        }, 100); // Pequeno atraso para garantir que as traduções estejam aplicadas
     }
-    
-    console.log(`Idioma alterado para: ${lang}`);
 }
 
 // Atualizar os ícones de verificação no menu de idiomas

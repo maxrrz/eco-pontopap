@@ -49,13 +49,14 @@ export const CONFIG = {
 export const translations = {
     pt: {
         // Geral
-        appName: 'EcoPonto',
+        appName: 'EcoPonto Inteligente',
         subtitle: 'Monitorização Inteligente',
         loading: 'Carregando...',
         connected: 'Conectado',
         disconnected: 'Desconectado',
         welcomeMessage: 'Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.',
-        title: 'EcoPonto',
+        title: 'EcoPonto Inteligente',
+        hello: 'Olá',
         
         // Autenticação
         login: 'Entrar',
@@ -114,11 +115,12 @@ export const translations = {
     
     en: {
         // General
-        appName: 'EcoPonto',
+        appName: 'EcoPonto Inteligente',
         subtitle: 'Smart Monitoring',
         loading: 'Loading...',
         connected: 'Connected',
         disconnected: 'Disconnected',
+        hello: 'Hello',
         
         // Autenticação
         login: 'Login',
@@ -182,13 +184,14 @@ export const translations = {
     
     es: {
         // General
-        appName: 'EcoPonto',
+        appName: 'EcoPonto Inteligente',
         subtitle: 'Monitoreo Inteligente',
         loading: 'Cargando...',
         connected: 'Conectado',
         disconnected: 'Desconectado',
         welcomeMessage: '¡Bienvenido al sistema de monitoreo! Aquí puede seguir el llenado de los ecopuntos en tiempo real.',
-        title: 'EcoPonto',
+        title: 'EcoPonto Inteligente',
+        hello: 'Hola',
         
         // Autenticación
         login: 'Iniciar sesión',
@@ -247,13 +250,14 @@ export const translations = {
     
     de: {
         // Allgemein
-        appName: 'EcoPonto',
+        appName: 'EcoPonto Inteligente',
         subtitle: 'Intelligente Überwachung',
         loading: 'Wird geladen...',
         connected: 'Verbunden',
         disconnected: 'Getrennt',
-        welcomeMessage: 'Willkommen beim Überwachungssystem! Hier können Sie den Füllstand der Ecopunkte in Echtzeit verfolgen.',
-        title: 'EcoPonto',
+        welcomeMessage: 'Willkommen beim Überwachungssystem! Hier können Sie die Füllstände der Recyclingbehälter in Echtzeit verfolgen.',
+        title: 'EcoPonto Inteligente',
+        hello: 'Hallo',
         
         // Authentifizierung
         login: 'Anmelden',
@@ -265,19 +269,19 @@ export const translations = {
         createAccount: 'Konto erstellen',
         
         // Menü
-        dashboard: 'Kontrollpanel',
+        dashboard: 'Dashboard',
         notifications: 'Benachrichtigungen',
         charts: 'Diagramme',
-        ecopointManagement: 'Ecopunkt-Verwaltung',
+        ecopointManagement: 'Recyclingbehälter-Verwaltung',
         userManagement: 'Benutzerverwaltung',
         settings: 'Einstellungen',
         languages: 'Sprachen',
         menu: 'Menü',
         user: 'Benutzer',
         darkMode: 'Dunkler Modus',
-        lightMode: 'Hellmodus',
+        lightMode: 'Heller Modus',
         
-        // Ecopunkte
+        // Recyclingbehälter
         ecopointTypes: {
             yellow: 'Kunststoff und Metall',
             green: 'Glas',
@@ -289,36 +293,37 @@ export const translations = {
         yellowSubtitle: 'Verpackungen und Behälter',
         greenSubtitle: 'Flaschen und Gläser',
         blueSubtitle: 'Zeitungen und Verpackungen',
-        ecopointInfoMessage: 'Hier können Sie die Füllstände der Ecopunkte sehen.',
+        ecopointInfoMessage: 'Hier können Sie die Füllstände der Recyclingbehälter sehen.',
         
         // Statistiken
         averageFill: 'Durchschnittliche Füllung',
         realTime: 'Echtzeit',
-        mostFull: 'Meistgefüllter Behälter',
+        mostFull: 'Vollster Behälter',
         activeMonitoring: 'Aktive Überwachung',
         lastUpdate: 'Letzte Aktualisierung',
         autoUpdate: 'Automatische Aktualisierung',
         status: 'Wird geladen...',
         
         // Diagramme
-        'chart-title': 'Füllverlauf',
+        'chart-title': 'Füllstandsverlauf',
         last24h: 'Letzte 24h',
         
         // Fußzeile
-        'footer-text': 'Projekt entwickelt für die berufliche Eignungsprüfung von Maximilian Guimaro',
+        'footer-text': 'Projekt entwickelt für die Berufliche Eignungsprüfung von Maximilian Guimaro',
         about: 'Über',
         docs: 'Dokumentation'
     },
     
     fr: {
         // Général
-        appName: 'EcoPonto',
+        appName: 'EcoPonto Inteligente',
         subtitle: 'Surveillance Intelligente',
         loading: 'Chargement...',
         connected: 'Connecté',
         disconnected: 'Déconnecté',
-        welcomeMessage: 'Bienvenue dans le système de surveillance! Ici, vous pouvez suivre le remplissage des éco-points en temps réel.',
-        title: 'EcoPonto',
+        welcomeMessage: 'Bienvenue dans le système de surveillance! Ici, vous pouvez suivre le remplissage des écopoints en temps réel.',
+        title: 'EcoPonto Inteligente',
+        hello: 'Bonjour',
         
         // Authentification
         login: 'Connexion',
@@ -333,7 +338,7 @@ export const translations = {
         dashboard: 'Tableau de bord',
         notifications: 'Notifications',
         charts: 'Graphiques',
-        ecopointManagement: 'Gestion des Éco-points',
+        ecopointManagement: 'Gestion des Écopoints',
         userManagement: 'Gestion des Utilisateurs',
         settings: 'Paramètres',
         languages: 'Langues',
@@ -342,7 +347,7 @@ export const translations = {
         darkMode: 'Mode Sombre',
         lightMode: 'Mode Clair',
         
-        // Éco-points
+        // Écopoints
         ecopointTypes: {
             yellow: 'Plastique et Métal',
             green: 'Verre',
@@ -352,16 +357,16 @@ export const translations = {
         'green-label': 'Verre',
         'blue-label': 'Papier et Carton',
         yellowSubtitle: 'Emballages et récipients',
-        greenSubtitle: 'Bouteilles et flacons',
+        greenSubtitle: 'Bouteilles et pots',
         blueSubtitle: 'Journaux et emballages',
-        ecopointInfoMessage: 'Ici, vous pouvez voir les niveaux de remplissage des éco-points.',
+        ecopointInfoMessage: 'Ici vous pouvez voir les niveaux de remplissage des écopoints.',
         
         // Statistiques
-        averageFill: 'Remplissage Moyen',
+        averageFill: 'REMPLISSAGE MOYEN',
         realTime: 'En temps réel',
-        mostFull: 'Conteneur le Plus Rempli',
+        mostFull: 'CONTENEUR LE PLUS REMPLI',
         activeMonitoring: 'Surveillance active',
-        lastUpdate: 'Dernière Mise à Jour',
+        lastUpdate: 'DERNIÈRE MISE À JOUR',
         autoUpdate: 'Mise à jour automatique',
         status: 'Chargement...',
         
@@ -377,21 +382,22 @@ export const translations = {
     
     ja: {
         // 一般
-        appName: 'エコポント',
+        appName: 'エコポント インテリジェント',
         subtitle: 'スマート監視',
         loading: '読み込み中...',
         connected: '接続済み',
         disconnected: '切断済み',
-        welcomeMessage: '監視システムへようこそ！ここでは、エコポイントの充填状況をリアルタイムで追跡できます。',
-        title: 'エコポント',
+        welcomeMessage: '監視システムへようこそ！ここでは、リアルタイムでエコポイントの充填状況を追跡できます。',
+        title: 'エコポント インテリジェント',
+        hello: 'こんにちは',
         
         // 認証
         login: 'ログイン',
         logout: 'ログアウト',
-        email: 'メールアドレス',
+        email: 'メール',
         password: 'パスワード',
         forgotPassword: 'パスワードをお忘れですか？',
-        rememberMe: 'ログイン状態を保持',
+        rememberMe: '記憶する',
         createAccount: 'アカウント作成',
         
         // メニュー
@@ -417,14 +423,14 @@ export const translations = {
         'green-label': 'ガラス',
         'blue-label': '紙とカートン',
         yellowSubtitle: '包装と容器',
-        greenSubtitle: '瓶とフラスコ',
+        greenSubtitle: 'ボトルと瓶',
         blueSubtitle: '新聞と包装',
-        ecopointInfoMessage: 'ここでエコポイントの充填レベルを確認できます。',
+        ecopointInfoMessage: 'ここではエコポイントの充填レベルを確認できます。',
         
         // 統計
         averageFill: '平均充填率',
         realTime: 'リアルタイム',
-        mostFull: '最も充填されたコンテナ',
+        mostFull: '最も充填された容器',
         activeMonitoring: 'アクティブ監視',
         lastUpdate: '最終更新',
         autoUpdate: '自動更新',
@@ -435,8 +441,8 @@ export const translations = {
         last24h: '過去24時間',
         
         // フッター
-        'footer-text': 'マキシミリアン・ギマロの専門適性証明のために開発されたプロジェクト',
-        about: '概要',
+        'footer-text': 'マキシミリアン・ギマロの職業適性試験のために開発されたプロジェクト',
+        about: '情報',
         docs: 'ドキュメント'
     }
 }; 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitorização em Tempo Real - Enchimento do Ecoponto</title>
+    <title>Monitorização em Tempo Real - Enchimento do Ecoponto Inteligente</title>
     <link rel="icon" type="image/x-icon" href="photos/ec.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -34,6 +34,21 @@
                 window.updateInterfaceTexts = LanguageSystem.updateInterfaceTexts;
                 window.changeLanguage = LanguageSystem.changeLanguage;
                 window.languageState = LanguageSystem.languageState;
+                
+                // Carregar traduções e disponibilizá-las globalmente
+                import('./js/config.js').then(module => {
+                    window.translations = module.translations;
+                    console.log('Traduções carregadas globalmente:', Object.keys(window.translations).length, 'idiomas disponíveis');
+                    
+                    // Forçar atualização das traduções com o idioma atual
+                    const currentLang = window.languageState?.currentLanguage || localStorage.getItem('language') || 'pt';
+                    console.log('Forçando atualização das traduções para o idioma atual:', currentLang);
+                    if (window.updateInterfaceTexts) {
+                        window.updateInterfaceTexts(currentLang);
+                    }
+                }).catch(error => {
+                    console.error('Erro ao carregar traduções:', error);
+                });
                 
                 // Inicializar o sistema
                 LanguageSystem.initializeLanguageSystem();
@@ -451,10 +466,19 @@
                 const statusText = document.getElementById('status');
                 
                 if (statusDot && statusText) {
-                    // Forçar mudança do status independentemente do texto atual
-                    console.log('Atualizando status para "Conectado"');
+                    // Forçar mudança do status usando o sistema de tradução
+                    console.log('Atualizando status para conectado');
                     statusDot.classList.add('connected');
-                    statusText.textContent = 'Conectado';
+                    
+                    // Usar traduções se disponíveis, caso contrário usar o texto padrão
+                    if (window.translations && window.languageState && window.languageState.currentLanguage) {
+                        const lang = window.languageState.currentLanguage;
+                        statusText.textContent = window.translations[lang]?.connected || 'Conectado';
+                        console.log('Status atualizado com tradução: ' + statusText.textContent);
+                    } else {
+                        statusText.textContent = 'Conectado';
+                        console.log('Status atualizado sem tradução: Conectado');
+                    }
                 } else {
                     console.warn('Elementos de status não encontrados');
                 }
@@ -525,13 +549,13 @@
                 <div class="header-title">
                     <h1 id="title" data-i18n="title">
                         <i class="fas fa-leaf"></i>
-                        EcoPonto
+                        EcoPonto Inteligente
                         <span class="subtitle" data-i18n="subtitle">Monitorização Inteligente</span>
                     </h1>
                 </div>
                 <div class="header-info">
                     <div id="userInfo" class="user-info">
-                        <span>Olá, <span id="userName">[Nome do Usuário]</span>!</span>
+                        <span><span data-i18n="hello">Olá</span>, <span id="userName">[Nome do Usuário]</span>!</span>
                         <button id="logoutButton" class="logout-btn" data-i18n="logout">Sair</button>
                     </div>
                     <div class="status-indicator">
@@ -554,7 +578,7 @@
                 <div class="login-content">
                     <!-- Lado esquerdo - Login -->
                     <div class="login-side">
-                        <h2 data-i18n="loginTitle">Entra na tua conta EcoPonto!</h2>
+                        <h2 data-i18n="loginTitle">Entra na tua conta EcoPonto Inteligente!</h2>
                         
                         <div class="login-options">
                             <button id="googleSignInButton" class="google-btn" data-btn-i18n="googleLogin">
@@ -692,7 +716,7 @@
         </div>
 
         <div class="welcome-message">
-            <h2>Olá, <span id="userName">[Nome do Usuário]</span>!</h2>
+            <h2><span data-i18n="hello">Olá</span>, <span id="userName">[Nome do Usuário]</span>!</h2>
             <p data-i18n="welcomeMessage">Bem-vindo ao sistema de monitorização! Aqui você pode acompanhar o enchimento dos ecopontos em tempo real.</p>
         </div>
 
@@ -1206,11 +1230,19 @@
                 const statusText = document.getElementById('status');
                 
                 if (statusDot && statusText) {
-                    // Forçar conexão bem-sucedida independentemente do texto atual
-                    console.log('Atualizando status para "Conectado"');
+                    // Forçar conexão bem-sucedida usando o sistema de tradução para o texto
+                    console.log('Atualizando status para conectado');
                     statusDot.classList.add('connected');
-                    statusText.textContent = 'Conectado';
-                    console.log('Status de conexão atualizado: Conectado');
+                    
+                    // Usar traduções se disponíveis, caso contrário usar o texto padrão
+                    if (window.translations && window.languageState && window.languageState.currentLanguage) {
+                        const lang = window.languageState.currentLanguage;
+                        statusText.textContent = window.translations[lang]?.connected || 'Conectado';
+                        console.log('Status de conexão atualizado com tradução: ' + statusText.textContent);
+                    } else {
+                        statusText.textContent = 'Conectado';
+                        console.log('Status de conexão atualizado sem tradução: Conectado');
+                    }
                 } else {
                     console.warn('Elementos de status não encontrados no DOM');
                 }
@@ -1222,8 +1254,16 @@
                     
                     if (statusTextCheck && statusDotCheck) {
                         statusDotCheck.classList.add('connected');
-                        statusTextCheck.textContent = 'Conectado';
-                        console.log('Status de conexão atualizado após atraso: Conectado');
+                        
+                        // Usar traduções se disponíveis, caso contrário usar o texto padrão
+                        if (window.translations && window.languageState && window.languageState.currentLanguage) {
+                            const lang = window.languageState.currentLanguage;
+                            statusTextCheck.textContent = window.translations[lang]?.connected || 'Conectado';
+                            console.log('Status de conexão atualizado após atraso com tradução: ' + statusTextCheck.textContent);
+                        } else {
+                            statusTextCheck.textContent = 'Conectado';
+                            console.log('Status de conexão atualizado após atraso sem tradução: Conectado');
+                        }
                     }
                 }, 1500);
             }
@@ -1326,17 +1366,65 @@
                 // Determinar contentor mais cheio
                 let mostFullValue = Math.max(yellowValue, greenValue, blueValue);
                 let mostFullContainer = '';
+                let containerKey = '';
                 
                 if (mostFullValue === yellowValue) {
-                    mostFullContainer = 'Plástico e Metal';
+                    containerKey = 'yellow-label';
                 } else if (mostFullValue === greenValue) {
-                    mostFullContainer = 'Vidro';
+                    containerKey = 'green-label';
                 } else if (mostFullValue === blueValue) {
-                    mostFullContainer = 'Papel e Cartão';
+                    containerKey = 'blue-label';
                 }
                 
+                // Obter o nome traduzido do contentor
                 const mostFullElement = document.getElementById('most-full');
                 if (mostFullElement) {
+                    // Tentar obter a tradução diretamente do sistema de idiomas
+                    let translated = false;
+                    if (window.languageState && window.languageState.currentLanguage) {
+                        const currentLang = window.languageState.currentLanguage;
+                        console.log(`Traduzindo contentor ${containerKey} para idioma: ${currentLang}`);
+                        
+                        if (window.translations && window.translations[currentLang]) {
+                            console.log('Usando traduções globais');
+                            mostFullContainer = window.translations[currentLang][containerKey];
+                            if (mostFullContainer) {
+                                console.log(`Tradução obtida: "${mostFullContainer}"`);
+                                translated = true;
+                            }
+                        } else if (window.languageState.translations && window.languageState.translations[currentLang]) {
+                            console.log('Usando traduções do languageState');
+                            mostFullContainer = window.languageState.translations[currentLang][containerKey];
+                            if (mostFullContainer) {
+                                console.log(`Tradução obtida: "${mostFullContainer}"`);
+                                translated = true;
+                            }
+                        }
+                        
+                        if (!translated) {
+                            console.warn(`Não foi possível encontrar a tradução para ${containerKey} em ${currentLang}`);
+                        }
+                    }
+                    
+                    // Se não conseguiu traduzir via sistema de idiomas, tenta obter do elemento DOM
+                    if (!translated) {
+                        const containerElement = document.querySelector(`[data-i18n="${containerKey}"]`);
+                        if (containerElement) {
+                            mostFullContainer = containerElement.textContent;
+                            console.log(`Usando texto do elemento DOM: "${mostFullContainer}"`);
+                        } else {
+                            // Fallback para o texto em português
+                            if (containerKey === 'yellow-label') {
+                                mostFullContainer = 'Plástico e Metal';
+                            } else if (containerKey === 'green-label') {
+                                mostFullContainer = 'Vidro';
+                            } else if (containerKey === 'blue-label') {
+                                mostFullContainer = 'Papel e Cartão';
+                            }
+                            console.log(`Usando texto fallback em português: "${mostFullContainer}"`);
+                        }
+                    }
+                    
                     mostFullElement.textContent = `${mostFullContainer} (${mostFullValue}%)`;
                 }
                 
@@ -1372,7 +1460,14 @@
                         const statusText = document.getElementById('status');
                         if (statusDot && statusText) {
                             statusDot.classList.add('connected');
-                            statusText.textContent = 'Conectado';
+                            
+                            // Usar traduções se disponíveis, caso contrário usar o texto padrão
+                            if (window.translations && window.languageState && window.languageState.currentLanguage) {
+                                const lang = window.languageState.currentLanguage;
+                                statusText.textContent = window.translations[lang]?.connected || 'Conectado';
+                            } else {
+                                statusText.textContent = 'Conectado';
+                            }
                         }
                     } else {
                         console.error('Falha ao obter dados da API');

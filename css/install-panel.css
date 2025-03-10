@@ -1,0 +1,276 @@
+/* Estilos para o painel de instalação */
+.install-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.install-panel.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.install-panel.closing {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+}
+
+.dark-mode .install-panel {
+    background-color: #222;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.install-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dark-mode .install-header {
+    border-bottom: 1px solid #333;
+}
+
+.install-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #0066cc;
+    font-weight: 600;
+}
+
+.dark-mode .install-header h3 {
+    color: #3399ff;
+}
+
+.close-install {
+    all: unset;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    outline: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.close-install i {
+    font-size: 20px;
+    color: #666;
+    pointer-events: none;
+}
+
+.dark-mode .close-install i {
+    color: #999;
+}
+
+.close-install:hover {
+    opacity: 0.7;
+}
+
+.dark-mode .close-install:hover {
+    opacity: 0.7;
+}
+
+.install-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.install-description {
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #555;
+    font-size: 1.1rem;
+}
+
+.dark-mode .install-description {
+    color: #bbb;
+}
+
+.install-section {
+    margin-bottom: 20px;
+}
+
+.install-section h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.dark-mode .install-section h4 {
+    color: #ddd;
+}
+
+.install-steps {
+    margin-bottom: 20px;
+}
+
+.install-step {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.step-number {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #0066cc;
+    min-width: 20px;
+}
+
+.dark-mode .step-number {
+    color: #3399ff;
+}
+
+.step-text {
+    line-height: 1.4;
+    flex: 1;
+    text-align: left;
+}
+
+.install-images {
+    display: none;
+}
+
+.browser-mockup {
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background-color: #f8f8f8;
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    margin-left: 30px;
+}
+
+.browser-mockup:last-of-type {
+    max-width: 400px;
+}
+
+/* Estilo específico para a terceira imagem do iOS */
+.install-steps .browser-mockup:nth-child(6) {
+    max-width: 350px;
+}
+
+.dark-mode .browser-mockup {
+    background-color: #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.install-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.install-footer {
+    display: none;
+}
+
+.install-btn, .cancel-install {
+    display: none;
+}
+
+.dark-mode .install-footer {
+    border-top: 1px solid #333;
+}
+
+.dark-mode .cancel-install,
+.dark-mode .cancel-install:hover {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .install-panel {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .install-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .install-images {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .browser-mockup {
+        width: 100%;
+    }
+}
+
+/* Estilos para o overlay */
+.install-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.install-overlay.active {
+    opacity: 1;
+}
+
+.install-overlay.closing {
+    opacity: 0;
+}
+
+.body-no-scroll {
+    overflow: hidden;
+    padding-right: 17px; /* Compensar a largura da scrollbar para evitar saltos */
+}
+
+.install-steps .install-step:nth-child(7) .browser-mockup {
+    max-width: 250px;
+    margin: 20px 0 20px 0;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.install-steps .install-step:nth-child(7) .browser-mockup img {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    display: block;
+    margin: 0;
+} 

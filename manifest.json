@@ -1,0 +1,24 @@
+{
+  "name": "myEcoponto",
+  "short_name": "myEcoponto",
+  "description": "Monitorização em Tempo Real - Enchimento do Ecoponto Inteligente",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#2196F3",
+  "icons": [
+    {
+      "src": "int/app.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "int/app.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+} 

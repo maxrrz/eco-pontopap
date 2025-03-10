@@ -1,0 +1,110 @@
+/* Estilos específicos para quando o aplicativo está sendo executado como PWA instalado */
+
+/* Garante que a aplicação ocupe toda a área disponível sem barras do navegador */
+.pwa-standalone-mode {
+    width: 100%;
+    height: 100vh;
+    height: -webkit-fill-available;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Evita a barra inferior do navegador em sistemas iOS */
+    padding-bottom: 0 !important;
+}
+
+/* Esconder a barra de indicação de gestos no iOS (home indicator) */
+@supports (-webkit-touch-callout: none) {
+    .pwa-standalone-mode {
+        /* Aplicar padding apenas em cima, evitando na parte inferior */
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: 0 !important;
+        
+        /* Garantir que a altura seja realmente 100% */
+        height: -webkit-fill-available;
+        min-height: 100vh;
+        max-height: 100vh;
+        
+        /* Desabilitar overscroll (bounce effect) */
+        -webkit-overflow-scrolling: auto;
+        overscroll-behavior: none;
+    }
+    
+    /* Esconder completamente a home indicator */
+    .pwa-standalone-mode:after {
+        content: '';
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        background-color: #fff;
+        z-index: 9999;
+    }
+    
+    /* Versão para modo escuro */
+    .dark-mode.pwa-standalone-mode:after {
+        background-color: #1a1a1a;
+    }
+    
+    /* Corrigir alinhamento no cabeçalho */
+    .pwa-standalone-mode .header {
+        padding-top: env(safe-area-inset-top);
+    }
+    
+    .pwa-standalone-mode .header-content {
+        padding: 10px 15px;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+/* Esconder elementos de navegação quando em modo instalado */
+.pwa-standalone-mode .browser-ui {
+    display: none !important;
+}
+
+/* Ajustes para área segura em tela cheia */
+.pwa-standalone-mode .main-content {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Evitar o efeito de "bounce" (rebote) no iOS */
+.pwa-standalone-mode * {
+    -webkit-overflow-scrolling: touch;
+}
+
+.pwa-standalone-mode body {
+    overscroll-behavior-y: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ocultar a barra inferior no iOS */
+.pwa-standalone-mode footer {
+    padding-bottom: 20px;
+    margin-bottom: -20px;
+}
+
+/* Remover a linha branca/home indicator */
+@media screen and (display-mode: standalone) {
+    body::after {
+        content: '';
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: #fff;
+        z-index: 9999;
+    }
+    
+    .dark-mode body::after {
+        background: #1a1a1a;
+    }
+} 

@@ -1,0 +1,123 @@
+/* Ajustes específicos para a barra superior em dispositivos móveis */
+@media (max-width: 768px) {
+    .header {
+        margin: 0;
+        height: 40px;
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+        background-color: #0d6efd !important;
+    }
+    
+    .header-content {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 0;
+        padding: 0 10px !important;
+        padding-top: 0 !important;
+    }
+    
+    .header-title {
+        display: none;
+    }
+    
+    .header-info {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    .status-indicator {
+        display: flex !important;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        margin-right: 0;
+        white-space: nowrap;
+        color: #ffffff !important;
+        font-weight: 400;
+        box-shadow: none;
+        align-items: center;
+        line-height: 1;
+    }
+    
+    .status-indicator span {
+        display: inline-block;
+        color: #ffffff !important;
+    }
+    
+    .status-indicator i {
+        font-size: 0.9rem;
+        color: #ffffff !important;
+        margin-right: 5px;
+    }
+    
+    /* Substituir o ícone de wifi por uma classe específica para corresponder à imagem */
+    .status-indicator .fa-wifi:before {
+        content: "\f1eb";
+    }
+    
+    .menu-button {
+        all: unset;
+        display: flex !important;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 20px;
+        height: 16px;
+        padding: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .menu-button span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background: #ffffff;
+        border-radius: 2px;
+    }
+    
+    /* Ajuste para o container principal para dar mais espaço ao conteúdo */
+    .container {
+        padding: 0 !important;
+    }
+}
+
+/* Ocultar o item "Instala o myEcoponto" apenas quando estiver no modo PWA */
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+    /* Ocultar item de instalação do app no menu */
+    [data-menu-id="install-app"] {
+        display: none !important;
+    }
+    
+    /* Também esconde o divisor que vem depois desse item */
+    [data-menu-id="install-app"] + .menu-divider {
+        display: none !important;
+    }
+    
+    /* Ocultar botão "CRIAR CONTA" no painel de login */
+    #showRegister, .register-side {
+        display: none !important;
+    }
+    
+    /* Ajustar o lado do login para ocupar toda a largura */
+    .login-side {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-right: none !important;
+    }
+    
+    /* Ajustar o container de login para centralizar */
+    .login-container {
+        max-width: 450px !important;
+        margin: 0 auto !important;
+    }
+    
+    .login-content {
+        grid-template-columns: 1fr !important;
+        padding: 20px !important;
+    }
+} 

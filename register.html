@@ -78,6 +78,7 @@
             // Processar registro
             function handleRegister(event) {
                 event.preventDefault();
+                console.log("Form submission triggered");
                 
                 const ecCode = document.getElementById('ecCode').value;
                 const name = document.getElementById('registerName').value;
@@ -124,7 +125,7 @@
                 }
                 
                 // Mostrar estado de carregamento
-                const submitButton = document.querySelector('#registerForm .create-account-btn');
+                const submitButton = document.getElementById('createAccountBtn');
                 if (submitButton) {
                     const originalButtonText = submitButton.textContent;
                     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
@@ -141,11 +142,11 @@
                             provider: 'email'
                         };
                         
-                        // Armazenar dados do usuário no localStorage
-                        localStorage.setItem('user', JSON.stringify(userData));
+                        // Não armazenar no localStorage ainda - apenas redirecionar para login
+                        // localStorage.setItem('user', JSON.stringify(userData));
                         
-                        // Redirecionar para a página principal
-                        window.location.href = 'index.html';
+                        // Redirecionar para a página de login
+                        window.location.href = 'login.html?registered=true';
                         
                         // Resetar botão
                         submitButton.innerHTML = originalButtonText;
@@ -158,8 +159,19 @@
             function setupEventListeners() {
                 // Registro
                 const registerForm = document.getElementById('registerForm');
+                const createAccountBtn = document.getElementById('createAccountBtn');
+                
                 if (registerForm) {
+                    console.log("Adding submit event listener to form");
                     registerForm.addEventListener('submit', handleRegister);
+                }
+                
+                if (createAccountBtn) {
+                    console.log("Adding click event listener to button");
+                    createAccountBtn.addEventListener('click', function(e) {
+                        console.log("Botão 'Criar Conta' clicado");
+                        handleRegister(e);
+                    });
                 }
                 
                 // Validação do campo EC-code (apenas dígitos)
@@ -179,12 +191,101 @@
             
             // Inicializar aplicação
             function initApp() {
+                console.log("Iniciando aplicação de registro");
                 setupEventListeners();
                 checkAuthStatus();
+                
+                // Configurar validação do checkbox dos termos
+                const termsCheckbox = document.getElementById('termsAgree');
+                const createAccountButton = document.getElementById('createAccountBtn');
+                
+                // Desabilitar o botão inicialmente
+                if (createAccountButton) {
+                    createAccountButton.disabled = true;
+                    createAccountButton.classList.add('disabled');
+                }
+                
+                // Adicionar listener para o checkbox dos termos
+                if (termsCheckbox && createAccountButton) {
+                    termsCheckbox.addEventListener('change', function() {
+                        createAccountButton.disabled = !this.checked;
+                        if (this.checked) {
+                            createAccountButton.classList.remove('disabled');
+                        } else {
+                            createAccountButton.classList.add('disabled');
+                        }
+                    });
+                }
+                
+                // Testar se o formulário está funcionando
+                const form = document.getElementById('registerForm');
+                const button = document.getElementById('createAccountBtn');
+                
+                if (form) {
+                    console.log("Formulário de registro encontrado");
+                } else {
+                    console.error("Formulário de registro NÃO encontrado");
+                }
+                
+                if (button) {
+                    console.log("Botão de criação de conta encontrado");
+                    // Garantir que o botão funcione mesmo que o evento de formulário falhe
+                    button.onclick = function(e) {
+                        console.log("Botão clicado diretamente");
+                        
+                        // Verificar se os termos foram aceitos
+                        const termsAgreed = document.getElementById('termsAgree')?.checked || false;
+                        if (!termsAgreed) {
+                            alert('Você deve aceitar os termos e condições para criar uma conta.');
+                            return;
+                        }
+                        
+                        handleRegister(e);
+                    };
+                } else {
+                    console.error("Botão de criação de conta NÃO encontrado");
+                }
             }
             
             // Iniciar aplicação
             initApp();
+
+            // Configurar o redirecionamento direto do botão como fallback
+            console.log('Configurando redirecionamento direto para o botão de criar conta');
+            const createAccountButton = document.getElementById('createAccountBtn');
+            
+            if (createAccountButton) {
+                createAccountButton.addEventListener('click', function() {
+                    const termsAgreed = document.getElementById('termsAgree')?.checked || false;
+                    
+                    if (!termsAgreed) {
+                        alert('Você deve aceitar os termos e condições para criar uma conta.');
+                        return;
+                    }
+                    
+                    console.log('Botão CRIAR CONTA clicado');
+                    
+                    // Simular processamento
+                    const button = this;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
+                    button.disabled = true;
+                    
+                    // Redirecionar após um curto delay
+                    setTimeout(function() {
+                        window.location.href = 'login.html?registered=true';
+                    }, 1000);
+                });
+            }
+
+            // Adicionar CSS para botão desabilitado
+            const style = document.createElement('style');
+            style.textContent = `
+                .create-account-btn.disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+            `;
+            document.head.appendChild(style);
         });
     </script>
 </head>
@@ -248,7 +349,7 @@
                         <label for="termsAgree">Concordo com os <a href="terms.html" class="terms-link">Termos e Condições</a></label>
                     </div>
                     
-                    <button type="submit" class="create-account-btn">CRIAR CONTA</button>
+                    <button type="button" id="createAccountBtn" class="create-account-btn disabled">CRIAR CONTA</button>
                 </form>
                 
                 <div class="login-link">

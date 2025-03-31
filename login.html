@@ -243,12 +243,115 @@
                 }
             }
             
+            // Mostrar notificação de registro bem-sucedido se vier da página de registro
+            function checkRegistrationSuccess() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const isRegistered = urlParams.get('registered');
+                
+                if (isRegistered === 'true') {
+                    // Criar e mostrar a notificação de sucesso
+                    const successNotification = document.createElement('div');
+                    successNotification.className = 'success-notification';
+                    successNotification.innerHTML = `
+                        <div class="notification-content">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Conta criada com sucesso! Por favor, inicie sessão.</span>
+                            <button class="close-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(successNotification);
+                    
+                    // Adicionar evento ao botão de fechar
+                    const closeBtn = successNotification.querySelector('.close-btn');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', function() {
+                            successNotification.classList.add('fade-out');
+                            setTimeout(() => {
+                                document.body.removeChild(successNotification);
+                            }, 300);
+                        });
+                    }
+                    
+                    // Remover automaticamente após 5 segundos
+                    setTimeout(() => {
+                        if (document.body.contains(successNotification)) {
+                            successNotification.classList.add('fade-out');
+                            setTimeout(() => {
+                                if (document.body.contains(successNotification)) {
+                                    document.body.removeChild(successNotification);
+                                }
+                            }, 300);
+                        }
+                    }, 5000);
+                    
+                    // Remover o parâmetro da URL para evitar que a mensagem apareça novamente após refresh
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+            
             // Inicializar aplicação
             function initApp() {
                 setupThemeToggle();
                 setupEventListeners();
                 checkAuthStatus();
+                checkRegistrationSuccess(); // Verificar se veio do registro
             }
+            
+            // Adicionar CSS para notificação de sucesso
+            const style = document.createElement('style');
+            style.textContent = `
+                .success-notification {
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    animation: slide-in 0.3s ease-out forwards;
+                }
+                
+                .notification-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .success-notification i.fa-check-circle {
+                    font-size: 20px;
+                }
+                
+                .close-btn {
+                    background: none;
+                    border: none;
+                    color: white;
+                    cursor: pointer;
+                    font-size: 16px;
+                    margin-left: 10px;
+                    padding: 0;
+                }
+                
+                .fade-out {
+                    animation: fade-out 0.3s ease-out forwards;
+                }
+                
+                @keyframes slide-in {
+                    from { transform: translate(-50%, -20px); opacity: 0; }
+                    to { transform: translate(-50%, 0); opacity: 1; }
+                }
+                
+                @keyframes fade-out {
+                    from { transform: translate(-50%, 0); opacity: 1; }
+                    to { transform: translate(-50%, -20px); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
             
             // Iniciar aplicação
             initApp();

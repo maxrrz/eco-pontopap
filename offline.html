@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Offline - EcoPonto Inteligente</title>
+    <link rel="icon" type="image/x-icon" href="int/ec-app.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#888888">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #4CAF50;
+            --text-primary: #333333;
+            --bg-light: #f8f9fa;
+            --bg-dark: #1a1a1a;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e8eaf6 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-primary);
+        }
+        
+        .offline-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            margin: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .offline-icon {
+            font-size: 5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+        }
+        
+        .retry-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .retry-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        .retry-button i {
+            font-size: 1.2rem;
+        }
+        
+        .dark-mode {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #121212 100%);
+            color: #ffffff;
+        }
+        
+        .dark-mode .offline-container {
+            background: rgba(30, 30, 30, 0.95);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dark-mode h1,
+        .dark-mode p {
+            color: #ffffff;
+        }
+        
+        @media (max-width: 768px) {
+            .offline-container {
+                padding: 30px;
+            }
+            
+            .offline-icon {
+                font-size: 4rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            <i class="fas fa-wifi"></i>
+        </div>
+        <h1>Você está offline</h1>
+        <p>Não foi possível carregar a página solicitada porque você está sem conexão com a internet. Verifique sua conexão e tente novamente.</p>
+        <button class="retry-button" onclick="window.location.reload()">
+            <i class="fas fa-sync-alt"></i>
+            Tentar novamente
+        </button>
+    </div>
+    
+    <script>
+        // Verificar se o tema escuro está ativado
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            // Garantir que tema claro é aplicado se não houver tema salvo
+            if (!theme) {
+                localStorage.setItem('theme', 'light');
+            }
+            document.body.classList.remove('dark-mode');
+        }
+        
+        // Verificar quando a conexão for restaurada
+        window.addEventListener('online', function() {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html> 

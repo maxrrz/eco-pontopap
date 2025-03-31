@@ -1,0 +1,80 @@
+<!-- Menu Panel Component -->
+<div class="menu-overlay"></div>
+<div class="menu-panel">
+    <div class="menu-header">
+        <h3 data-i18n="menu">Menu</h3>
+        <button class="menu-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="menu-items">
+        <a href="#" class="menu-item" data-menu-id="notifications">
+            <i class="fas fa-bell" style="color: #0066cc;"></i>
+            <span data-i18n="notifications">Notificações</span>
+        </a>
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-item" data-menu-id="charts" id="charts-menu-button">
+            <i class="fas fa-chart-line" style="color: #0066cc;"></i>
+            <span data-i18n="charts">Gráficos</span>
+        </a>
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-item" id="language-menu-item" data-menu-id="language-menu-item">
+            <i class="fas fa-language" style="color: #0066cc;"></i>
+            <span data-i18n="languages">Idiomas</span>
+            <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; color: #0066cc;"></i>
+        </a>
+        <div class="language-submenu" style="display: none; padding: 0 10px;">
+            <a href="#" class="menu-item language-option" data-lang="pt">
+                <i class="fas fa-check" style="color: #0066cc; visibility: visible;"></i>
+                <span>Português</span>
+            </a>
+            <a href="#" class="menu-item language-option" data-lang="es">
+                <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                <span>Español</span>
+            </a>
+            <a href="#" class="menu-item language-option" data-lang="de">
+                <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                <span>Deutsch</span>
+            </a>
+            <a href="#" class="menu-item language-option" data-lang="fr">
+                <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                <span>Français</span>
+            </a>
+            <a href="#" class="menu-item language-option" data-lang="ja">
+                <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                <span>日本語</span>
+            </a>
+        </div>
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-item" data-menu-id="user">
+            <i class="fas fa-user" style="color: #0066cc;"></i>
+            <span data-i18n="user">Utilizador</span>
+        </a>
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-item" id="install-app-button" data-menu-id="install-app" style="background-color: #e6f2ff; border-left: 3px solid #0066cc;">
+            <i class="fas fa-mobile-alt" style="color: #0066cc;"></i>
+            <span data-i18n="install-app-button">Instalar a aplicação do myEcoponto</span>
+        </a>
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-item" data-menu-id="manage-houses">
+            <i class="fas fa-home" style="color: #0066cc;"></i>
+            <span data-i18n="manage-houses">Gerir Ecoponto</span>
+        </a>
+        <div class="menu-divider"></div>
+        <div class="theme-toggle-container" id="theme-toggle-container">
+            <label class="theme-toggle-label">
+                <i class="fas fa-sun"></i>
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="theme-toggle-slider"></span>
+                </div>
+                <i class="fas fa-moon"></i>
+            </label>
+        </div>
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-item" data-menu-id="logout">
+            <i class="fas fa-sign-out-alt" style="color: #0066cc;"></i>
+            <span data-i18n="logout">Sair</span>
+        </a>
+    </div>
+</div> 

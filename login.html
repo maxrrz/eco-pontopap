@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - EcoPonto</title>
+    <link rel="icon" type="image/x-icon" href="photos/ec.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    
+    <!-- Importar arquivos de configuração e sistema de idiomas -->
+    <script type="module">
+        import { CONFIG, translations } from './js/config.js';
+        import * as LanguageSystem from './js/language-system.js';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando sistema de idiomas na página de login...');
+            
+            // Inicializar o sistema de idiomas
+            LanguageSystem.initializeLanguageSystem();
+            
+            // Configurar os event listeners dos idiomas
+            LanguageSystem.setupLanguageEventListeners();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detectar dispositivo móvel e adicionar classe
+            function detectMobileDevice() {
+                const isMobile = window.innerWidth <= 768 || 
+                                 /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    document.body.classList.add('mobile-device');
+                } else {
+                    document.body.classList.remove('mobile-device');
+                }
+            }
+            
+            // Executar na inicialização
+            detectMobileDevice();
+            
+            // Executar quando a janela for redimensionada
+            window.addEventListener('resize', detectMobileDevice);
+            
+            // Configurar o seletor de idiomas
+            const languageToggle = document.getElementById('language-menu-toggle');
+            const languageDropdown = document.querySelector('.language-dropdown');
+            
+            if (languageToggle && languageDropdown) {
+                // Abrir/fechar o menu de idiomas ao clicar no botão
+                languageToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    languageDropdown.classList.toggle('active');
+                });
+                
+                // Fechar o menu ao clicar fora dele
+                document.addEventListener('click', function(e) {
+                    if (!languageToggle.contains(e.target) && !languageDropdown.contains(e.target)) {
+                        languageDropdown.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Verificar se o usuário já está logado
+            function checkAuthStatus() {
+                try {
+                    const userData = localStorage.getItem('user');
+                    
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        if (user && user.name && user.email) {
+                            // Redirecionar para a página principal
+                            window.location.href = 'index.html';
+                            return true; // Usuário está logado
+                        }
+                    }
+                    
+                    // Verificar se "lembrar de mim" estava ativado
+                    if (localStorage.getItem('rememberMe') === 'true') {
+                        const email = localStorage.getItem('userEmail');
+                        if (email) {
+                            const loginEmail = document.getElementById('loginEmail');
+                            const rememberMe = document.getElementById('rememberMe');
+                            
+                            if (loginEmail) loginEmail.value = email;
+                            if (rememberMe) rememberMe.checked = true;
+                        }
+                    }
+                    
+                    return false; // Usuário não está logado
+                } catch (error) {
+                    console.error('Erro ao verificar status de autenticação:', error);
+                    localStorage.removeItem('user'); // Limpar dados corrompidos
+                    return false;
+                }
+            }
+            
+            // Processar login com email/senha
+            function handleEmailPasswordLogin(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const rememberMe = document.getElementById('rememberMe')?.checked || false;
+                
+                // Validação básica
+                if (!email || !password) {
+                    showNotification('Por favor, preencha todos os campos.', 'error');
+                    return;
+                }
+                
+                // Validação de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showNotification('Por favor, insira um email válido.', 'error');
+                    return;
+                }
+                
+                // Mostrar estado de carregamento
+                const submitButton = document.querySelector('#loginForm .login-btn');
+                if (submitButton) {
+                    const originalButtonText = submitButton.textContent;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
+                    submitButton.disabled = true;
+                    
+                    // Simular chamada de API com timeout
+                    setTimeout(() => {
+                        // Simular login bem-sucedido
+                        const userData = {
+                            name: email.split('@')[0],
+                            email: email,
+                            picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(email.split('@')[0]) + '&background=0066cc&color=fff',
+                            provider: 'email'
+                        };
+                        
+                        // Armazenar preferência de "lembrar de mim"
+                        if (rememberMe) {
+                            localStorage.setItem('rememberMe', 'true');
+                            localStorage.setItem('userEmail', email);
+                        } else {
+                            localStorage.removeItem('rememberMe');
+                            localStorage.removeItem('userEmail');
+                        }
+                        
+                        // Armazenar dados do usuário no localStorage
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        
+                        // Redirecionar para a página principal
+                        window.location.href = 'index.html';
+                        
+                        // Resetar botão
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    }, 1000);
+                }
+            }
+            
+            // Função para mostrar notificações
+            function showNotification(message, type = 'info') {
+                // Função desativada - não mostrar notificações
+                return;
+            }
+            
+            // Alternar visibilidade da senha
+            window.togglePasswordVisibility = function(inputId, buttonEl) {
+                const input = document.getElementById(inputId);
+                const icon = buttonEl.querySelector('i');
+                
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                }
+            };
+            
+            // Configurar tema escuro/claro
+            function setupThemeToggle() {
+                // Forçar modo claro
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Configurar event listeners
+            function setupEventListeners() {
+                // Login
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', handleEmailPasswordLogin);
+                }
+                
+                // Botão de registro
+                const showRegisterBtn = document.getElementById('showRegister');
+                if (showRegisterBtn) {
+                    showRegisterBtn.addEventListener('click', function() {
+                        // Redirecionar para a página de registro
+                        window.location.href = 'register.html';
+                    });
+                }
+                
+                // Botão de login com Google
+                const googleSignInButton = document.getElementById('googleSignInButton');
+                if (googleSignInButton) {
+                    googleSignInButton.addEventListener('click', function() {
+                        showNotification('Login com Google em desenvolvimento.', 'info');
+                    });
+                }
+                
+                // Botão de login na seção de registro
+                const showLoginBtn = document.getElementById('showLogin');
+                if (showLoginBtn) {
+                    showLoginBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        // Focar no formulário de login
+                        const loginEmail = document.getElementById('loginEmail');
+                        if (loginEmail) {
+                            loginEmail.focus();
+                        }
+                    });
+                }
+            }
+            
+            // Inicializar aplicação
+            function initApp() {
+                setupThemeToggle();
+                setupEventListeners();
+                checkAuthStatus();
+            }
+            
+            // Iniciar aplicação
+            initApp();
+        });
+    </script>
+</head>
+<body>
+    <div class="login-panel">
+        <div class="login-container">
+            <div class="login-content">
+                <div class="login-side">
+                    <h2 data-i18n="loginTitle">Entra na tua conta myEcoPonto!</h2>
+                    
+                    <div class="login-options">
+                        <button id="googleSignInButton" class="google-btn" data-btn-i18n="googleLogin">
+                            <i class="fab fa-google" style="color: #4285F4; margin-right: 10px; font-size: 18px;"></i>
+                            Entrar com o Google
+                        </button>
+                        
+                        <div class="login-divider">
+                            <span data-i18n="or">ou</span>
+                        </div>
+                    </div>
+                    
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <input type="email" id="loginEmail" placeholder="Email" data-placeholder-i18n="email" required>
+                        </div>
+                        <div class="form-group">
+                            <div class="password-input-group">
+                                <input type="password" id="loginPassword" placeholder="Password" data-placeholder-i18n="password" required>
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="rememberMe">
+                                <label for="rememberMe" data-i18n="rememberMe">Guardar sessão</label>
+                            </div>
+                            <a href="forgot-password.html" class="forgot-password" data-i18n="forgotPassword">Esqueceste-te da palavra-passe?</a>
+                        </div>
+                        <button type="submit" class="login-btn" data-i18n="loginButton">INICIAR SESSÃO</button>
+                    </form>
+                </div>
+                
+                <div class="section-divider">
+                    <div class="divider-line"></div>
+                </div>
+                
+                <div class="register-side">
+                    <h2 data-i18n="registerTitle">Ainda não tens conta?</h2>
+                    <p class="register-subtitle" data-i18n="registerSubtitle1">Regista-te agora!</p>
+                    <p class="register-subtitle" data-i18n="registerSubtitle2">Fácil e Rápido!</p>
+                    
+                    <ul class="benefits-list">
+                        <li class="benefit-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span data-i18n="benefit1">Acompanha os níveis de enchimento em tempo real</span>
+                        </li>
+                        <li class="benefit-item">
+                            <i class="fas fa-bell"></i>
+                            <span data-i18n="benefit2">Recebe notificações quando os ecopontos estiverem quase cheios</span>
+                        </li>
+                        <li class="benefit-item">
+                            <i class="fas fa-history"></i>
+                            <span data-i18n="benefit3">Acede a estatísticas e histórico de recolhas</span>
+                        </li>
+                    </ul>
+                    
+                    <a href="register.html" class="create-account-btn" data-i18n="createAccount">CRIAR CONTA</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Menu para seleção de idioma -->
+    <div class="language-selector">
+        <button class="lang-button" id="language-menu-toggle">
+            <i class="fas fa-globe"></i>
+        </button>
+        <div class="language-dropdown">
+            <a href="#" class="language-option" data-lang="pt">
+                <i class="fas fa-check" style="visibility: visible;"></i>
+                <span>Português</span>
+            </a>
+            <a href="#" class="language-option" data-lang="es">
+                <i class="fas fa-check" style="visibility: hidden;"></i>
+                <span>Español</span>
+            </a>
+            <a href="#" class="language-option" data-lang="de">
+                <i class="fas fa-check" style="visibility: hidden;"></i>
+                <span>Deutsch</span>
+            </a>
+            <a href="#" class="language-option" data-lang="fr">
+                <i class="fas fa-check" style="visibility: hidden;"></i>
+                <span>Français</span>
+            </a>
+            <a href="#" class="language-option" data-lang="ja">
+                <i class="fas fa-check" style="visibility: hidden;"></i>
+                <span>日本語</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

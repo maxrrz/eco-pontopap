@@ -1,0 +1,194 @@
+/* Estilos para o modal de instruções de instalação */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.visible .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #0066cc;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+/* Estilos para as etapas de instrução */
+.instruction-step {
+  display: flex;
+  margin-bottom: 25px;
+  align-items: flex-start;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  background-color: #0066cc;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.instruction-image {
+  max-width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.note {
+  background-color: rgba(0, 102, 204, 0.1);
+  border-left: 4px solid #0066cc;
+  padding: 15px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 20px;
+}
+
+.note p {
+  margin: 0;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.note i {
+  color: #0066cc;
+  margin-right: 5px;
+}
+
+/* Estilos para o modo escuro */
+.dark-mode .modal-content {
+  background-color: #222;
+  color: #fff;
+}
+
+.dark-mode .modal-header {
+  border-bottom-color: #333;
+}
+
+.dark-mode .modal-header h2 {
+  color: #fff;
+}
+
+.dark-mode .modal-close {
+  color: #aaa;
+}
+
+.dark-mode .modal-close:hover {
+  color: #0066cc;
+}
+
+.dark-mode .instruction-image {
+  border-color: #444;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .note {
+  background-color: rgba(0, 102, 204, 0.2);
+}
+
+.dark-mode .note p {
+  color: #ddd;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .instruction-step {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header {
+    padding: 12px 15px;
+  }
+  
+  .modal-body {
+    padding: 15px;
+  }
+  
+  .step-number {
+    width: 25px;
+    height: 25px;
+    font-size: 0.9rem;
+  }
+} 

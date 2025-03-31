@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Registo - EcoPonto</title>
+    <link rel="icon" type="image/x-icon" href="photos/ec.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/register.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detectar dispositivo móvel e adicionar classe
+            function detectMobileDevice() {
+                const isMobile = window.innerWidth <= 768 || 
+                                 /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    document.body.classList.add('mobile-device');
+                } else {
+                    document.body.classList.remove('mobile-device');
+                }
+            }
+            
+            // Executar na inicialização
+            detectMobileDevice();
+            
+            // Executar quando a janela for redimensionada
+            window.addEventListener('resize', detectMobileDevice);
+            
+            // Verificar se o usuário já está logado
+            function checkAuthStatus() {
+                try {
+                    const userData = localStorage.getItem('user');
+                    
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        if (user && user.name && user.email) {
+                            // Redirecionar para a página principal
+                            window.location.href = 'index.html';
+                            return true; // Usuário está logado
+                        }
+                    }
+                    
+                    return false; // Usuário não está logado
+                } catch (error) {
+                    console.error('Erro ao verificar status de autenticação:', error);
+                    localStorage.removeItem('user'); // Limpar dados corrompidos
+                    return false;
+                }
+            }
+            
+            // Função para mostrar notificações
+            function showNotification(message, type = 'info') {
+                // Função desativada - não mostrar notificações
+                return;
+            }
+            
+            // Alternar visibilidade da senha
+            window.togglePasswordVisibility = function(inputId, buttonEl) {
+                const input = document.getElementById(inputId);
+                const icon = buttonEl.querySelector('i');
+                
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                }
+            };
+            
+            // Processar registro
+            function handleRegister(event) {
+                event.preventDefault();
+                
+                const ecCode = document.getElementById('ecCode').value;
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const termsAgree = document.getElementById('termsAgree').checked;
+                
+                // Validação básica
+                if (!ecCode || !name || !email || !password || !confirmPassword) {
+                    showNotification('Por favor, preencha todos os campos.', 'error');
+                    return;
+                }
+                
+                // Validação do código EC
+                if (ecCode.length !== 4 || !/^\d+$/.test(ecCode)) {
+                    showNotification('O código EC deve conter exatamente 4 dígitos.', 'error');
+                    return;
+                }
+                
+                // Validação de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showNotification('Por favor, insira um email válido.', 'error');
+                    return;
+                }
+                
+                // Validação de senha
+                if (password.length < 6) {
+                    showNotification('A senha deve ter pelo menos 6 caracteres.', 'error');
+                    return;
+                }
+                
+                // Verificar se as senhas coincidem
+                if (password !== confirmPassword) {
+                    showNotification('As senhas não coincidem.', 'error');
+                    return;
+                }
+                
+                // Verificar se os termos foram aceitos
+                if (!termsAgree) {
+                    showNotification('Você deve aceitar os termos e condições.', 'error');
+                    return;
+                }
+                
+                // Mostrar estado de carregamento
+                const submitButton = document.querySelector('#registerForm .create-account-btn');
+                if (submitButton) {
+                    const originalButtonText = submitButton.textContent;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
+                    submitButton.disabled = true;
+                    
+                    // Simular chamada de API com timeout
+                    setTimeout(() => {
+                        // Simular registro bem-sucedido
+                        const userData = {
+                            ecCode: ecCode,
+                            name: name,
+                            email: email,
+                            picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=0066cc&color=fff',
+                            provider: 'email'
+                        };
+                        
+                        // Armazenar dados do usuário no localStorage
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        
+                        // Redirecionar para a página principal
+                        window.location.href = 'index.html';
+                        
+                        // Resetar botão
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    }, 1000);
+                }
+            }
+            
+            // Configurar event listeners
+            function setupEventListeners() {
+                // Registro
+                const registerForm = document.getElementById('registerForm');
+                if (registerForm) {
+                    registerForm.addEventListener('submit', handleRegister);
+                }
+                
+                // Validação do campo EC-code (apenas dígitos)
+                const ecCodeInput = document.getElementById('ecCode');
+                if (ecCodeInput) {
+                    ecCodeInput.addEventListener('input', function(e) {
+                        // Remover qualquer caractere que não seja dígito
+                        this.value = this.value.replace(/\D/g, '');
+                        
+                        // Limitar a 4 dígitos (adicional ao maxlength)
+                        if (this.value.length > 4) {
+                            this.value = this.value.slice(0, 4);
+                        }
+                    });
+                }
+            }
+            
+            // Inicializar aplicação
+            function initApp() {
+                setupEventListeners();
+                checkAuthStatus();
+            }
+            
+            // Iniciar aplicação
+            initApp();
+        });
+    </script>
+</head>
+<body>
+    <div class="register-panel">
+        <div class="register-container">
+            <div class="register-content">
+                <h2>Ainda não tens conta?</h2>
+                <h3>Regista-te agora!</h3>
+                <p class="register-subtitle">Fácil e Rápido!</p>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Acompanha os níveis de enchimento em tempo real</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Recebe notificações quando os ecopontos estiverem quase cheios</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check"></i>
+                        <span>Acede a estatísticas e histórico de recolhas</span>
+                    </div>
+                </div>
+                
+                <div class="code-form">
+                    <p><i class="fas fa-key"></i> Código de identificação</p>
+                    <div class="ec-code-container">
+                        <span class="ec-prefix">EC-</span>
+                        <input type="text" id="ecCode" maxlength="4" placeholder="XXXX" required pattern="[0-9]{4}" inputmode="numeric">
+                    </div>
+                    <span class="code-info">Este código é exclusivo e pessoal</span>
+                </div>
+                
+                <form id="registerForm" class="register-form">
+                    <div class="form-group">
+                        <input type="text" id="registerName" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="password-input-group">
+                            <input type="password" id="registerPassword" placeholder="Password" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="password-input-group">
+                            <input type="password" id="confirmPassword" placeholder="Confirmar password" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="termsAgree" required>
+                        <label for="termsAgree">Concordo com os <a href="terms.html" class="terms-link">Termos e Condições</a></label>
+                    </div>
+                    
+                    <button type="submit" class="create-account-btn">CRIAR CONTA</button>
+                </form>
+                
+                <div class="login-link">
+                    <p>Já tens uma conta? <a href="login.html">Iniciar sessão</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

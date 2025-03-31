@@ -80,12 +80,12 @@
                     
                     // Verificar se "lembrar de mim" estava ativado
                     if (localStorage.getItem('rememberMe') === 'true') {
-                        const email = localStorage.getItem('userEmail');
-                        if (email) {
-                            const loginEmail = document.getElementById('loginEmail');
+                        const savedValue = localStorage.getItem('userEmail');
+                        if (savedValue) {
+                            const loginInput = document.getElementById('loginEmail');
                             const rememberMe = document.getElementById('rememberMe');
                             
-                            if (loginEmail) loginEmail.value = email;
+                            if (loginInput) loginInput.value = savedValue;
                             if (rememberMe) rememberMe.checked = true;
                         }
                     }
@@ -102,20 +102,22 @@
             function handleEmailPasswordLogin(event) {
                 event.preventDefault();
                 
-                const email = document.getElementById('loginEmail').value;
+                const emailOrUsername = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
                 const rememberMe = document.getElementById('rememberMe')?.checked || false;
                 
                 // Validação básica
-                if (!email || !password) {
+                if (!emailOrUsername || !password) {
                     showNotification('Por favor, preencha todos os campos.', 'error');
                     return;
                 }
                 
-                // Validação de email
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    showNotification('Por favor, insira um email válido.', 'error');
+                // Validação de email ou username
+                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrUsername);
+                const isUsername = !isEmail && emailOrUsername.length >= 3;
+                
+                if (!isEmail && !isUsername) {
+                    showNotification('Por favor, insira um email válido ou nome de utilizador.', 'error');
                     return;
                 }
                 
@@ -128,18 +130,32 @@
                     
                     // Simular chamada de API com timeout
                     setTimeout(() => {
+                        // Determinar o nome do usuário para exibição
+                        let displayName;
+                        let email;
+                        
+                        if (isEmail) {
+                            email = emailOrUsername;
+                            displayName = email.split('@')[0];
+                        } else {
+                            // Se for username, usamos o nome diretamente
+                            displayName = emailOrUsername;
+                            // E simulamos um email baseado no username
+                            email = `${emailOrUsername}@myecoponto.com`;
+                        }
+                        
                         // Simular login bem-sucedido
                         const userData = {
-                            name: email.split('@')[0],
+                            name: displayName,
                             email: email,
-                            picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(email.split('@')[0]) + '&background=0066cc&color=fff',
+                            picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=0066cc&color=fff',
                             provider: 'email'
                         };
                         
                         // Armazenar preferência de "lembrar de mim"
                         if (rememberMe) {
                             localStorage.setItem('rememberMe', 'true');
-                            localStorage.setItem('userEmail', email);
+                            localStorage.setItem('userEmail', emailOrUsername);
                         } else {
                             localStorage.removeItem('rememberMe');
                             localStorage.removeItem('userEmail');
@@ -259,7 +275,7 @@
                     
                     <form id="loginForm" class="login-form">
                         <div class="form-group">
-                            <input type="email" id="loginEmail" placeholder="Email" data-placeholder-i18n="email" required>
+                            <input type="text" id="loginEmail" placeholder="Email ou Nome de Utilizador" data-placeholder-i18n="emailOrUsername" required>
                         </div>
                         <div class="form-group">
                             <div class="password-input-group">

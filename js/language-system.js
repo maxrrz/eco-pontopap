@@ -158,6 +158,22 @@ export function changeLanguage(lang) {
     
     // Atualizar as marcações de seleção
     updateLanguageCheckmarks(lang);
+
+    // Atualizar a URL para incluir o código do idioma
+    const currentPath = window.location.pathname;
+    const currentHost = window.location.host;
+    const protocol = window.location.protocol;
+    const currentSearch = window.location.search;
+    
+    // Criar ou atualizar o parâmetro 'lang' na URL, preservando outros parâmetros
+    const searchParams = new URLSearchParams(currentSearch);
+    searchParams.set('lang', lang);
+    
+    // Construir a nova URL usando parâmetros de query
+    const newURL = `${protocol}//${currentHost}${currentPath}?${searchParams.toString()}`;
+    
+    // Atualizar a URL sem recarregar a página
+    window.history.pushState({lang: lang}, '', newURL);
     
     // Forçar atualização dos dados para que elementos gerados dinamicamente sejam traduzidos
     if (window.forceDataUpdate) {
@@ -166,6 +182,9 @@ export function changeLanguage(lang) {
             window.forceDataUpdate();
         }, 100); // Pequeno atraso para garantir que as traduções estejam aplicadas
     }
+
+    // Atualizar o conteúdo HTML com base no idioma atual
+    updateContent();
 }
 
 // Atualizar os ícones de verificação no menu de idiomas
@@ -189,15 +208,13 @@ function updateLanguageCheckmarks(lang) {
 // Obter o idioma da URL, localStorage, ou usar o padrão
 function getPreferredLanguage() {
     try {
-        // Verificar parâmetro de URL
+        // Verificar parâmetro de URL (prioridade máxima)
         const urlParams = new URLSearchParams(window.location.search);
         const langParam = urlParams.get('lang');
+        const supportedLanguages = CONFIG ? CONFIG.SUPPORTED_LANGUAGES : ['pt', 'de', 'ja', 'zh'];
         
         // Verificar localStorage
         const storedLang = localStorage.getItem('language') || (CONFIG && localStorage.getItem(CONFIG.LANGUAGE_KEY));
-        
-        // Determinar o idioma suportado
-        const supportedLanguages = CONFIG ? CONFIG.SUPPORTED_LANGUAGES : ['pt', 'es', 'de', 'fr', 'ja'];
         
         // Retornar o idioma na seguinte ordem de prioridade:
         // 1. Parâmetro URL (se válido)
@@ -230,14 +247,90 @@ export function initializeLanguageSystem() {
         // Atualizar o idioma atual
         languageState.currentLanguage = preferredLanguage;
         
+        // Verificar se a URL já tem o parâmetro de idioma
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        
+        // Se não tiver o parâmetro lang ou se for diferente do idioma preferido, adicionar
+        if (!langParam || langParam !== preferredLanguage) {
+            // Configurar o parâmetro de URL sem recarregar a página, preservando outros parâmetros
+            urlParams.set('lang', preferredLanguage);
+            const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+            window.history.replaceState({lang: preferredLanguage}, '', newUrl);
+        }
+        
         // Aplicar as traduções
         updateInterfaceTextsInternal(preferredLanguage);
         
         // Atualizar ícones de verificação
         updateLanguageCheckmarks(preferredLanguage);
         
+        // Ajustar links internos para preservar o parâmetro de idioma
+        setupLinkInterceptor(preferredLanguage);
+        
         console.log("Sistema de idiomas inicializado com sucesso!");
     });
+}
+
+// Configurar interceptador de cliques em links para preservar o parâmetro de idioma
+function setupLinkInterceptor(currentLang) {
+    console.log("Configurando interceptador de links para preservar idioma...");
+    
+    try {
+        // Remover listener anterior, se existir
+        if (window.languageLinkHandler) {
+            document.body.removeEventListener('click', window.languageLinkHandler);
+        }
+        
+        // Função para manipular cliques em links
+        const linkHandler = function(e) {
+            // Verificar se o clique foi em um link
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            if (!href) return;
+            
+            // Ignorar links externos, âncoras, e-mails, links de idioma, ou links que abrem em nova janela
+            if (href.startsWith('http') || 
+                href.startsWith('#') || 
+                href.startsWith('mailto:') || 
+                link.classList.contains('language-option') ||
+                link.getAttribute('target') === '_blank') {
+                return;
+            }
+            
+            // Prevenir navegação padrão
+            e.preventDefault();
+            
+            // Construir nova URL com parâmetro de idioma
+            let url = new URL(href, window.location.origin);
+            
+            // Preservar o parâmetro de idioma atual
+            url.searchParams.set('lang', currentLang);
+            
+            // Preservar outros parâmetros importantes da URL atual (exceto o idioma)
+            const currentParams = new URLSearchParams(window.location.search);
+            for (const [key, value] of currentParams.entries()) {
+                if (key !== 'lang' && !url.searchParams.has(key)) {
+                    url.searchParams.set(key, value);
+                }
+            }
+            
+            // Navegar para a nova URL
+            window.location.href = url.toString();
+        };
+        
+        // Armazenar o handler para remover posteriormente, se necessário
+        window.languageLinkHandler = linkHandler;
+        
+        // Adicionar listener para cliques em todo o documento
+        document.body.addEventListener('click', linkHandler);
+        
+        console.log("Interceptador de links configurado com sucesso");
+    } catch (error) {
+        console.error("Erro ao configurar interceptador de links:", error);
+    }
 }
 
 // Configurar event listeners para os botões de idioma
@@ -272,6 +365,58 @@ export function setupLanguageEventListeners() {
     }
 }
 
+// Atualizar o conteúdo HTML com base no idioma atual
+function updateContent() {
+    const currentLang = languageState.currentLanguage;
+    const translationsObj = translations[currentLang] || translations.pt;
+    
+    // Atualizar elementos com atributo data-lang
+    const elements = document.querySelectorAll('[data-lang]');
+    elements.forEach(el => {
+        const key = el.getAttribute('data-lang');
+        if (translationsObj[key]) {
+            el.textContent = translationsObj[key];
+        }
+    });
+    
+    // Atualizar placeholders com atributo data-lang-placeholder
+    const placeholderElements = document.querySelectorAll('[data-lang-placeholder]');
+    placeholderElements.forEach(el => {
+        const key = el.getAttribute('data-lang-placeholder');
+        if (translationsObj[key]) {
+            el.setAttribute('placeholder', translationsObj[key]);
+        }
+    });
+    
+    // Atualizar elementos com data-lang-html (para conteúdo HTML)
+    const htmlElements = document.querySelectorAll('[data-lang-html]');
+    htmlElements.forEach(el => {
+        const key = el.getAttribute('data-lang-html');
+        if (translationsObj[key]) {
+            el.innerHTML = translationsObj[key];
+        }
+    });
+    
+    // Atualizar titles com data-lang-title
+    const titleElements = document.querySelectorAll('[data-lang-title]');
+    titleElements.forEach(el => {
+        const key = el.getAttribute('data-lang-title');
+        if (translationsObj[key]) {
+            el.setAttribute('title', translationsObj[key]);
+        }
+    });
+    
+    // Atualizar notificações se o menuManager existir
+    if (window.menuManager) {
+        window.menuManager.updateNotificationsLanguage();
+    }
+    
+    // Disparar evento personalizado para informar que os idiomas foram atualizados
+    document.dispatchEvent(new CustomEvent('languageChanged', {
+        detail: { language: currentLang }
+    }));
+}
+
 // Exportar todas as funções necessárias
 export {
     updateInterfaceTextsInternal
@@ -282,3 +427,30 @@ window.updateInterfaceTexts = updateInterfaceTexts;
 window.changeLanguage = changeLanguage;
 window.initializeLanguageSystem = initializeLanguageSystem;
 window.setupLanguageEventListeners = setupLanguageEventListeners;
+
+// Definir o idioma atual
+function setLanguage(lang) {
+    if (!CONFIG.SUPPORTED_LANGUAGES.includes(lang)) {
+        console.warn(`Idioma não suportado: ${lang}. Usando o idioma padrão (pt).`);
+        lang = 'pt';
+    }
+    
+    languageState.currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    document.documentElement.setAttribute('lang', lang);
+    
+    // Atualizar URLs que contêm parâmetro lang=
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.has('lang')) {
+        currentUrl.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', currentUrl.toString());
+    }
+    
+    // Atualizar o conteúdo da página
+    updateContent();
+    
+    // Debug: Exibir idioma atual
+    console.log(`Idioma definido: ${lang}`);
+    
+    return lang;
+}

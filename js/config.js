@@ -42,7 +42,7 @@ export const CONFIG = {
     // Configurações de idioma
     LANGUAGE_KEY: 'language',
     DEFAULT_LANGUAGE: 'pt',
-    SUPPORTED_LANGUAGES: ['pt', 'es', 'de', 'fr', 'ja']
+    SUPPORTED_LANGUAGES: ['pt', 'en', 'de', 'ja', 'zh']
 };
 
 // Traduções para diferentes idiomas
@@ -117,7 +117,50 @@ export const translations = {
         // Rodapé
         'footer-text': 'Projeto desenvolvido para a Prova de Aptidão Profissional de Maximilian Guimaro',
         about: 'Sobre',
-        docs: 'Documentação'
+        docs: 'Documentação',
+        
+        // Instruções de instalação
+        installAppModalTitle: 'Instalar a aplicação do myEcoponto',
+        close: 'Fechar',
+        
+        // iOS
+        installAppIOSTitle: 'Instalar o myEcoPonto no iOS',
+        installAppIOSStep1: 'Toque no ícone de compartilhamento na barra de navegação.',
+        installAppIOSStep2: 'Role para baixo e toque em "Adicionar à Tela de Início".',
+        installAppIOSStep3: 'Confirme tocando em "Adicionar" no canto superior direito.',
+        
+        // Android
+        installAppAndroidTitle: 'Instalar o myEcoPonto no Android',
+        installAppAndroidStep1: 'Toque no menu no canto superior direito.',
+        installAppAndroidStep2: 'Selecione "Instalar aplicativo" ou "Adicionar à tela inicial".',
+        installAppAndroidStep3: 'Confirme tocando em "Instalar".',
+        
+        // Desktop
+        installAppDesktopTitle: 'Instalar o myEcoPonto no Desktop',
+        installAppDesktopStep1: 'Clique no ícone de instalação na barra de endereço.',
+        installAppDesktopStep2: 'Clique em "Instalar" no prompt que aparece.',
+        
+        // Firefox
+        installAppFirefoxTitle: 'Instalar o myEcoPonto no Firefox',
+        installAppFirefoxStep1: 'Clique no menu no canto superior direito.',
+        installAppFirefoxStep2: 'Selecione "+ Adicionar à Tela Inicial".',
+        installAppFirefoxStep3: 'Confirme clicando em "Adicionar".',
+        
+        // Genérico
+        installAppGenericTitle: 'Instalar o myEcoPonto',
+        installAppGenericStep1: 'Abra o site no Chrome, Edge ou Safari.',
+        installAppGenericStep2: 'No menu do navegador, procure a opção "Instalar aplicativo" ou "Adicionar à tela inicial".',
+        installAppGenericStep3: 'Siga as instruções na tela para completar a instalação.',
+        
+        // Nota
+        installAppNote: 'Nota: Após a instalação, você poderá acessar o myEcoPonto diretamente do seu dispositivo, mesmo quando estiver offline.',
+        
+        // Notificações
+        noNotifications: 'Não há notificações.',
+        markAsRead: 'Marcar como lida',
+        deleteNotification: 'Excluir',
+        markAllAsRead: 'Marcar todas como lidas',
+        clearAll: 'Limpar todas'
     },
     
     en: {
@@ -128,6 +171,8 @@ export const translations = {
         connected: 'Connected',
         disconnected: 'Disconnected',
         hello: 'Hello',
+        welcomeMessage: 'Welcome to the monitoring system! Here you can track the filling of ecopoints in real time.',
+        title: 'EcoPonto Inteligente',
         
         // PWA
         'install-app': 'Install App',
@@ -164,6 +209,67 @@ export const translations = {
             green: 'Glass',
             blue: 'Paper and Cardboard'
         },
+        'yellow-label': 'Plastic and Metal',
+        'green-label': 'Glass',
+        'blue-label': 'Paper and Cardboard',
+        yellowSubtitle: 'Packaging and containers',
+        greenSubtitle: 'Bottles and jars',
+        blueSubtitle: 'Newspapers and packaging',
+        ecopointInfoMessage: 'Here you can see the filling levels of the ecopoints.',
+        
+        // Statistics
+        averageFill: 'Average Fill',
+        realTime: 'Real time',
+        mostFull: 'Most Filled Container',
+        activeMonitoring: 'Active monitoring',
+        lastUpdate: 'Last Update',
+        autoUpdate: 'Auto update',
+        status: 'Loading...',
+        
+        // Charts
+        'chart-title': 'Filling History',
+        last24h: 'Last 24h',
+        
+        // Footer
+        'footer-text': 'Project developed for the Professional Aptitude Test of Maximilian Guimaro',
+        about: 'About',
+        docs: 'Documentation',
+        
+        // Installation Instructions
+        installAppModalTitle: 'Install myEcoponto application',
+        close: 'Close',
+        
+        // iOS
+        installAppIOSTitle: 'Install myEcoPonto on iOS',
+        installAppIOSStep1: 'Tap the share icon in the navigation bar.',
+        installAppIOSStep2: 'Scroll down and tap "Add to Home Screen".',
+        installAppIOSStep3: 'Confirm by tapping "Add" in the top right corner.',
+        
+        // Android
+        installAppAndroidTitle: 'Install myEcoPonto on Android',
+        installAppAndroidStep1: 'Tap the menu in the top right corner.',
+        installAppAndroidStep2: 'Select "Install app" or "Add to home screen".',
+        installAppAndroidStep3: 'Confirm by tapping "Install".',
+        
+        // Desktop
+        installAppDesktopTitle: 'Install myEcoPonto on Desktop',
+        installAppDesktopStep1: 'Click the installation icon in the address bar.',
+        installAppDesktopStep2: 'Click "Install" in the prompt that appears.',
+        
+        // Firefox
+        installAppFirefoxTitle: 'Install myEcoPonto on Firefox',
+        installAppFirefoxStep1: 'Click the menu in the top right corner.',
+        installAppFirefoxStep2: 'Select "+ Add to Home Screen".',
+        installAppFirefoxStep3: 'Confirm by clicking "Add".',
+        
+        // Generic
+        installAppGenericTitle: 'Install myEcoPonto',
+        installAppGenericStep1: 'Open the site in Chrome, Edge, or Safari.',
+        installAppGenericStep2: 'In the browser menu, look for the "Install app" or "Add to home screen" option.',
+        installAppGenericStep3: 'Follow the on-screen instructions to complete the installation.',
+        
+        // Note
+        installAppNote: 'Note: After installation, you can access myEcoPonto directly from your device, even when offline.',
         
         // Charts
         chartsTitle: 'Filling History',
@@ -349,7 +455,50 @@ export const translations = {
         password: 'Passwort',
         forgotPassword: 'Passwort vergessen?',
         rememberMe: 'Angemeldet bleiben',
-        createAccount: 'Konto erstellen'
+        createAccount: 'Konto erstellen',
+        
+        // Instruções de instalação
+        installAppModalTitle: 'myEcoponto-Anwendung installieren',
+        close: 'Schließen',
+        
+        // iOS
+        installAppIOSTitle: 'myEcoPonto auf iOS installieren',
+        installAppIOSStep1: 'Tippen Sie auf das Teilen-Symbol in der Navigationsleiste.',
+        installAppIOSStep2: 'Scrollen Sie nach unten und tippen Sie auf "Zum Home-Bildschirm hinzufügen".',
+        installAppIOSStep3: 'Bestätigen Sie mit "Hinzufügen" in der oberen rechten Ecke.',
+        
+        // Android
+        installAppAndroidTitle: 'myEcoPonto auf Android installieren',
+        installAppAndroidStep1: 'Tippen Sie auf das Menü in der oberen rechten Ecke.',
+        installAppAndroidStep2: 'Wählen Sie "App installieren" oder "Zum Startbildschirm hinzufügen".',
+        installAppAndroidStep3: 'Bestätigen Sie mit "Installieren".',
+        
+        // Desktop
+        installAppDesktopTitle: 'myEcoPonto auf dem Desktop installieren',
+        installAppDesktopStep1: 'Klicken Sie auf das Installations-Symbol in der Adressleiste.',
+        installAppDesktopStep2: 'Klicken Sie auf "Installieren" im erscheinenden Dialog.',
+        
+        // Firefox
+        installAppFirefoxTitle: 'myEcoPonto in Firefox installieren',
+        installAppFirefoxStep1: 'Klicken Sie auf das Menü in der oberen rechten Ecke.',
+        installAppFirefoxStep2: 'Wählen Sie "+ Zum Startbildschirm hinzufügen".',
+        installAppFirefoxStep3: 'Bestätigen Sie mit "Hinzufügen".',
+        
+        // Genérico
+        installAppGenericTitle: 'myEcoPonto installieren',
+        installAppGenericStep1: 'Öffnen Sie die Website in Chrome, Edge oder Safari.',
+        installAppGenericStep2: 'Suchen Sie im Browser-Menü nach der Option "App installieren" oder "Zum Startbildschirm hinzufügen".',
+        installAppGenericStep3: 'Folgen Sie den Anweisungen auf dem Bildschirm, um die Installation abzuschließen.',
+        
+        // Nota
+        installAppNote: 'Hinweis: Nach der Installation können Sie direkt von Ihrem Gerät auf myEcoPonto zugreifen, auch wenn Sie offline sind.',
+        
+        // Notificações
+        noNotifications: 'Keine Benachrichtigungen',
+        markAsRead: 'Als gelesen markieren',
+        deleteNotification: 'Löschen',
+        markAllAsRead: 'Alle als gelesen markieren',
+        clearAll: 'Alle löschen'
     },
     
     fr: {
@@ -432,7 +581,14 @@ export const translations = {
         password: 'Mot de passe',
         forgotPassword: 'Mot de passe oublié?',
         rememberMe: 'Se souvenir de moi',
-        createAccount: 'Créer un compte'
+        createAccount: 'Créer un compte',
+        
+        // Notificações
+        noNotifications: 'Não há notificações.',
+        markAsRead: 'Marcar como lida',
+        deleteNotification: 'Excluir',
+        markAllAsRead: 'Marcar todas como lidas',
+        clearAll: 'Limpar todas'
     },
     
     ja: {
@@ -515,6 +671,165 @@ export const translations = {
         password: 'パスワード',
         forgotPassword: 'パスワードをお忘れですか？',
         rememberMe: '記憶する',
-        createAccount: 'アカウント作成'
+        createAccount: 'アカウント作成',
+        
+        // インストール手順
+        installAppModalTitle: 'myEcopontoアプリのインストール',
+        close: '閉じる',
+        
+        // iOS
+        installAppIOSTitle: 'iOSにmyEcopontoをインストール',
+        installAppIOSStep1: 'ナビゲーションバーの共有アイコンをタップします。',
+        installAppIOSStep2: '下にスクロールして「ホーム画面に追加」をタップします。',
+        installAppIOSStep3: '右上の「追加」をタップして確認します。',
+        
+        // Android
+        installAppAndroidTitle: 'AndroidにmyEcopontoをインストール',
+        installAppAndroidStep1: '右上のメニューをタップします。',
+        installAppAndroidStep2: '「アプリをインストール」または「ホーム画面に追加」を選択します。',
+        installAppAndroidStep3: '「インストール」をタップして確認します。',
+        
+        // Desktop
+        installAppDesktopTitle: 'デスクトップにmyEcopontoをインストール',
+        installAppDesktopStep1: 'アドレスバーのインストールアイコンをクリックします。',
+        installAppDesktopStep2: '表示されるプロンプトで「インストール」をクリックします。',
+        
+        // Firefox
+        installAppFirefoxTitle: 'FirefoxにmyEcopontoをインストール',
+        installAppFirefoxStep1: '右上のメニューをクリックします。',
+        installAppFirefoxStep2: '「+ ホーム画面に追加」を選択します。',
+        installAppFirefoxStep3: '「追加」をクリックして確認します。',
+        
+        // Generic
+        installAppGenericTitle: 'myEcopontoをインストール',
+        installAppGenericStep1: 'Chrome、Edge、またはSafariでサイトを開きます。',
+        installAppGenericStep2: 'ブラウザメニューで「アプリをインストール」または「ホーム画面に追加」オプションを探します。',
+        installAppGenericStep3: '画面の指示に従ってインストールを完了します。',
+        
+        // Note
+        installAppNote: '注意：インストール後は、オフラインでもデバイスから直接myEcopontoにアクセスできます。',
+        
+        // 通知
+        noNotifications: '通知はありません',
+        markAsRead: '既読にする',
+        deleteNotification: '削除',
+        markAllAsRead: 'すべて既読にする',
+        clearAll: 'すべて消去'
+    },
+    
+    zh: {
+        // Geral
+        appName: 'EcoPonto 智能',
+        subtitle: '智能监控',
+        loading: '加载中...',
+        connected: '已连接',
+        disconnected: '已断开',
+        welcomeMessage: '欢迎使用监控系统！在这里，您可以实时跟踪回收点的填充情况。',
+        title: 'EcoPonto 智能',
+        hello: '您好',
+        
+        // PWA
+        'install-app': '安装应用',
+        
+        // 认证
+        login: '登录',
+        logout: '退出',
+        email: '电子邮件',
+        emailOrUsername: '电子邮件或用户名',
+        password: '密码',
+        forgotPassword: '忘记密码？',
+        rememberMe: '记住我',
+        createAccount: '创建账户',
+        
+        // 菜单
+        dashboard: '仪表板',
+        notifications: '通知',
+        charts: '图表',
+        ecopointManagement: '回收点管理',
+        'manage-houses': '管理回收点',
+        userManagement: '用户管理',
+        settings: '设置',
+        languages: '语言',
+        menu: '菜单',
+        user: '用户',
+        user2: '安装myEcoponto',
+        'install-app-button': '安装myEcoponto应用',
+        darkMode: '深色模式',
+        lightMode: '浅色模式',
+        
+        // 回收点
+        ecopointTypes: {
+            yellow: '塑料和金属',
+            green: '玻璃',
+            blue: '纸张和纸板'
+        },
+        'yellow-label': '塑料和金属',
+        'green-label': '玻璃',
+        'blue-label': '纸张和纸板',
+        yellowSubtitle: '包装和容器',
+        greenSubtitle: '瓶子和罐子',
+        blueSubtitle: '报纸和包装',
+        ecopointInfoMessage: '在这里，您可以查看回收点的填充水平。',
+        
+        // 统计
+        averageFill: '平均填充率',
+        realTime: '实时',
+        mostFull: '最满的容器',
+        activeMonitoring: '主动监控',
+        lastUpdate: '最后更新',
+        autoUpdate: '自动更新',
+        status: '加载中...',
+        
+        // 图表
+        'chart-title': '填充历史',
+        last24h: '最近24小时',
+        
+        // 页脚
+        'footer-text': '为Maximilian Guimaro的职业能力测试开发的项目',
+        about: '关于',
+        docs: '文档',
+        
+        // 安装指南
+        installAppModalTitle: '安装myEcoponto应用',
+        close: '关闭',
+        
+        // iOS
+        installAppIOSTitle: '在iOS上安装myEcoponto',
+        installAppIOSStep1: '点击导航栏中的分享图标。',
+        installAppIOSStep2: '向下滚动并点击"添加到主屏幕"。',
+        installAppIOSStep3: '点击右上角的"添加"确认。',
+        
+        // Android
+        installAppAndroidTitle: '在Android上安装myEcoponto',
+        installAppAndroidStep1: '点击右上角的菜单。',
+        installAppAndroidStep2: '选择"安装应用"或"添加到主屏幕"。',
+        installAppAndroidStep3: '点击"安装"确认。',
+        
+        // Desktop
+        installAppDesktopTitle: '在桌面上安装myEcoponto',
+        installAppDesktopStep1: '点击地址栏中的安装图标。',
+        installAppDesktopStep2: '在弹出的提示中点击"安装"。',
+        
+        // Firefox
+        installAppFirefoxTitle: '在Firefox上安装myEcoponto',
+        installAppFirefoxStep1: '点击右上角的菜单。',
+        installAppFirefoxStep2: '选择"+ 添加到主屏幕"。',
+        installAppFirefoxStep3: '点击"添加"确认。',
+        
+        // Generic
+        installAppGenericTitle: '安装myEcoponto',
+        installAppGenericStep1: '在Chrome、Edge或Safari中打开网站。',
+        installAppGenericStep2: '在浏览器菜单中，查找"安装应用"或"添加到主屏幕"选项。',
+        installAppGenericStep3: '按照屏幕上的说明完成安装。',
+        
+        // Note
+        installAppNote: '注意：安装后，即使离线，您也可以直接从设备访问myEcoponto。',
+        
+        // 通知
+        noNotifications: '没有通知',
+        markAsRead: '标记为已读',
+        deleteNotification: '删除',
+        markAllAsRead: '全部标记为已读',
+        clearAll: '清除全部'
     }
 }; 

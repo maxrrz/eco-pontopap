@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/charts-module.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="js/language-system.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -243,7 +244,7 @@
             <div class="header-actions">
                 <button id="back-button" class="secondary">
                     <i class="fas fa-arrow-left"></i>
-                    Voltar ao Painel Principal
+                    <span>Voltar ao Painel Principal</span>
                 </button>
                 <button id="theme-toggle" class="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -253,20 +254,20 @@
         
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-title">Enchimento Médio</div>
+                <div id="avg-fill-title" class="stat-title">Enchimento Médio</div>
                 <div class="stat-value" id="avg-fill">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-title">Pico de Enchimento</div>
+                <div id="peak-fill-title" class="stat-title">Pico de Enchimento</div>
                 <div class="stat-value" id="peak-fill">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-title">EcoPonto com Enchimento Mais Rápido</div>
+                <div id="fastest-fill-title" class="stat-title">EcoPonto com Enchimento Mais Rápido</div>
                 <div class="stat-value" id="fastest-fill">--</div>
             </div>
         </div>
         
-        <div class="chart-container">
+        <div id="main-chart-container" class="chart-container">
             <div class="chart-header">
                 <h2 class="chart-title">Histórico de Enchimento</h2>
                 <div class="time-range">
@@ -281,7 +282,7 @@
         </div>
         
         <div class="ecopoint-charts">
-            <div class="chart-container">
+            <div id="yellow-chart-container" class="chart-container">
                 <div class="chart-header">
                     <h2 class="chart-title">Plástico e Metal</h2>
                 </div>
@@ -290,7 +291,7 @@
                 </div>
             </div>
             
-            <div class="chart-container">
+            <div id="green-chart-container" class="chart-container">
                 <div class="chart-header">
                     <h2 class="chart-title">Vidro</h2>
                 </div>
@@ -299,7 +300,7 @@
                 </div>
             </div>
             
-            <div class="chart-container">
+            <div id="blue-chart-container" class="chart-container">
                 <div class="chart-header">
                     <h2 class="chart-title">Papel e Cartão</h2>
                 </div>
@@ -312,6 +313,7 @@
     
     <script type="module">
         import { fixCharts } from './js/charts-fix.js';
+        import * as LanguageSystem from './js/language-system.js';
         
         // Verificar e aplicar tema salvo
         const savedTheme = localStorage.getItem('theme');
@@ -325,6 +327,81 @@
             }
             document.body.classList.remove('dark-mode');
             document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        
+        // Inicializar sistema de idiomas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar o sistema de idiomas
+            LanguageSystem.initializeLanguageSystem();
+            
+            // Atualizar textos da interface
+            updateInterfaceLanguage();
+        });
+        
+        // Função para atualizar textos da interface com base no idioma atual
+        function updateInterfaceLanguage() {
+            // Obter o idioma atual
+            const currentLanguage = window.languageState?.currentLanguage || 
+                                   localStorage.getItem('language') || 
+                                   'pt';
+            
+            // Importar as traduções do config.js
+            import('./js/config.js').then(module => {
+                const translations = module.translations;
+                const texts = translations[currentLanguage] || translations.pt;
+                
+                // Atualizar título da página
+                document.title = texts.chartsTitle || 'Gráficos - EcoPonto';
+                
+                // Atualizar textos dos elementos
+                document.querySelector('.header-title h1').textContent = texts.historyFill || 'Histórico de Enchimento dos EcoPontos';
+                
+                // Atualizar texto do botão voltar
+                const backButton = document.getElementById('back-button');
+                if (backButton) {
+                    const backButtonSpan = backButton.querySelector('span');
+                    if (backButtonSpan) {
+                        backButtonSpan.textContent = texts.back || 'Voltar ao Painel Principal';
+                    }
+                }
+                
+                // Atualizar títulos dos gráficos com os IDs corretos
+                const mainChartTitle = document.querySelector('#main-chart-container .chart-title');
+                const yellowChartTitle = document.querySelector('#yellow-chart-container .chart-title');
+                const greenChartTitle = document.querySelector('#green-chart-container .chart-title');
+                const blueChartTitle = document.querySelector('#blue-chart-container .chart-title');
+                
+                if (mainChartTitle) mainChartTitle.textContent = texts.historyFill || 'Histórico de Enchimento';
+                if (yellowChartTitle) yellowChartTitle.textContent = texts.yellowTypeTitle || 'Plástico e Metal';
+                if (greenChartTitle) greenChartTitle.textContent = texts.greenTypeTitle || 'Vidro';
+                if (blueChartTitle) blueChartTitle.textContent = texts.blueTypeTitle || 'Papel e Cartão';
+                
+                // Atualizar estatísticas usando os IDs
+                const avgFillTitle = document.getElementById('avg-fill-title');
+                const peakFillTitle = document.getElementById('peak-fill-title');
+                const fastestFillTitle = document.getElementById('fastest-fill-title');
+                
+                if (avgFillTitle) avgFillTitle.textContent = texts.averageFill || 'Enchimento Médio';
+                if (peakFillTitle) peakFillTitle.textContent = texts.peakFill || 'Pico de Enchimento';
+                if (fastestFillTitle) fastestFillTitle.textContent = texts.fastestFill || 'EcoPonto com Enchimento Mais Rápido';
+                
+                // Atualizar botões de intervalo de tempo
+                const timeButtons = document.querySelectorAll('.time-btn');
+                timeButtons.forEach(btn => {
+                    const range = btn.dataset.range;
+                    if (range === '24h') {
+                        btn.textContent = texts.last24Hours || '24 horas';
+                    } else if (range === '7d') {
+                        btn.textContent = texts.last7Days || '7 dias';
+                    } else if (range === '30d') {
+                        btn.textContent = texts.last30Days || '30 dias';
+                    }
+                });
+                
+                // Reconstruir os gráficos para atualizar as legendas
+                destroyCharts();
+                renderCharts();
+            });
         }
         
         // Inicializar correções de gráficos
@@ -357,7 +434,13 @@
         
         // Botão de voltar
         document.getElementById('back-button').addEventListener('click', function() {
-            window.location.href = 'index.html';
+            // Obter o idioma atual
+            const currentLanguage = window.languageState?.currentLanguage || 
+                                   localStorage.getItem('language') || 
+                                   'pt';
+            
+            // Voltar para a página inicial preservando o idioma
+            window.location.href = `index.html?lang=${currentLanguage}`;
         });
         
         // Botões de intervalo de tempo
@@ -374,8 +457,30 @@
         
         // Função para carregar dados históricos
         function loadData() {
+            console.log('Carregando dados para os gráficos...');
+            
+            // Verificar se os canvas existem
+            const mainCanvas = document.getElementById('main-chart');
+            const yellowCanvas = document.getElementById('yellow-chart');
+            const greenCanvas = document.getElementById('green-chart');
+            const blueCanvas = document.getElementById('blue-chart');
+            
+            console.log('Canvas encontrados:', {
+                mainCanvas: !!mainCanvas,
+                yellowCanvas: !!yellowCanvas,
+                greenCanvas: !!greenCanvas,
+                blueCanvas: !!blueCanvas
+            });
+            
             // Usar a função de geração de dados do utilitário
             historicalData = chartUtils.generateHistoricalData(currentTimeRange);
+            
+            console.log('Dados gerados:', {
+                timestamps: historicalData.timestamps?.length || 0,
+                yellowPoints: historicalData.yellow?.length || 0,
+                greenPoints: historicalData.green?.length || 0,
+                bluePoints: historicalData.blue?.length || 0
+            });
             
             // Atualizar estatísticas
             updateStats();
@@ -437,113 +542,197 @@
         
         // Função para renderizar gráficos
         function renderCharts() {
-            if (!historicalData) return;
+            console.log('Iniciando renderização dos gráficos...');
+            if (!historicalData) {
+                console.error('Dados históricos não disponíveis. Abortando renderização.');
+                return;
+            }
             
             const colors = chartUtils.getChartColors();
             const commonOptions = chartUtils.getCommonOptions();
             const labels = chartUtils.formatTimestamps(historicalData.timestamps, currentTimeRange);
             
-            // Renderizar gráfico principal
-            const mainChartCtx = document.getElementById('main-chart').getContext('2d');
-            mainChart = new Chart(mainChartCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Plástico e Metal',
-                            data: historicalData.yellow,
-                            backgroundColor: colors.yellow.fill,
-                            borderColor: colors.yellow.stroke,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
+            console.log('Labels formatados:', labels.length);
+            
+            // Obter traduções para os rótulos dos gráficos
+            const currentLanguage = window.languageState?.currentLanguage || 
+                                   localStorage.getItem('language') || 
+                                   'pt';
+            
+            // Definir rótulos padrão
+            let yellowLabel = 'Plástico e Metal';
+            let greenLabel = 'Vidro';
+            let blueLabel = 'Papel e Cartão';
+            let fillLevelLabel = 'Nível de Enchimento (%)';
+            let timeLabel = 'Tempo';
+            
+            try {
+                // Verificar se os canvas existem e obter seus contextos
+                const mainChartCanvas = document.getElementById('main-chart');
+                const yellowChartCanvas = document.getElementById('yellow-chart');
+                const greenChartCanvas = document.getElementById('green-chart');
+                const blueChartCanvas = document.getElementById('blue-chart');
+                
+                if (!mainChartCanvas || !yellowChartCanvas || !greenChartCanvas || !blueChartCanvas) {
+                    console.error('Um ou mais canvas não foram encontrados:', {
+                        mainChart: !!mainChartCanvas,
+                        yellowChart: !!yellowChartCanvas,
+                        greenChart: !!greenChartCanvas,
+                        blueChart: !!blueChartCanvas
+                    });
+                    return;
+                }
+                
+                const mainChartCtx = mainChartCanvas.getContext('2d');
+                const yellowChartCtx = yellowChartCanvas.getContext('2d');
+                const greenChartCtx = greenChartCanvas.getContext('2d');
+                const blueChartCtx = blueChartCanvas.getContext('2d');
+                
+                if (!mainChartCtx || !yellowChartCtx || !greenChartCtx || !blueChartCtx) {
+                    console.error('Não foi possível obter o contexto 2D de um ou mais canvas');
+                    return;
+                }
+                
+                console.log('Contextos 2D obtidos com sucesso');
+                
+                // Obter traduções
+                import('./js/config.js').then(module => {
+                    console.log('Módulo config.js carregado');
+                    const translations = module.translations;
+                    const texts = translations[currentLanguage] || translations.pt;
+                    
+                    yellowLabel = texts.yellowTypeTitle || yellowLabel;
+                    greenLabel = texts.greenTypeTitle || greenLabel;
+                    blueLabel = texts.blueTypeTitle || blueLabel;
+                    fillLevelLabel = texts.fillLevel || fillLevelLabel;
+                    timeLabel = texts.time || timeLabel;
+                    
+                    // Atualizar opções comuns com textos traduzidos
+                    commonOptions.scales.y.title = { 
+                        display: true, 
+                        text: fillLevelLabel,
+                        color: commonOptions.scales.y.ticks.color
+                    };
+                    
+                    commonOptions.scales.x.title = {
+                        display: true,
+                        text: timeLabel,
+                        color: commonOptions.scales.x.ticks.color
+                    };
+                    
+                    console.log('Criando gráfico principal...');
+                    // Renderizar gráfico principal
+                    mainChart = new Chart(mainChartCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: yellowLabel,
+                                    data: historicalData.yellow,
+                                    backgroundColor: colors.yellow.fill,
+                                    borderColor: colors.yellow.stroke,
+                                    borderWidth: 2,
+                                    tension: 0.3,
+                                    pointRadius: 3
+                                },
+                                {
+                                    label: greenLabel,
+                                    data: historicalData.green,
+                                    backgroundColor: colors.green.fill,
+                                    borderColor: colors.green.stroke,
+                                    borderWidth: 2,
+                                    tension: 0.3,
+                                    pointRadius: 3
+                                },
+                                {
+                                    label: blueLabel,
+                                    data: historicalData.blue,
+                                    backgroundColor: colors.blue.fill,
+                                    borderColor: colors.blue.stroke,
+                                    borderWidth: 2,
+                                    tension: 0.3,
+                                    pointRadius: 3
+                                }
+                            ]
                         },
-                        {
-                            label: 'Vidro',
-                            data: historicalData.green,
-                            backgroundColor: colors.green.fill,
-                            borderColor: colors.green.stroke,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
+                        options: commonOptions
+                    });
+                    console.log('Gráfico principal criado');
+                    
+                    console.log('Criando gráfico amarelo...');
+                    // Renderizar gráfico de plástico e metal
+                    yellowChart = new Chart(yellowChartCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: yellowLabel,
+                                    data: historicalData.yellow,
+                                    backgroundColor: colors.yellow.fill,
+                                    borderColor: colors.yellow.stroke,
+                                    borderWidth: 2,
+                                    tension: 0.3,
+                                    fill: true
+                                }
+                            ]
                         },
-                        {
-                            label: 'Papel e Cartão',
-                            data: historicalData.blue,
-                            backgroundColor: colors.blue.fill,
-                            borderColor: colors.blue.stroke,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
-                        }
-                    ]
-                },
-                options: commonOptions
-            });
-            
-            // Renderizar gráfico de plástico e metal
-            const yellowChartCtx = document.getElementById('yellow-chart').getContext('2d');
-            yellowChart = new Chart(yellowChartCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Plástico e Metal',
-                            data: historicalData.yellow,
-                            backgroundColor: colors.yellow.fill,
-                            borderColor: colors.yellow.stroke,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: commonOptions
-            });
-            
-            // Renderizar gráfico de vidro
-            const greenChartCtx = document.getElementById('green-chart').getContext('2d');
-            greenChart = new Chart(greenChartCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Vidro',
-                            data: historicalData.green,
-                            backgroundColor: colors.green.fill,
-                            borderColor: colors.green.stroke,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: commonOptions
-            });
-            
-            // Renderizar gráfico de papel e cartão
-            const blueChartCtx = document.getElementById('blue-chart').getContext('2d');
-            blueChart = new Chart(blueChartCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Papel e Cartão',
-                            data: historicalData.blue,
-                            backgroundColor: colors.blue.fill,
-                            borderColor: colors.blue.stroke,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: commonOptions
-            });
+                        options: commonOptions
+                    });
+                    console.log('Gráfico amarelo criado');
+                    
+                    console.log('Criando gráfico verde...');
+                    // Renderizar gráfico de vidro
+                    greenChart = new Chart(greenChartCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: greenLabel,
+                                    data: historicalData.green,
+                                    backgroundColor: colors.green.fill,
+                                    borderColor: colors.green.stroke,
+                                    borderWidth: 2,
+                                    tension: 0.3,
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: commonOptions
+                    });
+                    console.log('Gráfico verde criado');
+                    
+                    console.log('Criando gráfico azul...');
+                    // Renderizar gráfico de papel e cartão
+                    blueChart = new Chart(blueChartCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: blueLabel,
+                                    data: historicalData.blue,
+                                    backgroundColor: colors.blue.fill,
+                                    borderColor: colors.blue.stroke,
+                                    borderWidth: 2,
+                                    tension: 0.3,
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: commonOptions
+                    });
+                    console.log('Gráfico azul criado');
+                    
+                    console.log('Todos os gráficos foram criados com sucesso');
+                }).catch(error => {
+                    console.error('Erro ao carregar módulo config.js:', error);
+                });
+            } catch (error) {
+                console.error('Erro durante a renderização dos gráficos:', error);
+            }
         }
         
         // Inicializar dados e gráficos

@@ -91,33 +91,148 @@
             // Adicionar algumas notificações de demonstração, caso o MenuManager não tenha nenhuma
             if (!menuManager.notifications || menuManager.notifications.length === 0) {
                 console.log('Adicionando notificações de demonstração...');
-                // Adicionar notificações de exemplo
-                menuManager.notifications = [
-                    {
-                        id: 1,
-                        title: 'Ecoponto Amarelo',
-                        message: 'O Ecoponto Amarelo (Plástico/Metal) atingiu 85% da capacidade.',
-                        timestamp: new Date().toISOString(),
-                        read: false,
-                        type: 'warning'
-                    },
-                    {
-                        id: 2,
-                        title: 'Nova Funcionalidade',
-                        message: 'O sistema multilíngue foi atualizado com novos idiomas: Alemão, Francês e Japonês.',
-                        timestamp: new Date().toISOString(),
-                        read: false,
-                        type: 'info'
-                    },
-                    {
-                        id: 3,
-                        title: 'Manutenção Programada',
-                        message: 'Haverá manutenção programada no sistema no próximo domingo.',
-                        timestamp: new Date().toISOString(),
-                        read: true,
-                        type: 'info'
-                    }
-                ];
+                
+                // Obter o idioma atual
+                const currentLanguage = window.languageState?.currentLanguage || 
+                                      localStorage.getItem('language') || 
+                                      'pt';
+                
+                // Definir notificações de acordo com o idioma selecionado
+                const notificationsContent = {
+                    pt: [
+                        {
+                            id: 1,
+                            title: 'Ecoponto Amarelo',
+                            message: 'O ecoponto amarelo está quase cheio (85%).',
+                            timestamp: new Date().toISOString(),
+                            read: false,
+                            type: 'warning'
+                        },
+                        {
+                            id: 2,
+                            title: 'Manutenção Programada',
+                            message: 'Manutenção programada para amanhã às 10:00.',
+                            timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+                            read: false,
+                            type: 'info'
+                        },
+                        {
+                            id: 3,
+                            title: 'Coleta Realizada',
+                            message: 'Coleta do ecoponto verde realizada com sucesso.',
+                            timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
+                            read: true,
+                            type: 'success'
+                        }
+                    ],
+                    en: [
+                        {
+                            id: 1,
+                            title: 'Yellow Ecopoint',
+                            message: 'The yellow ecopoint is almost full (85%).',
+                            timestamp: new Date().toISOString(),
+                            read: false,
+                            type: 'warning'
+                        },
+                        {
+                            id: 2,
+                            title: 'Scheduled Maintenance',
+                            message: 'Maintenance scheduled for tomorrow at 10:00.',
+                            timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+                            read: false,
+                            type: 'info'
+                        },
+                        {
+                            id: 3,
+                            title: 'Collection Completed',
+                            message: 'Green ecopoint collection successfully completed.',
+                            timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
+                            read: true,
+                            type: 'success'
+                        }
+                    ],
+                    de: [
+                        {
+                            id: 1,
+                            title: 'Gelber Recyclingbehälter',
+                            message: 'Der gelbe Recyclingbehälter ist fast voll (85%).',
+                            timestamp: new Date().toISOString(),
+                            read: false,
+                            type: 'warning'
+                        },
+                        {
+                            id: 2,
+                            title: 'Geplante Wartung',
+                            message: 'Wartung für morgen um 10:00 Uhr geplant.',
+                            timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+                            read: false,
+                            type: 'info'
+                        },
+                        {
+                            id: 3,
+                            title: 'Sammlung Abgeschlossen',
+                            message: 'Sammlung des grünen Recyclingbehälters erfolgreich abgeschlossen.',
+                            timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
+                            read: true,
+                            type: 'success'
+                        }
+                    ],
+                    ja: [
+                        {
+                            id: 1,
+                            title: '黄色のエコポイント',
+                            message: '黄色のエコポイントがほぼ満杯です（85％）。',
+                            timestamp: new Date().toISOString(),
+                            read: false,
+                            type: 'warning'
+                        },
+                        {
+                            id: 2,
+                            title: '予定されたメンテナンス',
+                            message: '明日の10時にメンテナンスが予定されています。',
+                            timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+                            read: false,
+                            type: 'info'
+                        },
+                        {
+                            id: 3,
+                            title: '収集完了',
+                            message: '緑のエコポイントの収集が正常に完了しました。',
+                            timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
+                            read: true,
+                            type: 'success'
+                        }
+                    ],
+                    zh: [
+                        {
+                            id: 1,
+                            title: '黄色回收点',
+                            message: '黄色回收点几乎已满（85％）。',
+                            timestamp: new Date().toISOString(),
+                            read: false,
+                            type: 'warning'
+                        },
+                        {
+                            id: 2,
+                            title: '计划维护',
+                            message: '明天10:00计划进行维护。',
+                            timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+                            read: false,
+                            type: 'info'
+                        },
+                        {
+                            id: 3,
+                            title: '收集完成',
+                            message: '绿色回收点收集成功完成。',
+                            timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
+                            read: true,
+                            type: 'success'
+                        }
+                    ]
+                };
+                
+                // Usar notificações do idioma atual ou cair para português se o idioma não tiver traduções
+                menuManager.notifications = notificationsContent[currentLanguage] || notificationsContent.pt;
                 
                 // Criar ou substituir a função updateNotificationBadge
                 menuManager.updateNotificationBadge = function() {
@@ -183,6 +298,29 @@
                             existingPanel.remove();
                         }
                         
+                        // Obter o idioma atual
+                        const currentLanguage = window.languageState?.currentLanguage || 
+                                            localStorage.getItem('language') || 
+                                            'pt';
+        
+                        // Função para obter texto traduzido
+                        const getTranslatedText = (key, defaultText) => {
+                            if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage][key]) {
+                                return window.translations[currentLanguage][key];
+                            }
+                            return defaultText;
+                        };
+                        
+                        // Textos traduzidos
+                        const texts = {
+                            notificationsTitle: getTranslatedText('notifications', 'Notificações'),
+                            noNotifications: getTranslatedText('noNotifications', 'Não há notificações.'),
+                            markAsRead: getTranslatedText('markAsRead', 'Marcar como lida'),
+                            deleteNotification: getTranslatedText('deleteNotification', 'Excluir'),
+                            markAllAsRead: getTranslatedText('markAllAsRead', 'Marcar todas como lidas'),
+                            clearAll: getTranslatedText('clearAll', 'Limpar todas')
+                        };
+                        
                         // Criar painel de notificações
                         const notificationsPanel = document.createElement('div');
                         notificationsPanel.className = 'notifications-panel';
@@ -191,7 +329,7 @@
                         const header = document.createElement('div');
                         header.className = 'notifications-header';
                         header.innerHTML = `
-                            <h3>Notificações</h3>
+                            <h3>${texts.notificationsTitle}</h3>
                             <button class="close-notifications">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -202,7 +340,7 @@
                         notificationsList.className = 'notifications-list';
                         
                         if (menuManager.notifications.length === 0) {
-                            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                            notificationsList.innerHTML = `<p class="no-notifications">${texts.noNotifications}</p>`;
                         } else {
                             // Ordenar notificações por data (mais recentes primeiro)
                             const sortedNotifications = [...menuManager.notifications].sort((a, b) => 
@@ -241,9 +379,9 @@
                                     </div>
                                     <div class="notification-actions">
                                         ${!notification.read ? 
-                                            '<button class="mark-read" title="Marcar como lida"><i class="fas fa-check"></i></button>' 
+                                            `<button class="mark-read" title="${texts.markAsRead}"><i class="fas fa-check"></i></button>` 
                                             : ''}
-                                        <button class="delete-notification" title="Excluir"><i class="fas fa-trash"></i></button>
+                                        <button class="delete-notification" title="${texts.deleteNotification}"><i class="fas fa-trash"></i></button>
                                     </div>
                                 `;
                                 
@@ -255,8 +393,8 @@
                         const footer = document.createElement('div');
                         footer.className = 'notifications-footer';
                         footer.innerHTML = `
-                            <button class="mark-all-read">Marcar todas como lidas</button>
-                            <button class="clear-all">Limpar todas</button>
+                            <button class="mark-all-read">${texts.markAllAsRead}</button>
+                            <button class="clear-all">${texts.clearAll}</button>
                         `;
                         
                         // Montar o painel
@@ -315,7 +453,7 @@
                                 setTimeout(() => {
                                     notificationItem.remove();
                                     if (menuManager.notifications.length === 0) {
-                                        notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                                        notificationsList.innerHTML = `<p class="no-notifications">${texts.noNotifications}</p>`;
                                     }
                                     
                                     // Atualizar o badge
@@ -358,7 +496,7 @@
                             menuManager.notifications = [];
                             
                             // Atualizar UI
-                            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                            notificationsList.innerHTML = `<p class="no-notifications">${texts.noNotifications}</p>`;
                             
                             // Atualizar o badge
                             if (typeof menuManager.updateNotificationBadge === 'function') {
@@ -1113,17 +1251,6 @@
                             <span>English</span>
                         </div>
                     </a>
-                    <a href="#" class="menu-item language-option" data-lang="es">
-                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="display: flex; align-items: center;">
-                                <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; overflow: hidden; position: relative; border: 1px solid #eaeaea; margin-right: 8px;">
-                                    <img src="https://flagcdn.com/w40/es.png" alt="Spain" style="width: 100%; height: 100%; object-fit: cover;">
-                                </span>
-                            </div>
-                            <span>Español</span>
-                        </div>
-                    </a>
                     <a href="#" class="menu-item language-option" data-lang="de">
                         <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -1135,17 +1262,6 @@
                             <span>Deutsch</span>
                         </div>
                     </a>
-                    <a href="#" class="menu-item language-option" data-lang="fr">
-                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="display: flex; align-items: center;">
-                                <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; overflow: hidden; position: relative; border: 1px solid #eaeaea; margin-right: 8px;">
-                                    <img src="https://flagcdn.com/w40/fr.png" alt="France" style="width: 100%; height: 100%; object-fit: cover;">
-                                </span>
-                            </div>
-                            <span>Français</span>
-                        </div>
-                    </a>
                     <a href="#" class="menu-item language-option" data-lang="ja">
                         <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -1155,6 +1271,17 @@
                                 </span>
                             </div>
                             <span>日本語</span>
+                        </div>
+                    </a>
+                    <a href="#" class="menu-item language-option" data-lang="zh">
+                        <i class="fas fa-check" style="color: #0066cc; visibility: hidden;"></i>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="display: flex; align-items: center;">
+                                <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; overflow: hidden; position: relative; border: 1px solid #eaeaea; margin-right: 8px;">
+                                    <img src="https://flagcdn.com/w40/cn.png" alt="China" style="width: 100%; height: 100%; object-fit: cover;">
+                                </span>
+                            </div>
+                            <span>中文</span>
                         </div>
                     </a>
                 </div>

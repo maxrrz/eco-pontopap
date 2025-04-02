@@ -161,33 +161,147 @@ export class MenuManager {
 
     // Configurar notificações
     setupNotifications() {
-        // Simular algumas notificações para demonstração
-        this.notifications = [
-            {
-                id: 1,
-                title: 'Ecoponto Amarelo',
-                message: 'O ecoponto amarelo está quase cheio (85%).',
-                type: 'warning',
-                timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
-                read: false
-            },
-            {
-                id: 2,
-                title: 'Manutenção Programada',
-                message: 'Manutenção programada para amanhã às 10:00.',
-                type: 'info',
-                timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
-                read: false
-            },
-            {
-                id: 3,
-                title: 'Coleta Realizada',
-                message: 'Coleta do ecoponto verde realizada com sucesso.',
-                type: 'success',
-                timestamp: new Date(Date.now() - 24 * 3600000).toISOString(),
-                read: true
-            }
-        ];
+        // Obter o idioma atual
+        const currentLanguage = window.languageState?.currentLanguage || 
+                               localStorage.getItem('language') || 
+                               'pt';
+                               
+        // Definir notificações de acordo com o idioma selecionado
+        const notificationsContent = {
+            pt: [
+                {
+                    id: 1,
+                    title: 'Ecoponto Amarelo',
+                    message: 'O ecoponto amarelo está quase cheio (85%).',
+                    type: 'warning',
+                    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 2,
+                    title: 'Manutenção Programada',
+                    message: 'Manutenção programada para amanhã às 10:00.',
+                    type: 'info',
+                    timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 3,
+                    title: 'Coleta Realizada',
+                    message: 'Coleta do ecoponto verde realizada com sucesso.',
+                    type: 'success',
+                    timestamp: new Date(Date.now() - 24 * 3600000).toISOString(),
+                    read: true
+                }
+            ],
+            en: [
+                {
+                    id: 1,
+                    title: 'Yellow Ecopoint',
+                    message: 'The yellow ecopoint is almost full (85%).',
+                    type: 'warning',
+                    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 2,
+                    title: 'Scheduled Maintenance',
+                    message: 'Maintenance scheduled for tomorrow at 10:00.',
+                    type: 'info',
+                    timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 3,
+                    title: 'Collection Completed',
+                    message: 'Green ecopoint collection successfully completed.',
+                    type: 'success',
+                    timestamp: new Date(Date.now() - 24 * 3600000).toISOString(),
+                    read: true
+                }
+            ],
+            de: [
+                {
+                    id: 1,
+                    title: 'Gelber Recyclingbehälter',
+                    message: 'Der gelbe Recyclingbehälter ist fast voll (85%).',
+                    type: 'warning',
+                    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 2,
+                    title: 'Geplante Wartung',
+                    message: 'Wartung für morgen um 10:00 Uhr geplant.',
+                    type: 'info',
+                    timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 3,
+                    title: 'Sammlung Abgeschlossen',
+                    message: 'Sammlung des grünen Recyclingbehälters erfolgreich abgeschlossen.',
+                    type: 'success',
+                    timestamp: new Date(Date.now() - 24 * 3600000).toISOString(),
+                    read: true
+                }
+            ],
+            ja: [
+                {
+                    id: 1,
+                    title: '黄色のエコポイント',
+                    message: '黄色のエコポイントがほぼ満杯です（85％）。',
+                    type: 'warning',
+                    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 2,
+                    title: '予定されたメンテナンス',
+                    message: '明日の10時にメンテナンスが予定されています。',
+                    type: 'info',
+                    timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 3,
+                    title: '収集完了',
+                    message: '緑のエコポイントの収集が正常に完了しました。',
+                    type: 'success',
+                    timestamp: new Date(Date.now() - 24 * 3600000).toISOString(),
+                    read: true
+                }
+            ],
+            zh: [
+                {
+                    id: 1,
+                    title: '黄色回收点',
+                    message: '黄色回收点几乎已满（85％）。',
+                    type: 'warning',
+                    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 2,
+                    title: '计划维护',
+                    message: '明天10:00计划进行维护。',
+                    type: 'info',
+                    timestamp: new Date(Date.now() - 2 * 3600000).toISOString(),
+                    read: false
+                },
+                {
+                    id: 3,
+                    title: '收集完成',
+                    message: '绿色回收点收集成功完成。',
+                    type: 'success',
+                    timestamp: new Date(Date.now() - 24 * 3600000).toISOString(),
+                    read: true
+                }
+            ]
+        };
+        
+        // Usar notificações do idioma atual ou cair para português se o idioma não tiver traduções
+        this.notifications = notificationsContent[currentLanguage] || notificationsContent.pt;
         
         this.updateNotificationBadge();
     }
@@ -281,6 +395,29 @@ export class MenuManager {
         }
         
         try {
+            // Obter o idioma atual
+            const currentLanguage = window.languageState?.currentLanguage || 
+                                   localStorage.getItem('language') || 
+                                   'pt';
+            
+            // Função para obter texto traduzido
+            const getTranslatedText = (key, defaultText) => {
+                if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage][key]) {
+                    return window.translations[currentLanguage][key];
+                }
+                return defaultText;
+            };
+            
+            // Textos traduzidos
+            const texts = {
+                notificationsTitle: getTranslatedText('notifications', 'Notificações'),
+                noNotifications: getTranslatedText('noNotifications', 'Não há notificações.'),
+                markAsRead: getTranslatedText('markAsRead', 'Marcar como lida'),
+                deleteNotification: getTranslatedText('deleteNotification', 'Excluir'),
+                markAllAsRead: getTranslatedText('markAllAsRead', 'Marcar todas como lidas'),
+                clearAll: getTranslatedText('clearAll', 'Limpar todas')
+            };
+            
             // Criar painel de notificações
             const notificationsPanel = document.createElement('div');
             notificationsPanel.className = 'notifications-panel';
@@ -289,7 +426,7 @@ export class MenuManager {
             const header = document.createElement('div');
             header.className = 'notifications-header';
             header.innerHTML = `
-                <h3>Notificações</h3>
+                <h3>${texts.notificationsTitle}</h3>
                 <button class="close-notifications">
                     <i class="fas fa-times"></i>
                 </button>
@@ -300,7 +437,7 @@ export class MenuManager {
             notificationsList.className = 'notifications-list';
             
             if (this.notifications.length === 0) {
-                notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                notificationsList.innerHTML = `<p class="no-notifications">${texts.noNotifications}</p>`;
             } else {
                 // Ordenar notificações por data (mais recentes primeiro)
                 const sortedNotifications = [...this.notifications].sort((a, b) =>
@@ -328,8 +465,8 @@ export class MenuManager {
                             <div class="notification-date">${formattedDate}</div>
                         </div>
                         <div class="notification-actions">
-                            ${!notification.read ? '<button class="mark-read" title="Marcar como lida"><i class="fas fa-check"></i></button>' : ''}
-                            <button class="delete-notification" title="Excluir"><i class="fas fa-trash"></i></button>
+                            ${!notification.read ? `<button class="mark-read" title="${texts.markAsRead}"><i class="fas fa-check"></i></button>` : ''}
+                            <button class="delete-notification" title="${texts.deleteNotification}"><i class="fas fa-trash"></i></button>
                         </div>
                     `;
                     
@@ -341,8 +478,8 @@ export class MenuManager {
             const footer = document.createElement('div');
             footer.className = 'notifications-footer';
             footer.innerHTML = `
-                <button class="mark-all-read">Marcar todas como lidas</button>
-                <button class="clear-all">Limpar todas</button>
+                <button class="mark-all-read">${texts.markAllAsRead}</button>
+                <button class="clear-all">${texts.clearAll}</button>
             `;
             
             // Montar o painel
@@ -363,17 +500,21 @@ export class MenuManager {
             const markReadButtons = notificationsPanel.querySelectorAll('.mark-read');
             markReadButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
-                    e.stopPropagation();
                     const notificationItem = button.closest('.notification-item');
                     const id = parseInt(notificationItem.getAttribute('data-id'));
                     
-                    this.markNotificationAsRead(id);
+                    // Atualizar o objeto de notificação
+                    const notification = this.notifications.find(n => n.id === id);
+                    if (notification) {
+                        notification.read = true;
+                    }
                     
                     // Atualizar UI
                     notificationItem.classList.remove('unread');
                     notificationItem.classList.add('read');
                     button.remove();
                     
+                    // Atualizar o badge
                     this.updateNotificationBadge();
                 });
             });
@@ -382,19 +523,23 @@ export class MenuManager {
             const deleteButtons = notificationsPanel.querySelectorAll('.delete-notification');
             deleteButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
-                    e.stopPropagation();
                     const notificationItem = button.closest('.notification-item');
                     const id = parseInt(notificationItem.getAttribute('data-id'));
                     
-                    this.deleteNotification(id);
+                    // Atualizar o array de notificações
+                    this.notifications = this.notifications.filter(n => n.id !== id);
                     
-                    // Atualizar UI
-                    notificationItem.classList.add('deleting');
+                    // Remover visualmente
+                    notificationItem.classList.add('removing');
                     setTimeout(() => {
                         notificationItem.remove();
+                        
+                        // Verificar se ainda há notificações
                         if (this.notifications.length === 0) {
-                            notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                            notificationsList.innerHTML = `<p class="no-notifications">${texts.noNotifications}</p>`;
                         }
+                        
+                        // Atualizar o badge
                         this.updateNotificationBadge();
                     }, 300);
                 });
@@ -403,36 +548,42 @@ export class MenuManager {
             // Adicionar event listener para marcar todas como lidas
             const markAllReadButton = notificationsPanel.querySelector('.mark-all-read');
             markAllReadButton.addEventListener('click', () => {
-                this.markAllNotificationsAsRead();
+                // Atualizar todos os objetos
+                this.notifications.forEach(notification => {
+                    notification.read = true;
+                });
                 
                 // Atualizar UI
                 const unreadItems = notificationsPanel.querySelectorAll('.notification-item.unread');
                 unreadItems.forEach(item => {
                     item.classList.remove('unread');
                     item.classList.add('read');
+                    
                     const markReadButton = item.querySelector('.mark-read');
                     if (markReadButton) {
                         markReadButton.remove();
                     }
                 });
                 
+                // Atualizar o badge
                 this.updateNotificationBadge();
             });
             
             // Adicionar event listener para limpar todas
             const clearAllButton = notificationsPanel.querySelector('.clear-all');
             clearAllButton.addEventListener('click', () => {
-                this.clearAllNotifications();
-                notificationsList.innerHTML = '<p class="no-notifications">Não há notificações.</p>';
+                // Limpar array
+                this.notifications = [];
+                
+                // Atualizar UI
+                notificationsList.innerHTML = `<p class="no-notifications">${texts.noNotifications}</p>`;
+                
+                // Atualizar o badge
                 this.updateNotificationBadge();
             });
-            
-            // Se estamos aqui, a função foi bem-sucedida
-            return true;
         } catch (error) {
             console.error('Erro ao mostrar notificações:', error);
             this.showNotification('Ocorreu um erro ao mostrar as notificações. Por favor, tente novamente.', 'error');
-            return false;
         }
     }
 
@@ -451,38 +602,18 @@ export class MenuManager {
         }
     }
 
-    // Marcar notificação como lida
-    markNotificationAsRead(id) {
-        const notification = this.notifications.find(n => n.id === id);
-        if (notification) {
-            notification.read = true;
-        }
-    }
-
-    // Excluir notificação
-    deleteNotification(id) {
-        this.notifications = this.notifications.filter(n => n.id !== id);
-    }
-
-    // Marcar todas as notificações como lidas
-    markAllNotificationsAsRead() {
-        this.notifications.forEach(notification => {
-            notification.read = true;
-        });
-    }
-
-    // Limpar todas as notificações
-    clearAllNotifications() {
-        this.notifications = [];
-    }
-
     // Mostrar gráficos
     showCharts() {
         console.log('Abrindo página de gráficos');
         this.showNotification('Abrindo página de gráficos...', 'info');
         
-        // Abrir a página de gráficos
-        window.location.href = 'charts.html';
+        // Obter o idioma atual
+        const currentLanguage = window.languageState?.currentLanguage || 
+                               localStorage.getItem('language') || 
+                               'pt';
+        
+        // Abrir a página de gráficos preservando o idioma atual
+        window.location.href = `charts.html?lang=${currentLanguage}`;
     }
 
     // Mostrar gerenciamento de usuários (apenas para administradores)
@@ -590,10 +721,9 @@ export class MenuManager {
                     <label for="settings-language">Idioma</label>
                     <select id="settings-language">
                         <option value="pt" ${this.currentLanguage === 'pt' ? 'selected' : ''}>Português</option>
-                        <option value="es" ${this.currentLanguage === 'es' ? 'selected' : ''}>Español</option>
                         <option value="de" ${this.currentLanguage === 'de' ? 'selected' : ''}>Deutsch</option>
-                        <option value="fr" ${this.currentLanguage === 'fr' ? 'selected' : ''}>Français</option>
                         <option value="ja" ${this.currentLanguage === 'ja' ? 'selected' : ''}>日本語</option>
+                        <option value="zh" ${this.currentLanguage === 'zh' ? 'selected' : ''}>中文</option>
                     </select>
                 </div>
                 <div class="form-group checkbox">
@@ -728,11 +858,6 @@ export class MenuManager {
                 menuPanel.classList.remove('active');
                 menuOverlay.classList.remove('active');
                 document.body.style.overflow = '';
-            }
-            
-            // Limpar quaisquer timeouts pendentes para evitar que alertas antigos apareçam
-            for (let i = 1; i < 10000; i++) {
-                window.clearTimeout(i);
             }
             
             // Remover painel de perfil anterior se existir
@@ -1583,6 +1708,19 @@ export class MenuManager {
             existingOverlay.remove();
         }
         
+        // Obter o idioma atual
+        const currentLanguage = window.languageState?.currentLanguage || 
+                                localStorage.getItem('language') || 
+                                'pt';
+        
+        // Função para obter texto traduzido
+        const getTranslatedText = (key, defaultText) => {
+            if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage][key]) {
+                return window.translations[currentLanguage][key];
+            }
+            return defaultText;
+        };
+        
         // Detecção de dispositivo e navegador mais precisa
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         
@@ -1610,6 +1748,28 @@ export class MenuManager {
             deviceType = 'android';
         }
         
+        // Obter textos traduzidos
+        const texts = {
+            modalTitle: getTranslatedText('installAppModalTitle', 'Instalar a aplicação do myEcoponto'),
+            description: getTranslatedText('installAppNote', 'Os seus dados de monitorização favoritos na ponta dos seus dedos. Acesso rápido. Notificações instantâneas. Tudo o que adora, ainda melhor.'),
+            
+            // iOS
+            iosStep1: getTranslatedText('installAppIOSStep1', 'Abra o myEcoponto no navegador Safari do teu iPhone.'),
+            iosStep2: getTranslatedText('installAppIOSStep2', 'Toque no botão "Partilhar" na barra de navegação.'),
+            iosStep3: getTranslatedText('installAppIOSStep3', 'Deslize para baixo e pressione em "Adicionar ao Ecrã Inicial".'),
+            
+            // Android
+            androidStep1: getTranslatedText('installAppAndroidStep1', 'Abra o myEcoponto no navegador Chrome no seu dispositivo Android.'),
+            androidStep2: getTranslatedText('installAppAndroidStep2', 'Toque no menu (três pontos) no canto superior direito.'),
+            androidStep3: getTranslatedText('installAppAndroidStep3', 'Selecione "Adicionar à tela inicial" ou "Instalar aplicação".'),
+            androidStep4: getTranslatedText('installAppAndroidStep3', 'Confirme a instalação tocando em "Adicionar" ou "Instalar".'),
+            
+            // Desktop
+            desktopStep1: getTranslatedText('installAppGenericStep1', 'Abra o myEcoponto no navegador Chrome.'),
+            desktopStep2: getTranslatedText('installAppDesktopStep1', 'Clique no ícone de instalação na barra de endereço.'),
+            desktopStep3: getTranslatedText('installAppDesktopStep2', 'Confirme a instalação clicando em "Instalar".')
+        };
+        
         // Criar overlay
         const overlay = document.createElement('div');
         overlay.className = 'install-overlay';
@@ -1623,7 +1783,7 @@ export class MenuManager {
         const header = document.createElement('div');
         header.className = 'install-header';
         header.innerHTML = `
-            <h3>Instalar a aplicação do myEcoponto</h3>
+            <h3>${texts.modalTitle}</h3>
             <button class="close-install">
                 <i class="fas fa-times"></i>
             </button>
@@ -1636,10 +1796,7 @@ export class MenuManager {
         // Descrição
         const description = document.createElement('div');
         description.className = 'install-description';
-        description.innerHTML = `
-            Os seus dados de monitorização favoritos na ponta dos seus dedos. Acesso rápido.
-            Notificações instantâneas. Tudo o que adora, ainda melhor.
-        `;
+        description.innerHTML = texts.description;
         
         // Título do browser
         const browserTitle = document.createElement('h3');
@@ -1656,7 +1813,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <div class="step-instruction">Abra o myEcoponto no navegador Safari do teu iPhone.</div>
+                        <div class="step-instruction">${texts.iosStep1}</div>
                         <div class="step-image-container">
                             <img src="int/ios/1.png" alt="Instruções de instalação iOS - Passo 1" class="step-image">
                         </div>
@@ -1666,7 +1823,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <div class="step-instruction">Toque no botão "Partilhar" na barra de navegação.</div>
+                        <div class="step-instruction">${texts.iosStep2}</div>
                         <div class="step-image-container">
                             <img src="int/ios/2.png" alt="Instruções de instalação iOS - Passo 2" class="step-image">
                         </div>
@@ -1676,7 +1833,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <div class="step-instruction">Deslize para baixo e pressione em "Adicionar ao Ecrã Inicial".</div>
+                        <div class="step-instruction">${texts.iosStep3}</div>
                         <div class="step-image-container">
                             <img src="int/ios/3.png" alt="Instruções de instalação iOS - Passo 3" class="step-image">
                         </div>
@@ -1688,7 +1845,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <div class="step-instruction">Abra o myEcoponto no navegador Chrome no seu dispositivo Android.</div>
+                        <div class="step-instruction">${texts.androidStep1}</div>
                         <div class="step-image-container">
                             <img src="int/android/1.png" alt="Instruções de instalação Android - Passo 1" class="step-image">
                         </div>
@@ -1698,7 +1855,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <div class="step-instruction">Toque no menu (três pontos) no canto superior direito.</div>
+                        <div class="step-instruction">${texts.androidStep2}</div>
                         <div class="step-image-container">
                             <img src="int/android/2.png" alt="Instruções de instalação Android - Passo 2" class="step-image">
                         </div>
@@ -1708,7 +1865,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <div class="step-instruction">Selecione "Adicionar à tela inicial" ou "Instalar aplicação".</div>
+                        <div class="step-instruction">${texts.androidStep3}</div>
                         <div class="step-image-container">
                             <img src="int/android/3.png" alt="Instruções de instalação Android - Passo 3" class="step-image">
                         </div>
@@ -1718,7 +1875,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <div class="step-instruction">Confirme a instalação tocando em "Adicionar" ou "Instalar".</div>
+                        <div class="step-instruction">${texts.androidStep4}</div>
                     </div>
                 </div>
             `;
@@ -1727,7 +1884,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <div class="step-instruction">Abra o myEcoponto no navegador Chrome.</div>
+                        <div class="step-instruction">${texts.desktopStep1}</div>
                         <div class="step-image-container">
                             <img src="int/win/1.png" alt="Instruções de instalação - Passo 1" class="step-image">
                         </div>
@@ -1737,7 +1894,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <div class="step-instruction">Clique no ícone de instalação na barra de endereço.</div>
+                        <div class="step-instruction">${texts.desktopStep2}</div>
                         <div class="step-image-container">
                             <img src="int/win/2.png" alt="Instruções de instalação - Passo 2" class="step-image">
                         </div>
@@ -1747,7 +1904,7 @@ export class MenuManager {
                 <div class="install-step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <div class="step-instruction">Confirme a instalação clicando em "Instalar".</div>
+                        <div class="step-instruction">${texts.desktopStep3}</div>
                     </div>
                 </div>
             `;
@@ -1776,6 +1933,11 @@ export class MenuManager {
             installPanel.remove();
             overlay.remove();
         });
+    }
+
+    // Atualizar idioma das notificações quando o idioma é alterado
+    updateNotificationsLanguage() {
+        this.setupNotifications();
     }
 }
 

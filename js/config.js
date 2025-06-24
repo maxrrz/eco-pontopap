@@ -126,19 +126,19 @@ export const translations = {
         // iOS
         installAppIOSTitle: 'Instalar o myEcoPonto no iOS',
         installAppIOSStep1: 'Toque no ícone de compartilhamento na barra de navegação.',
-        installAppIOSStep2: 'Role para baixo e toque em "Adicionar à Tela de Início".',
+        installAppIOSStep2: 'Role para baixo e toque em "Adicionar ao ecrã de Início".',
         installAppIOSStep3: 'Confirme tocando em "Adicionar" no canto superior direito.',
         
         // Android
         installAppAndroidTitle: 'Instalar o myEcoPonto no Android',
         installAppAndroidStep1: 'Toque no menu no canto superior direito.',
-        installAppAndroidStep2: 'Selecione "Instalar aplicativo" ou "Adicionar à tela inicial".',
+        installAppAndroidStep2: 'Selecione "Instalar aplicativo" ou "Adicionar ao ecrã inicial".',
         installAppAndroidStep3: 'Confirme tocando em "Instalar".',
         
         // Desktop
         installAppDesktopTitle: 'Instalar o myEcoPonto no Desktop',
         installAppDesktopStep1: 'Clique no ícone de instalação na barra de endereço.',
-        installAppDesktopStep2: 'Clique em "Instalar" no prompt que aparece.',
+        installAppDesktopStep2: 'Clique em "Instalar" no pop up que aparece.',
         
         // Firefox
         installAppFirefoxTitle: 'Instalar o myEcoPonto no Firefox',

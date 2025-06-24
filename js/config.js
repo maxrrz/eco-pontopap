@@ -153,7 +153,7 @@ export const translations = {
         installAppGenericStep3: 'Siga as instruções na tela para completar a instalação.',
         
         // Nota
-        installAppNote: 'Nota: Após a instalação, você poderá acessar o myEcoPonto diretamente do seu dispositivo, mesmo quando estiver offline.',
+        installAppNote: 'Nota: Após a instalação, você poderá abrir a aplicação myEcoPonto diretamente do seu dispositivo.',
         
         // Notificações
         noNotifications: 'Não há notificações.',

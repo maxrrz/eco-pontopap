@@ -1871,13 +1871,6 @@ export class MenuManager {
                         </div>
                     </div>
                 </div>
-                
-                <div class="install-step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <div class="step-instruction">${texts.androidStep4}</div>
-                    </div>
-                </div>
             `;
         } else {
             steps.innerHTML = `

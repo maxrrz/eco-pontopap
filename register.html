@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/register.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Código existente...
             // Detectar dispositivo móvel e adicionar classe
             function detectMobileDevice() {
                 const isMobile = window.innerWidth <= 768 || 
@@ -286,6 +287,29 @@
                 }
             `;
             document.head.appendChild(style);
+
+            // ************ INÍCIO DO CÓDIGO NOVO PARA PREENCHER O EC-CODE ************
+            // Este bloco de código vai ler o parâmetro 'ecCode' do URL e preencher o input
+            const urlParams = new URLSearchParams(window.location.search);
+            const ecCodeFromUrl = urlParams.get('ecCode'); // Obtém o valor do parâmetro 'ecCode' do URL
+
+            if (ecCodeFromUrl) { // Se o parâmetro 'ecCode' existir no URL
+                const ecCodeInput = document.getElementById('ecCode');
+                if (ecCodeInput) {
+                    // Preenche o input
+                    ecCodeInput.value = ecCodeFromUrl;
+                    // Se quiseres que o placeholder "XXXX" também seja substituído pelo valor
+                    // ecCodeInput.placeholder = ecCodeFromUrl;
+
+                    // O teu layout mostra "EC- XXXX", vamos tentar atualizar esse texto também se for um span/div à parte
+                    // Pelo teu HTML, o "EC-" é um span, e o input é separado. O placeholder resolve o "XXXX" do input.
+                    // Para o caso de teres um elemento fora do input que mostre o valor, teríamos de o identificar aqui.
+                    // Na tua estrutura, o `input` tem o `placeholder="XXXX"`. Quando o `value` é definido, o `placeholder` desaparece.
+                    // A parte "EC-" é um `span` fixo.
+                    // Então, basta preencher o `input.value`.
+                }
+            }
+            // ************ FIM DO CÓDIGO NOVO ************
         });
     </script>
 </head>
@@ -359,4 +383,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>
